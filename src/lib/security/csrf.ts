@@ -3,9 +3,9 @@ import { generateId } from "@/lib/utils";
 const CSRF_COOKIE = "csrf-token";
 const CSRF_HEADER = "x-csrf-token";
 
-function getSecret(): Uint8Array {
+function getSecret(): Uint8Array<ArrayBuffer> {
   const secret = process.env.CSRF_SECRET ?? "prontly-csrf-secret-change-in-production";
-  return new TextEncoder().encode(secret.padEnd(32, "0").slice(0, 32));
+  return new TextEncoder().encode(secret.padEnd(32, "0").slice(0, 32)) as Uint8Array<ArrayBuffer>;
 }
 
 async function sign(value: string): Promise<string> {

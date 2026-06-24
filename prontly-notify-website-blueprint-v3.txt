@@ -4823,3 +4823,115 @@ Dimension
 * Every infrastructure investment at each stage should be traceable back to a specific Open Question or scaling ceiling already flagged in the TRD or Scalability Blueprint, not a net-new architectural decision made under growth pressure.
 * Team scaling follows revenue and operational load, not the reverse — the founding team should feel the specific pain (support backlog, on-call fatigue, a stalled enterprise deal) that a new hire or system resolves before making that hire or building that system.
 Page  of
+
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: HOME / LANDING PAGE
+
+Layout (desktop 1440px):
+- Sticky navbar: logo left, nav links center (Product / Pricing / Docs / Blog), "Start Free" CTA button right
+- Hero section (60% viewport height): left 55% — headline "Bring Visitors Back — Without Email" in Sora 56px bold white, subheadline 20px #94A3B8, two CTAs ("Start Free — No Card Required" filled blue + "Watch Demo" ghost). Right 45% — glassmorphic animated notification stack mockup showing 3 Chrome push notifications stacked with parallax depth
+- Trust bar: "Trusted by 2,400+ websites" + logo marquee of recognizable platform icons (WordPress, Shopify, Webflow, etc.)
+- How it works: 3-step horizontal flow with numbered circles, icon + headline + 1-line description per step
+- Feature grid: 3×2 cards — Campaigns, Automation, AI Tools, Analytics, Segmentation, Multi-site. Each card: icon in blue accent, bold title, 1-line desc, subtle glass background
+- Pricing teaser: 3 plan cards side by side, center "Growth" card elevated with blue glow border and "Most Popular" badge
+- Testimonial row: 3 cards with avatar, quote, name + role
+- Final CTA band: full-width gradient band, large headline, "Start Free" button centered
+- Footer: 4-column links, copyright
+
+Mobile (375px): hero stacks vertically, notification mockup below CTA, feature grid becomes 2-column, sticky bottom CTA bar
+
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: PRICING PAGE
+
+Layout:
+- Page hero: "Simple, transparent pricing" heading, monthly/annual toggle (segmented control, shows "Save 20%" badge on annual)
+- 4 plan cards in a row (Free / Starter / Growth / Scale):
+  * Free: subtle card, "₹0/mo", subscriber limit, basic features checklist
+  * Starter: standard card, ₹999/mo
+  * Growth: FEATURED — elevated with 2px #3B82F6 border glow, soft blue ambient background, "Most Popular" pill badge above card, ₹2,999/mo highlighted in large blue text
+  * Scale: dark card, ₹7,999/mo, "Contact Sales" secondary CTA
+- Each card: plan name, price (large 36px), subscriber limit chip, feature checklist with checkmarks (blue) and crosses (muted) for unincluded features, primary/secondary CTA button
+- Feature comparison table below cards: sticky left column with feature names, columns per plan with ✓ / × / value. Subtle alternating row shading
+- FAQ accordion below: 5 billing questions, plus/minus toggle icon
+- "Talk to Enterprise Sales" banner at bottom with email form field
+
+Annual/monthly toggle changes all prices smoothly. Mobile: plan cards stack vertically, comparison table becomes per-plan accordion
+
+
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: DOCS HUB / INTEGRATIONS
+
+Layout (desktop):
+- Left sidebar (260px): "Documentation" header, nested navigation tree — Getting Started, SDK Install, REST API, Webhooks, Segments API, Changelog. Active item has blue left border accent
+- Top: search bar full width ("Search documentation...")
+- Platform tiles grid (2×3): WordPress, Shopify, Webflow, Wix, Custom HTML/JS, REST API. Each tile: platform logo icon, name, "5 min setup" pill, hover lifts with blue border
+- Main content area: "Quick Start" selected by default. Shows:
+  * Step counter (Step 1 of 3)
+  * Code block with syntax highlighting (dark background #0D1117, green for strings, blue for keywords), copy button top-right
+  * Tab switcher: HTML / WordPress / React
+- Right rail: "On this page" anchor links list
+
+Mobile: sidebar collapses to top hamburger, platform grid becomes 2-column
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: BLOG DETAIL / ARTICLE PAGE
+
+Layout (desktop):
+- Left rail (4% sticky): share buttons — Twitter/X, LinkedIn, Copy Link icons (vertical)
+- Center column (max 720px): breadcrumb (Blog > Campaign Tips), article title 36px Sora, meta row (author avatar + name, date, 8 min read), hero image full-width with rounded corners, article body with proper typographic scale, inline CTA card after 2nd paragraph ("Try AI campaign suggestions — free →" card with blue left border), author bio card at end (avatar, name, role, short bio)
+- Right rail sticky: "Table of Contents" with anchor links auto-generated from headings, below it a "Related Posts" section with 2 compact post cards
+
+Progress bar: thin blue line at very top of viewport showing scroll progress
+
+Mobile: share buttons become bottom sticky bar with icons, left/right rails collapse

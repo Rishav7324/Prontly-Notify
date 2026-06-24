@@ -30,8 +30,8 @@ const mockSubscribers: Subscriber[] = [
 const browserIcon = (b: string) => {
   const props = "h-4 w-4 text-text-muted";
   switch (b.toLowerCase()) {
-    case "chrome": return <Chrome className={props} />;
-    case "safari": return <Safari className={props} />;
+    case "chrome": return <Monitor className={props} />;
+    case "safari": return <Globe className={props} />;
     default: return <Smartphone className={props} />;
   }
 };
