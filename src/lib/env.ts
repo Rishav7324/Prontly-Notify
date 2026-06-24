@@ -37,6 +37,7 @@ const envSchema = z.object({
 
   // VAPID
   VAPID_ENCRYPTION_KEY: z.string().optional(),
+  NEXT_PUBLIC_FIREBASE_VAPID_KEY: z.string().optional(),
 
   // App
   NEXT_PUBLIC_APP_URL: z.string().default("http://localhost:3000"),
