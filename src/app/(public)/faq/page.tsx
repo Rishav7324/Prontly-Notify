@@ -145,6 +145,27 @@ export default function FAQPage() {
         </section>
       ))}
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              ...categories,
+              ...categories2,
+            ].flatMap(cat => cat.items.map(item => ({
+              "@type": "Question",
+              name: item.title,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: item.content,
+              },
+            }))),
+          }),
+        }}
+      />
+
       {/* Still have questions */}
       <section className="border-t border-border py-20">
         <div className="mx-auto max-w-xl px-4 text-center sm:px-6 lg:px-8">

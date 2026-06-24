@@ -110,6 +110,21 @@ export default function AboutPage() {
       </section>
 
       {/* Team */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Prontly Notify",
+            url: "https://prontly.in",
+            description: "AI-assisted browser push notification platform for publishers, SaaS, and e-commerce.",
+            foundingDate: "2025",
+            slogan: "Never lose a visitor again.",
+          }),
+        }}
+      />
+
       <section className="border-t border-border py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">

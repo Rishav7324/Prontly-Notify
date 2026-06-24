@@ -75,8 +75,32 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const shareUrl = `https://prontly.in/blog/${slug}`;
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    author: {
+      "@type": "Person",
+      name: post.author.name,
+    },
+    datePublished: post.date,
+    publisher: {
+      "@type": "Organization",
+      name: "Prontly Notify",
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://prontly.in/blog/${slug}`,
+    },
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <div className="lg:flex lg:gap-12">
         {/* Table of Contents - Desktop */}
         <aside className="hidden w-56 shrink-0 lg:block">

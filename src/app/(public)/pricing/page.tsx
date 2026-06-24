@@ -135,6 +135,23 @@ export default function PricingPage() {
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: "Prontly Notify",
+            offers: plans.map((p) => ({
+              "@type": "Offer",
+              name: p.name,
+              price: p.price[annual ? "annual" : "monthly"].replace("₹", ""),
+              priceCurrency: "INR",
+              description: p.desc,
+            })),
+          }),
+        }}
+      />
       {/* Header */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="text-center">

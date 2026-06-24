@@ -26,8 +26,8 @@
   --color-warning: #F59E0B;
   --color-error: #EF4444;
   --color-info: #3B82F6;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "Sora", "Inter", system-ui, sans-serif;
+  --font-sans: var(--font-sora), "Inter", system-ui, sans-serif;
+  --font-display: var(--font-sora), "Inter", system-ui, sans-serif;
 }
 
 @layer base {
