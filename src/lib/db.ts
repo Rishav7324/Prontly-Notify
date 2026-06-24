@@ -1,0 +1,32 @@
+import "server-only";
+
+function getD1Config() {
+  return {
+    accountId: process.env.CF_ACCOUNT_ID,
+    databaseId: process.env.CF_D1_DATABASE_ID,
+    apiToken: process.env.CF_D1_API_TOKEN,
+  };
+}
+
+export async function executeQuery<T = any>(sql: string, params: any[] = []): Promise<T> {
+  const { accountId, databaseId, apiToken } = getD1Config();
+  const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`;
+  
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ sql, params }),
+  });
+
+  const data = await res.json();
+  if (!data.success) throw new Error(data.errors?.[0]?.message || "D1 Query Failed");
+  return data.result?.[0]?.results || [];
+}
+
+// UUIDv7 generator placeholder (use a library like 'uuidv7' in production)
+export function generateUUID() {
+  return crypto.randomUUID(); 
+}
