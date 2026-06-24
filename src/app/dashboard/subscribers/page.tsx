@@ -9,7 +9,7 @@ import { DataTable, type Column } from "@/components/ui/DataTable";
 import { StateContainer } from "@/components/ui/StateContainer";
 import { useToast } from "@/components/ui/Toast";
 import { formatDate, formatNumber } from "@/lib/utils";
-import { Search, Download, Users, Filter, Globe, Chrome, Safari, Smartphone } from "lucide-react";
+import { Search, Download, Users, Filter, Globe, Monitor, Smartphone } from "lucide-react";
 
 interface Subscriber {
   id: string;

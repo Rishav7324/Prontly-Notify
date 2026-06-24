@@ -19,7 +19,8 @@ async function sign(value: string): Promise<string> {
     ["sign"]
   );
   const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(value));
-  const sigHex = Array.from(new Uint8Array(signature))
+  const buf = new Uint8Array(signature);
+  const sigHex = Array.from(buf)
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
   return `${value}.${sigHex}`;
@@ -41,7 +42,8 @@ async function verify(value: string): Promise<boolean> {
     ["sign"]
   );
   const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(message));
-  const sigHex = Array.from(new Uint8Array(signature))
+  const buf = new Uint8Array(signature);
+  const sigHex = Array.from(buf)
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
   return sigHex === expectedSig;

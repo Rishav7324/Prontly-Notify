@@ -116,7 +116,7 @@ export default function AdminSystem() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const systemStatus: "operational" | "degraded" | "down" = "degraded";
+  const systemStatus = "degraded" as "operational" | "degraded" | "down";
 
   const filteredLogs = useMemo(() => {
     return logs.filter((l) => {

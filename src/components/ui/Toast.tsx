@@ -21,9 +21,14 @@ interface Toast {
   duration?: number;
 }
 
+type AddToastFn = {
+  (toast: Omit<Toast, "id">): void;
+  (message: string, variant?: ToastVariant, duration?: number): void;
+};
+
 interface ToastContextValue {
   toasts: Toast[];
-  addToast: (toast: Omit<Toast, "id">) => void;
+  addToast: AddToastFn;
   removeToast: (id: string) => void;
 }
 
@@ -86,9 +91,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const addToast = useCallback((toast: Omit<Toast, "id">) => {
+  const addToast = useCallback((...args: [Omit<Toast, "id">] | [string, ToastVariant?, number?]) => {
+    const toastPayload: Omit<Toast, "id"> = typeof args[0] === "string"
+      ? { message: args[0], variant: args[1] ?? "info", duration: args[2] }
+      : args[0];
     const id = generateId();
-    setToasts((prev) => [...prev, { ...toast, id }]);
+    setToasts((prev) => [...prev, { ...toastPayload, id }]);
   }, []);
 
   const removeToast = useCallback((id: string) => {
@@ -100,7 +108,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       const detail = (e as CustomEvent).detail;
       if (detail) addToast(detail);
     };
-    containerRef.current = document.getElementById("__next");
+    containerRef.current = document.getElementById("__next") as HTMLDivElement | null;
     window.addEventListener("prontly-toast", handler);
     return () => window.removeEventListener("prontly-toast", handler);
   }, [addToast]);

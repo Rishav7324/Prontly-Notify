@@ -29,7 +29,7 @@ export async function PATCH(
     const body = await request.json();
     const parsed = teamInviteSchema.partial().safeParse(body);
     if (!parsed.success) {
-      return err(parsed.error.errors[0].message, 400);
+      return err(parsed.error.issues[0].message, 400);
     }
 
     const updates: string[] = [];

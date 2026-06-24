@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const parsed = teamInviteSchema.safeParse(body);
     if (!parsed.success) {
-      return err(parsed.error.errors[0].message, 400);
+      return err(parsed.error.issues[0].message, 400);
     }
 
     const workspace = await executeQuery<any>(

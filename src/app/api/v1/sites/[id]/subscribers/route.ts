@@ -20,7 +20,7 @@ export async function POST(
     const body = await request.json();
     const parsed = subscriberSchema.safeParse(body);
     if (!parsed.success) {
-      return err(parsed.error.errors[0].message, 400);
+      return err(parsed.error.issues[0].message, 400);
     }
 
     const sites = await executeQuery<any>(

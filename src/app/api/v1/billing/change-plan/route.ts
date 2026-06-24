@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       planId: razorpayPlanId,
       customerId: workspace[0].razorpay_customer_id || "temp_customer",
       totalCount: 12,
-      notes: { workspace_id: auth.workspaceId },
+      notes: { workspace_id: auth.workspaceId ?? "" },
     });
 
     const subId = existingSub.length > 0

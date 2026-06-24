@@ -48,8 +48,8 @@ export function DataTable<T extends object>({
   const sortedData = useMemo(() => {
     if (!sortKey || onSort) return data;
     return [...data].sort((a, b) => {
-      const aVal = a[sortKey];
-      const bVal = b[sortKey];
+      const aVal = (a as Record<string, unknown>)[sortKey];
+      const bVal = (b as Record<string, unknown>)[sortKey];
       if (aVal == null) return 1;
       if (bVal == null) return -1;
       const cmp =
@@ -130,7 +130,7 @@ export function DataTable<T extends object>({
                   >
                     {col.render
                       ? col.render(item)
-                      : String(item[col.key] ?? "")}
+                      : String((item as Record<string, unknown>)[col.key] ?? "")}
                   </td>
                 ))}
               </tr>
@@ -162,7 +162,7 @@ export function DataTable<T extends object>({
                   <span className="text-sm text-text-secondary text-right">
                     {col.render
                       ? col.render(item)
-                      : String(item[col.key] ?? "")}
+                        : String((item as Record<string, unknown>)[col.key] ?? "")}
                   </span>
                 </div>
               ))}

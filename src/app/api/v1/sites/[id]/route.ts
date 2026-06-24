@@ -45,7 +45,7 @@ export async function PATCH(
     const body = await request.json();
     const parsed = siteSchema.partial().safeParse(body);
     if (!parsed.success) {
-      return err(parsed.error.errors[0].message, 400);
+      return err(parsed.error.issues[0].message, 400);
     }
 
     const existing = await executeQuery<any>("SELECT * FROM sites WHERE id = ?", [id]);

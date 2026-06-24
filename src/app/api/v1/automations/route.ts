@@ -14,13 +14,13 @@ const automationSchema = z.object({
   site_id: z.string().uuid(),
   name: z.string().min(1).max(100),
   trigger_type: z.enum(["new_subscriber", "tag_added", "page_visited", "inactive_days", "ai_suggested"]),
-  trigger_config: z.record(z.any()).optional(),
+  trigger_config: z.record(z.string(), z.any()).optional(),
   steps: z
     .array(
       z.object({
         step_order: z.number().int().min(0),
         type: z.enum(["wait", "send", "condition"]),
-        config: z.record(z.any()),
+        config: z.record(z.string(), z.any()),
       })
     )
     .optional(),
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     const parsed = automationSchema.safeParse(body);
     if (!parsed.success) {
-      return err(parsed.error.errors[0].message, 400);
+      return err(parsed.error.issues[0].message, 400);
     }
 
     await requireSiteAccess(auth, parsed.data.site_id);

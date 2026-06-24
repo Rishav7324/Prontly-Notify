@@ -13,6 +13,7 @@ interface InputBaseProps {
   error?: string;
   label?: string;
   hint?: string;
+  icon?: React.ReactNode;
   containerClassName?: string;
 }
 
@@ -34,6 +35,7 @@ export const Input = forwardRef<HTMLInputElement & HTMLTextAreaElement, InputPro
       error,
       label,
       hint,
+      icon,
       containerClassName,
       className,
       as = "input",
@@ -47,6 +49,7 @@ export const Input = forwardRef<HTMLInputElement & HTMLTextAreaElement, InputPro
 
     const inputStyles = cn(
       "w-full rounded-lg border bg-background px-3 py-2.5 text-sm text-text-primary placeholder:text-text-muted transition-colors duration-150",
+      icon && "pl-10",
       "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary",
       error
         ? "border-error focus:ring-error/30 focus:border-error"
@@ -87,6 +90,11 @@ export const Input = forwardRef<HTMLInputElement & HTMLTextAreaElement, InputPro
           </label>
         )}
         <div className="relative">
+          {icon && (
+            <div className="absolute left-3 top-1/2 -translate-y-1/2">
+              {icon}
+            </div>
+          )}
           {isTextarea ? (
             <textarea
               ref={ref as React.Ref<HTMLTextAreaElement>}

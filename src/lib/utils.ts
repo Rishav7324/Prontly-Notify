@@ -5,8 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function generateId(): string {
-  return crypto.randomUUID();
+export function generateId(prefix?: string): string {
+  return `${prefix ?? ""}${crypto.randomUUID()}`;
 }
 
 export function formatDate(date: Date | string): string {
