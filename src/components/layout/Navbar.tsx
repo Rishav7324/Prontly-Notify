@@ -1,199 +1,127 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const productLinks = [
-  { label: "Features", href: "/features" },
-  { label: "Integrations", href: "/integrations" },
-  { label: "API", href: "/api" },
-  { label: "Changelog", href: "/changelog" },
+const navLinks = [
+  { label: "Product", href: "/features" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Docs", href: "/docs" },
+  { label: "Blog", href: "/blog" },
 ];
 
 export function Navbar() {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 80);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-10">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">
-              P
-            </div>
-            <span className="font-display text-lg font-bold text-primary">
+    <>
+      <header
+        className={cn(
+          "fixed top-4 left-1/2 -translate-x-1/2 z-50",
+          "flex items-center justify-between gap-4",
+          "h-[52px] w-[calc(100%-32px)] md:w-[calc(100%-128px)] max-w-[760px]",
+          "rounded-full px-4 md:px-5",
+          "border shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_0_1px_rgba(255,255,255,0.06)]",
+          "transition-all duration-300",
+          scrolled
+            ? "bg-[rgba(10,14,26,0.92)] border-[rgba(255,255,255,0.14)]"
+            : "bg-[rgba(17,24,39,0.72)] border-[rgba(255,255,255,0.10)]"
+        )}
+        style={{
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        }}
+      >
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="w-2 h-2 rounded-[5px] bg-[#3B82F6]" />
+          <Link href="/">
+            <span className="hidden sm:inline text-sm text-[#F8FAFC] font-display font-semibold">
+              Prontly Notify
+            </span>
+            <span className="sm:hidden text-sm text-[#F8FAFC] font-display font-semibold">
               Prontly
             </span>
           </Link>
-
-          <nav className="hidden items-center gap-1 md:flex">
-            {/* Product dropdown */}
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
-              >
-                Product
-                <ChevronDown
-                  className={cn(
-                    "h-4 w-4 transition-transform",
-                    dropdownOpen && "rotate-180"
-                  )}
-                />
-              </button>
-              {dropdownOpen && (
-                <div className="absolute left-0 top-full mt-1 w-44 animate-fade-in rounded-lg border border-border bg-surface p-1.5 shadow-lg">
-                  {productLinks.map((link) => (
-                    <Link
-                      key={link.label}
-                      href={link.href}
-                      onClick={() => setDropdownOpen(false)}
-                      className="block rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <Link
-              href="/pricing"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/docs"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
-            >
-              Docs
-            </Link>
-            <Link
-              href="/blog"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
-            >
-              Blog
-            </Link>
-          </nav>
         </div>
 
-        <div className="flex items-center gap-3">
+        <nav className="hidden md:flex items-center gap-1">
+          {navLinks.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className="text-[13px] text-[rgba(248,250,252,0.65)] px-3 py-1.5 rounded-full transition-colors hover:bg-[rgba(255,255,255,0.08)]"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2 shrink-0">
           <Link
             href="/login"
-            className="hidden rounded-lg px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary sm:inline-block"
+            className="hidden md:inline-flex text-[13px] text-[#F8FAFC] px-4 py-1.5 rounded-full border border-[rgba(255,255,255,0.14)] transition-colors hover:bg-[rgba(255,255,255,0.06)]"
           >
-            Login
+            Log in
           </Link>
           <Link
             href="/signup"
-            className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-primary/90 hover:shadow-glow-primary"
+            className="text-[13px] font-semibold text-white px-4 py-1.5 rounded-full bg-[#3B82F6] transition-all hover:bg-[#3B82F6]/90"
           >
             Start Free
           </Link>
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="md:hidden flex items-center justify-center w-8 h-8 text-[#F8FAFC]"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
+      </header>
 
-        {/* Mobile hamburger */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="ml-2 flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary md:hidden"
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-        >
-          {mobileOpen ? (
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="animate-slide-down border-t border-border bg-surface md:hidden">
-          <div className="space-y-1 px-4 py-4">
-            <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
-            >
-              Product
-              <ChevronDown
-                className={cn(
-                  "h-4 w-4 transition-transform",
-                  dropdownOpen && "rotate-180"
-                )}
-              />
-            </button>
-            {dropdownOpen && (
-              <div className="ml-4 space-y-1">
-                {productLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    onClick={() => {
-                      setMobileOpen(false);
-                      setDropdownOpen(false);
-                    }}
-                    className="block rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-            <Link
-              href="/pricing"
-              onClick={() => setMobileOpen(false)}
-              className="block rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/docs"
-              onClick={() => setMobileOpen(false)}
-              className="block rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
-            >
-              Docs
-            </Link>
-            <Link
-              href="/blog"
-              onClick={() => setMobileOpen(false)}
-              className="block rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
-            >
-              Blog
-            </Link>
-            <hr className="my-2 border-border" />
+        <div className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-[rgba(10,14,26,0.98)] backdrop-blur-xl md:hidden">
+          <nav className="flex flex-col items-center gap-6">
+            {navLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="text-2xl font-semibold text-[#F8FAFC] transition-colors hover:text-[#3B82F6]"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="flex flex-col items-center gap-4">
             <Link
               href="/login"
               onClick={() => setMobileOpen(false)}
-              className="block rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
+              className="text-base text-[rgba(248,250,252,0.65)] px-8 py-2.5 rounded-full border border-[rgba(255,255,255,0.14)] transition-colors hover:bg-[rgba(255,255,255,0.06)]"
             >
-              Login
+              Log in
+            </Link>
+            <Link
+              href="/signup"
+              onClick={() => setMobileOpen(false)}
+              className="text-base font-semibold text-white px-8 py-2.5 rounded-full bg-[#3B82F6] transition-all hover:bg-[#3B82F6]/90"
+            >
+              Start Free
             </Link>
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }

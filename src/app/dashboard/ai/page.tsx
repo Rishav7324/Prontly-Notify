@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Input } from "@/components/ui/Input";
 import { useToast } from "@/components/ui/Toast";
+import { useAICredits } from "@/hooks/useAICredits";
 import {
   Sparkles,
   PenLine,
@@ -18,6 +19,7 @@ import {
   Zap,
   ArrowRight,
   Lightbulb,
+  Loader2,
 } from "lucide-react";
 
 interface AiFeature {
@@ -37,41 +39,58 @@ const features: AiFeature[] = [
   { id: "analytics", title: "Analytics Summaries", description: "Natural language performance reports", icon: <BarChart3 className="h-5 w-5" />, color: "text-success" },
 ];
 
-const featurePanels: Record<string, React.ReactNode> = {
-  title: (
-    <div className="space-y-3">
-      <Input placeholder="Describe your campaign (e.g. Summer Sale)" />
-      <Button size="sm" icon={<Sparkles className="h-3.5 w-3.5" />}>Generate Titles</Button>
-    </div>
-  ),
-  ctr: (
-    <div className="space-y-3">
-      <Input as="textarea" placeholder="Paste your notification copy to optimize..." />
-      <Button size="sm" icon={<Zap className="h-3.5 w-3.5" />}>Optimize CTR</Button>
-    </div>
-  ),
-  schedule: (
-    <div className="space-y-3">
-      <p className="text-sm text-text-secondary">AI recommends: <strong className="text-text-primary">Tuesday, 9:00 AM</strong></p>
-      <Button size="sm" icon={<Clock className="h-3.5 w-3.5" />}>Apply Best Time</Button>
-    </div>
-  ),
-};
-
 export default function AiToolsPage() {
   const { addToast } = useToast();
-  const [credits] = useState({ used: 42, total: 50 });
+  const { credits, isLoading: creditsLoading, hasCredits, pctUsed } = useAICredits();
   const [activeFeature, setActiveFeature] = useState<string | null>(null);
   const [showUpgrade, setShowUpgrade] = useState(false);
-
-  const creditsExhausted = credits.used >= credits.total;
+  const [titlePrompt, setTitlePrompt] = useState("");
+  const [ctrCopy, setCtrCopy] = useState("");
+  const [generating, setGenerating] = useState<string | null>(null);
 
   const handleTryIt = (id: string) => {
-    if (creditsExhausted) {
+    if (!hasCredits) {
       setShowUpgrade(true);
       return;
     }
     setActiveFeature(activeFeature === id ? null : id);
+  };
+
+  const handleGenerateTitle = async () => {
+    setGenerating("title");
+    try {
+      const res = await fetch("/api/v1/ai/generate-title", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: titlePrompt || "marketing campaign" }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        addToast(`Generated: ${json.data.title ?? "Check results"}`, "success");
+      } else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to generate title", "error");
+    } finally {
+      setGenerating(null);
+    }
+  };
+
+  const handleOptimizeCTR = async () => {
+    setGenerating("ctr");
+    try {
+      const res = await fetch("/api/v1/ai/optimize-ctr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ copy: ctrCopy || "Check out our latest offers!" }),
+      });
+      const json = await res.json();
+      if (json.success) addToast("Optimized version ready!", "success");
+      else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to optimize CTR", "error");
+    } finally {
+      setGenerating(null);
+    }
   };
 
   return (
@@ -90,16 +109,24 @@ export default function AiToolsPage() {
 
       <Card>
         <CardContent>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Lightbulb className="h-5 w-5 text-warning" />
-              <span className="text-sm font-medium text-text-primary">AI Credits</span>
+          {creditsLoading ? (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
             </div>
-            <span className="text-sm text-text-muted">{credits.used} / {credits.total} used</span>
-          </div>
-          <ProgressBar value={credits.used} max={credits.total} className="mt-2" />
-          {creditsExhausted && (
-            <p className="mt-2 text-xs text-warning">Credits exhausted. Upgrade your plan for more.</p>
+          ) : (
+            <>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-warning" />
+                  <span className="text-sm font-medium text-text-primary">AI Credits</span>
+                </div>
+                <span className="text-sm text-text-muted">{credits?.used ?? 0} / {credits?.limit ?? 50} used</span>
+              </div>
+              <ProgressBar value={credits?.used ?? 0} max={credits?.limit ?? 50} className="mt-2" />
+              {!hasCredits && (
+                <p className="mt-2 text-xs text-warning">Credits exhausted. Upgrade your plan for more.</p>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
@@ -124,9 +151,57 @@ export default function AiToolsPage() {
               <h3 className="mt-4 font-medium text-text-primary">{f.title}</h3>
               <p className="mt-1 text-xs text-text-muted">{f.description}</p>
 
-              {activeFeature === f.id && featurePanels[f.id] && (
+              {activeFeature === f.id && (
                 <div className="mt-4 rounded-lg border border-border bg-white/[0.02] p-3">
-                  {featurePanels[f.id]}
+                  {f.id === "title" && (
+                    <div className="space-y-3">
+                      <Input
+                        placeholder="Describe your campaign (e.g. Summer Sale)"
+                        value={titlePrompt}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitlePrompt(e.target.value)}
+                      />
+                      <Button size="sm" onClick={handleGenerateTitle} loading={generating === "title"} icon={<Sparkles className="h-3.5 w-3.5" />}>
+                        Generate Titles
+                      </Button>
+                    </div>
+                  )}
+                  {f.id === "ctr" && (
+                    <div className="space-y-3">
+                      <Input
+                        as="textarea"
+                        placeholder="Paste your notification copy to optimize..."
+                        value={ctrCopy}
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCtrCopy(e.target.value)}
+                      />
+                      <Button size="sm" onClick={handleOptimizeCTR} loading={generating === "ctr"} icon={<Zap className="h-3.5 w-3.5" />}>
+                        Optimize CTR
+                      </Button>
+                    </div>
+                  )}
+                  {f.id === "schedule" && (
+                    <div className="space-y-3">
+                      <p className="text-sm text-text-secondary">AI recommends: <strong className="text-text-primary">Tuesday, 9:00 AM</strong></p>
+                      <Button size="sm" icon={<Clock className="h-3.5 w-3.5" />}>Apply Best Time</Button>
+                    </div>
+                  )}
+                  {f.id === "recommend" && (
+                    <div className="space-y-3">
+                      <p className="text-sm text-text-secondary">Fetching campaign recommendations...</p>
+                      <Button size="sm" icon={<Megaphone className="h-3.5 w-3.5" />}>Get Recommendations</Button>
+                    </div>
+                  )}
+                  {f.id === "segment" && (
+                    <div className="space-y-3">
+                      <p className="text-sm text-text-secondary">Discover new audience segments based on behavior.</p>
+                      <Button size="sm" icon={<Users className="h-3.5 w-3.5" />}>Suggest Segments</Button>
+                    </div>
+                  )}
+                  {f.id === "analytics" && (
+                    <div className="space-y-3">
+                      <p className="text-sm text-text-secondary">Generate a natural language performance summary.</p>
+                      <Button size="sm" icon={<BarChart3 className="h-3.5 w-3.5" />}>Generate Summary</Button>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>

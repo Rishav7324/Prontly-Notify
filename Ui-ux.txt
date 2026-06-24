@@ -1,0 +1,1402 @@
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: HOME / LANDING PAGE
+
+Layout (desktop 1440px):
+- Sticky navbar: logo left, nav links center (Product / Pricing / Docs / Blog), "Start Free" CTA button right
+- Hero section (60% viewport height): left 55% — headline "Bring Visitors Back — Without Email" in Sora 56px bold white, subheadline 20px #94A3B8, two CTAs ("Start Free — No Card Required" filled blue + "Watch Demo" ghost). Right 45% — glassmorphic animated notification stack mockup showing 3 Chrome push notifications stacked with parallax depth
+- Trust bar: "Trusted by 2,400+ websites" + logo marquee of recognizable platform icons (WordPress, Shopify, Webflow, etc.)
+- How it works: 3-step horizontal flow with numbered circles, icon + headline + 1-line description per step
+- Feature grid: 3×2 cards — Campaigns, Automation, AI Tools, Analytics, Segmentation, Multi-site. Each card: icon in blue accent, bold title, 1-line desc, subtle glass background
+- Pricing teaser: 3 plan cards side by side, center "Growth" card elevated with blue glow border and "Most Popular" badge
+- Testimonial row: 3 cards with avatar, quote, name + role
+- Final CTA band: full-width gradient band, large headline, "Start Free" button centered
+- Footer: 4-column links, copyright
+
+Mobile (375px): hero stacks vertically, notification mockup below CTA, feature grid becomes 2-column, sticky bottom CTA bar
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: PRICING PAGE
+
+Layout:
+- Page hero: "Simple, transparent pricing" heading, monthly/annual toggle (segmented control, shows "Save 20%" badge on annual)
+- 4 plan cards in a row (Free / Starter / Growth / Scale):
+  * Free: subtle card, "₹0/mo", subscriber limit, basic features checklist
+  * Starter: standard card, ₹999/mo
+  * Growth: FEATURED — elevated with 2px #3B82F6 border glow, soft blue ambient background, "Most Popular" pill badge above card, ₹2,999/mo highlighted in large blue text
+  * Scale: dark card, ₹7,999/mo, "Contact Sales" secondary CTA
+- Each card: plan name, price (large 36px), subscriber limit chip, feature checklist with checkmarks (blue) and crosses (muted) for unincluded features, primary/secondary CTA button
+- Feature comparison table below cards: sticky left column with feature names, columns per plan with ✓ / × / value. Subtle alternating row shading
+- FAQ accordion below: 5 billing questions, plus/minus toggle icon
+- "Talk to Enterprise Sales" banner at bottom with email form field
+
+Annual/monthly toggle changes all prices smoothly. Mobile: plan cards stack vertically, comparison table becomes per-plan accordion
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: DOCS HUB / INTEGRATIONS
+
+Layout (desktop):
+- Left sidebar (260px): "Documentation" header, nested navigation tree — Getting Started, SDK Install, REST API, Webhooks, Segments API, Changelog. Active item has blue left border accent
+- Top: search bar full width ("Search documentation...")
+- Platform tiles grid (2×3): WordPress, Shopify, Webflow, Wix, Custom HTML/JS, REST API. Each tile: platform logo icon, name, "5 min setup" pill, hover lifts with blue border
+- Main content area: "Quick Start" selected by default. Shows:
+  * Step counter (Step 1 of 3)
+  * Code block with syntax highlighting (dark background #0D1117, green for strings, blue for keywords), copy button top-right
+  * Tab switcher: HTML / WordPress / React
+- Right rail: "On this page" anchor links list
+
+Mobile: sidebar collapses to top hamburger, platform grid becomes 2-column
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: BLOG LISTING PAGE
+
+Layout:
+- Page header: "Blog" title + "Push notification growth tactics" subtitle
+- Category filter chips row: All / Campaigns / Analytics / Automation / Case Studies / Product Updates. Active chip filled blue
+- Featured post: full-width card (hero image left 40%, content right 60%): category badge, headline 28px, excerpt 2 lines, author avatar + name + date + read time, "Read Article" link
+- Post grid (3 columns): standard post cards — cover image, category badge, headline, excerpt, author + date + read time. Hover: image scales slightly, border brightens
+- Inline newsletter capture card (spans 3 columns): dark blue gradient card, "Push Notification Tactics — Free" headline, email input + "Subscribe" button
+- Pagination: numbered page buttons
+
+Mobile: featured post stacks, grid becomes single column, newsletter card full-width
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: BLOG DETAIL / ARTICLE PAGE
+
+Layout (desktop):
+- Left rail (4% sticky): share buttons — Twitter/X, LinkedIn, Copy Link icons (vertical)
+- Center column (max 720px): breadcrumb (Blog > Campaign Tips), article title 36px Sora, meta row (author avatar + name, date, 8 min read), hero image full-width with rounded corners, article body with proper typographic scale, inline CTA card after 2nd paragraph ("Try AI campaign suggestions — free →" card with blue left border), author bio card at end (avatar, name, role, short bio)
+- Right rail sticky: "Table of Contents" with anchor links auto-generated from headings, below it a "Related Posts" section with 2 compact post cards
+
+Progress bar: thin blue line at very top of viewport showing scroll progress
+
+Mobile: share buttons become bottom sticky bar with icons, left/right rails collapses
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: CONTACT PAGE
+
+Layout (desktop, 2-column 60/40 split):
+Left column — contact form card:
+- "Get in touch" heading
+- Fields: Full Name, Work Email, Company, Message (textarea 4 rows), Reason dropdown (Pre-sales / Support / Partnership / Other)
+- "Send Message" primary blue button full width
+- Honeypot hidden field (not visible in design)
+- Success state: green checkmark icon, "Message sent! We'll reply within 24 hours"
+
+Right column — contact info:
+- Response time expectation card: "⏱ Typical response: under 4 hours"
+- Support email with copy icon
+- "Chat with us" button that triggers chat widget
+- Office location (India) with small India flag
+
+Mobile: columns stack, form takes full width
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: FAQ PAGE
+
+Layout:
+- Hero: "Frequently asked questions" + search input "Search FAQs..."
+- Left sidebar: category list — All / Billing / Technical / Privacy / General. Active has blue accent
+- Main content: accordion list for selected category. Each item:
+  * Question text in white, 15px
+  * Expand/collapse chevron right-aligned
+  * Open state: answer text in #94A3B8, smooth expand animation
+  * Highlighted matching text when search is active (blue background on matched word)
+- "Still have questions?" CTA band at bottom: dark card with "Contact Support →" button
+
+Billing FAQ items visible by default (most searched). 5 items visible, "Show 5 more" expand.
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: ABOUT PAGE
+
+Layout:
+- Mission hero: "We believe every website deserves returning visitors" — large 44px headline, 2-line mission statement below
+- Stats strip (4 columns): "2,400+ Sites", "18M+ Notifications Sent", "40+ Countries", "99.9% Uptime" — large number in blue, label below. Numbers animate counting up on scroll
+- Team section heading + 4-column grid: each card has avatar (colored placeholder circle with initials), name, role, LinkedIn icon
+- Company timeline as horizontal stepper: Founded → First 100 customers → Product launches → Current. Each milestone has date, title, short desc
+- Final CTA band: "Start free today →"
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: LEGAL PAGES (Privacy Policy / Terms of Service / Cookie Policy / Refund Policy)
+
+Layout (desktop):
+- Left sticky TOC (25%): document title, anchor links to each major section. Current section highlights in blue. "Last updated: June 2026" at bottom of TOC
+- Right content column (75%): 
+  * Page title (e.g. "Privacy Policy") in 32px Sora
+  * "Last updated" date badge
+  * Body content with clear heading hierarchy (h2 for major sections, h3 for sub-sections)
+  * Highlight box: GDPR / DPDPA 2023 compliance callout with info icon, blue left border
+  * DPO contact card at end of Privacy Policy
+  * Internal navigation breadcrumb: Home > Legal > Privacy Policy
+
+Footer links: Privacy / Terms / Cookies / Refund — all 4 interlinked
+Mobile: TOC becomes collapsible accordion above content
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: LOGIN PAGE
+
+Layout (desktop, 2-column):
+Left panel (45%, glassmorphic dark blue) — brand panel:
+- Prontly Notify logo top left
+- Rotating product screenshot/testimonial area
+- Current testimonial: avatar + quote + name + company
+- Dot navigation for testimonial rotation
+
+Right panel (55%) — login form card (centered, max 400px):
+- "Welcome back" heading 28px
+- Email input (label above, full width)
+- Password input with eye/hide toggle icon right
+- "Forgot password?" right-aligned link below password
+- "Log In" primary button full width + loading spinner state
+- Divider "or continue with"
+- Google button (Google G icon + "Continue with Google") + GitHub button — both full width ghost style
+- Footer: "New here? Create a free account →"
+- Error state: red inline banner below password field "Incorrect email or password"
+
+Mobile: only the right panel, full screen, logo at top of form
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: SIGNUP / CREATE ACCOUNT
+
+Layout (desktop, 2-column):
+Left brand panel:
+- "Join 2,400+ websites already using Prontly Notify"
+- Feature checklist: ✓ Free forever · ✓ No credit card · ✓ Setup in 5 minutes · ✓ AI-powered campaigns
+- Subscriber count live ticker
+
+Right form panel (max 420px):
+- "Create your free account" heading
+- Full Name input
+- Email input
+- Password input with strength meter below (4 segments: Weak=red, Fair=amber, Good=blue, Strong=green) + text label
+- Terms checkbox: "I agree to the Terms of Service and Privacy Policy" with linked text in blue
+- "Create Account" primary button
+- OAuth buttons (Google, GitHub)
+- "Already have an account? Log in"
+- If arriving from Pricing: blue info banner at top "You selected the Growth plan — upgrade after signup"
+
+Mobile: full screen, logo top, form below
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: FORGOT PASSWORD
+
+Layout (centered card, max 400px, no split panel):
+- Prontly Notify logo centered
+- Lock icon (blue, 48px)
+- "Reset your password" heading 26px
+- "Enter your email and we'll send a reset link" subtext
+- Email input full width
+- "Send Reset Link" primary blue button full width + loading state
+- SUCCESS STATE (replace form): Green checkmark circle icon, "Check your inbox" heading, "We sent a reset link to r***@gmail.com" body, "Resend email" ghost button (shows 60s countdown: "Resend in 45s"), "Open Gmail →" shortcut button
+- "← Back to login" text link at bottom
+
+Background: same #0F172A dark, subtle floating particles animation
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: EMAIL VERIFICATION
+
+Layout (centered card, max 420px):
+- Animated email envelope illustration (SVG, open envelope with @ symbol flying out, subtle loop animation)
+- "Verify your email" heading 26px
+- "We sent a verification link to [r***@gmail.com]"
+- Status indicator: pulsing blue dot + "Waiting for verification..." text — auto-detects when email is clicked
+- VERIFIED STATE: green checkmark, "Email verified! Redirecting to setup..." with progress bar
+- "Resend email" button — disabled 60s cooldown with countdown timer visible
+- "Change email address" text link
+- "Open Gmail →" and "Open Outlook →" shortcut buttons with mail app icons
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: WEBSITE ONBOARDING WIZARD (3-step)
+
+Layout (centered card, max 640px):
+- Top: "Prontly Notify" logo + "Join 2,400+ websites →"
+- Step progress bar: 3 labeled steps "Add Website" / "Choose Platform" / "Verify Install" — current step highlighted blue, completed steps have checkmark
+- "Setup takes less than 5 minutes" green badge
+
+STEP 1 — Add Website:
+- Website URL input (placeholder: "https://yourblog.com") + Website Name input + Category dropdown
+- "Next" primary button
+
+STEP 2 — Choose Platform:
+- 3 large platform cards in a row: WordPress (logo + "One-click plugin"), Shopify (logo + "App integration"), Custom HTML/JS (code icon + "Paste a snippet")
+- Selected card has blue border glow
+- "Next" button
+
+STEP 3 — Verify Installation:
+- Platform-specific code snippet in dark code block, copy button
+- "Download service-worker.js" link
+- "I've added the code → Verify Installation" primary button
+- Verification checklist (polling): ⏳ Script detected · ⏳ Service worker registered · ⏳ VAPID key valid
+- SUCCESS: confetti micro-animation, "🎉 Your site is live!" green banner, "Send a test notification" + "Go to Dashboard →" buttons
+
+Mobile: wizard steps become top progress dots, full-width stackedlayout
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: DASHBOARD HOME (authenticated)
+
+Layout (desktop, persistent left sidebar + main content):
+
+LEFT SIDEBAR (260px, dark #111827):
+- Logo top + workspace name
+- Website switcher dropdown (favicon + domain name + subscriber count, "Add website +" option)
+- Nav items with icons: Dashboard · Subscribers · Campaigns · Automation · Segments · Analytics · AI Tools · Integration · Team · Billing · Settings
+- Active: blue left border + slightly brighter text
+- Bottom: avatar + name + "Settings" gear
+
+MAIN CONTENT:
+- Top bar: breadcrumb "Dashboard", date range "Last 7 days" dropdown, "New Campaign" blue button right
+- KPI row (4 cards): Total Subscribers (chart up green +12%), Sends Today, Avg CTR (7.3%), Active Automations — each card has large number, delta badge, tiny sparkline
+- 2-column split below:
+  Left 65%: "Subscriber Growth" line chart (area fill, blue gradient, 7 data points, hover tooltip)
+  Right 35%: AI Insight card (blue-purple gradient border, robot icon, "Your Tuesday 9am sends get 2× better CTR — schedule your next campaign then →") + Recent Activity feed (3-4 items with icons and timestamps)
+- Recent Campaigns table: Title / Status badge / Sent / CTR / Date columns. Status badges: green=Sent, blue=Scheduled, gray=Draft
+- FAB: "New Campaign +" floating blue button bottom-right on mobile
+
+Mobile: sidebar collapses to bottom tab bar, KPIs stack 2×2
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: SUBSCRIBERS LIST
+
+Layout (full dashboard shell, main content):
+- Page header row: "Subscribers" heading + total count badge "12,439" + "Export CSV" button right
+- Filter chips row: All · Active · Unsubscribed · Chrome · Firefox · Edge · India · USA — scrollable, active chip filled blue
+- Search input: "Search subscribers..."
+- Data table (full width):
+  Columns: [checkbox] · Browser icon · Subscriber ID (monospace, truncated) · Location flag+name · Subscribed Date · Last Seen · Segments (blue tag pills) · Status badge
+  Row hover: subtle highlight, action menu appears (3-dot)
+  Status: green pill "Active" / red pill "Unsubscribed"
+  Bulk action bar (appears when rows checked): "Export selected" / "Add to segment" / "Remove"
+- Right filter panel (240px, collapsible): Date range picker, Segment multi-select, Browser checkboxes, Country search
+- Pagination: "Showing 1-50 of 12,439" + prev/next + page size dropdown
+- EMPTY STATE: illustration (satellite dish with question mark), "No subscribers yet — verify your installation first →" blue link
+
+Mobile: table becomes card list, filter panel becomes slide-up drawer
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: CAMPAIGN BUILDER (compose + send)
+
+Layout (2-column: 60% form / 40% live preview):
+
+LEFT — 4-step vertical wizard (all steps visible as collapsible sections):
+STEP 1 COMPOSE (expanded):
+- Title input (max 65 chars) with character counter "42/65" + inline "✨ AI Suggest" button (blue, robot icon). AI suggestion popover: 3 title alternatives with "Use this" per option
+- Body textarea (max 240 chars) with counter
+- Icon upload button (small square) + Image upload (banner)
+- Click URL input
+- Action buttons: "+ Add CTA button" (up to 2: label + URL pairs)
+
+STEP 2 TARGET:
+- "All Subscribers (12,439)" radio selected
+- "Specific Segment" radio → segment dropdown appears
+- "AI Suggested Audience" chip — shows recommended segment
+- Live reach counter: "Estimated reach: 12,439"
+
+STEP 3 SCHEDULE:
+- "Send Now" / "Schedule for Later" / "AI Optimal Time" radio buttons
+- Schedule: date-time picker appears
+- AI Optimal Time: shows "Tuesday 9:00 AM IST (predicted +127% CTR)" chip
+
+STEP 4 REVIEW:
+- Summary cards: audience, timing, estimated reach
+- "Send Campaign" large blue primary button + "Save as Draft" ghost button
+
+RIGHT — Sticky live notification preview:
+- Device toggle: Chrome / Firefox / Edge icons
+- Realistic browser notification mockup on dark phone/desktop frame
+- Updates character-by-character as user types
+- Shows icon, title, body, site URL, action buttons
+
+Mobile: steps become horizontal scroll tabs, preview pins above keyboard
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: CAMPAIGNS HISTORY / LIST
+
+Layout:
+- Header: "Campaigns" + "New Campaign" button right
+- Status filter tabs: All · Sent · Scheduled · Draft · Failed
+- Table columns: [checkbox] · Campaign Title · Status badge · Audience · Sent Date · Delivered · CTR (with mini bar) · Actions (3-dot menu: Duplicate / Edit / Delete / View Analytics)
+- Status badges: 🟢 Sent, 🔵 Scheduled (with countdown "in 3h"), ⚫ Draft, 🔴 Failed
+- CTR column: percentage number + thin horizontal bar showing relative performance (blue fill)
+- Clicking row → expands inline analytics mini-row (delivered, clicked, failed numbers with icons)
+- "Duplicate" quick action on hover
+- Bulk select → "Bulk delete drafts" action bar appears
+- EMPTY STATE: empty inbox illustration, "No campaigns yet — compose your first one →" CTA
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: AUTOMATION / DRIP FLOW BUILDER
+
+Layout (desktop — split panel):
+LEFT PANEL (30%) — Automation list:
+- "Automations" heading + "New Automation" button
+- Template gallery row at top: "Welcome Series" / "Re-engagement" / "Abandoned Content" — blue template cards with use count
+- Automation list items: name, trigger icon (bell/clock/tag), status toggle (active=blue, paused=gray), enrolled count, "3 steps" pill
+
+RIGHT PANEL (70%) — Visual flow canvas (selected automation):
+- Canvas background: subtle dot grid on #0F172A
+- Flow nodes connected by animated dashed blue lines:
+  [TRIGGER] New Subscriber → [WAIT] 1 minute → [SEND] "Welcome to the community!" → [WAIT] 3 days → [SEND] "Here's what you might have missed" → [CONDITION] Clicked? → Yes: [SEND] "Thanks for engaging!" / No: [SEND] "Still here? Check this →"
+- Each node: rounded rectangle card with icon + type label + config preview + edit pencil icon on hover
+- "Add Step" button at flow end (+ icon in dashed circle)
+- Canvas controls: zoom in/out, fit to screen buttons (bottom right)
+- "Activate Automation" green button top right of canvas
+- AI badge on trigger: "✨ AI suggested this trigger"
+
+Mobile: list full screen, tap automation → opens step-by-step linear BUILDER
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: AUDIENCE SEGMENTS
+
+Layout:
+- Header: "Segments" + "New Segment" button
+- AI suggestion banner: "✨ AI found 3 valuable segments for you" — horizontal scroll of 3 suggestion cards (gradient blue border): "Highly Engaged (3,241 subscribers)" / "At Risk of Churning (892)" / "First-week New Users (124)" — each with "Accept" blue button + "Dismiss" ghost
+- Segments table: Name · Type (Manual/Dynamic/AI badge) · Subscriber Count · Last Updated · Actions
+- Dynamic type badge = animated blue shimmer pill
+- Clicking segment → right side panel slides in (40%) with rule details and "Use in Campaign" button
+
+NEW SEGMENT BUILDER (inline panel or page):
+- Segment name input
+- Rule builder: [Attribute dropdown: Country/Browser/Last Active/Tag...] [Operator: is/is not/greater than...] [Value input]
+- "AND / OR" toggle between rows
+- "+ Add condition" blue text button
+- Live preview: "Matches 4,823 subscribers" — updates as rules change (blue pill, debounced)
+- "Save Segment" primary + "Use in Campaign" secondary buttons
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: ANALYTICS DASHBOARD
+
+Layout:
+- Header: "Analytics" + date range picker (7d / 30d / 90d / Custom) segmented control + "Export Report" button
+- AI Summary card (full width, top): gradient border (blue-purple), robot sparkle icon, "This week: Your CTR improved 23% vs last week. Tuesday campaigns outperform by 2×. Consider sending to your 'Highly Engaged' segment for your next campaign." — "Regenerate ↺" button right
+- KPI row (4 cards): Net Subscriber Growth / Avg CTR / Total Delivered / Unsubscribe Rate — each with value, delta %, sparkline
+- Charts 2-column grid:
+  Left: "Subscriber Growth" area line chart (blue gradient fill, dates on X, count on Y, hover tooltip)
+  Right: "CTR by Campaign" horizontal bar chart (bars in blue gradient, campaign names on Y)
+- Second row:
+  Left: "Delivery by Browser" donut chart (Chrome blue / Firefox orange / Edge purple) with legend
+  Right: "Best Send Times" heat grid (7 days × 24 hours, intensity = CTR)
+- Performance Table: Campaign / Sent / Delivered / Clicked / CTR / Conversions — sortable columns
+- "View as table" toggle on each chart for accessibility
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: AI TOOLS HUB
+
+Layout:
+- Header: "AI Tools" heading + usage meter "342 / 500 credits used" (blue progress bar + percentage)
+- Usage warning chip (amber, when >80%): "⚠ 80% credits used · Resets in 12 days · Upgrade for unlimited"
+- Feature card grid (3 columns):
+
+CARD 1 — AI Title Generator: sparkle icon (blue), "Generate Notification Titles", "Paste your message, get 3 high-CTR title options", "Try it →" button. Inline expansion on click: textarea input + 3 generated title pills each with "Use" button
+
+CARD 2 — CTR Optimizer: chart-up icon, "Optimize for Clicks", "Paste existing title/body, get an improved version with rationale"
+
+CARD 3 — Smart Scheduling: clock icon, "Best Send Time", "We analyze your audience's click patterns to suggest optimal timing"
+
+CARD 4 — Campaign Ideas: lightbulb icon, "Campaign Recommendations", "Get AI-suggested next campaigns based on your history"
+
+CARD 5 — Audience Segmentation: users icon, "Smart Segments", "AI spots subscriber patterns and suggests high-value segments"
+
+CARD 6 — Analytics Summary: file-chart icon, "Analytics Summaries", "Get a plain-language weekly performance report"
+
+- Each card: icon (32px blue tinted), title bold, description muted, "Try it" button, blue "✨ AI" badge
+- Exhausted state: card dims + "Upgrade for more →" overlay
+- Credits remaining ring chart in header
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: INTEGRATION & SDK SETUP
+
+Layout:
+- Header: "Integration" + install status badge ("🟢 Live" or "🔴 Not Detected")
+- Platform tabs: WordPress / Shopify / Webflow / Custom JS / REST API (horizontal, active has blue underline)
+- WORDPRESS tab content:
+  * Step-by-step with numbered badges: 1 Install Plugin → 2 Activate → 3 Enter API Key
+  * "Download Plugin" prominent button with WordPress blue
+  * Or manual: code snippet in dark code block with copy button
+- CUSTOM JS tab:
+  * Script tag snippet in highlighted code block, copy button, "Download service-worker.js" link
+- Verification checklist (right panel or below):
+  ☑ Script detected (green)
+  ⏳ Service worker registered (spinning, amber)  
+  ○ VAPID key valid (waiting, gray)
+  ○ Test notification sent (waiting, gray)
+- "Test Installation" primary button → runs checks, updates checklist live
+- "Send Test Notification to Yourself →" secondary button
+- Troubleshooting accordion: "Script loads but service worker fails" / "Chrome blocks notifications" etc.
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: TEAM MANAGEMENT
+
+Layout:
+- Header: "Team" + "Invite Member +" button (blue)
+- Team member table:
+  Columns: Avatar+Name / Email / Role badge / Website Access / Last Active / Status / Actions
+  Role badges: "Owner" (purple) / "Admin" (blue) / "Member" (gray)
+  Status: "Active" (green dot) / "Pending invite" (amber dot + "Resend" link)
+  Actions: Role dropdown (inline editable) + Remove button (red, hover only)
+- Pending invites section (separate subtle card below): email, invited date, "Resend invite" + "Revoke" per row
+- Seat usage: "3 of 10 seats used" progress bar
+- "Invite Member" modal:
+  * Email input
+  * Role select: Owner / Admin / Member
+  * Website access: "All websites" or multi-select checkboxes
+  * "Send Invite" button
+
+
+  Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: API KEYS MANAGEMENT
+
+Layout:
+- Header: "API Keys" + "Generate New Key +" button + "View API Docs →" link
+- Keys table:
+  Columns: Name / Key (pk_live_••••••••3f2a) / Scopes (tag pills) / Created / Last Used / Status / Revoke
+  Key column: shows only prefix + masked ••••• + last 4 chars. "Reveal once" notice
+  Scope pills: "subscribers:read" / "campaigns:write" / "segments:read" etc.
+  Status: green "Active" / red "Revoked"
+  Revoke: red text button with confirm dialog
+- Side panel per key: usage chart (requests per day bar chart), rate limit headroom "847 / 1000 req/min"
+- "Generate New Key" modal:
+  * Name input
+  * Scope checkboxes: Read Subscribers / Send Campaigns / Manage Segments / Read Analytics
+  * "Generate Key" button
+- ONE-TIME REVEAL state (after generation): amber warning banner "⚠ Copy this key now — it won't be shown again", large monospace key in selectable box, copy button, done button
+
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: BILLING & SUBSCRIPTION
+
+Layout (2-column: 35% left / 65% right):
+LEFT column:
+- Current plan card: "Growth Plan" heading, "₹2,999 / month" large, "Renews Aug 1, 2026", "Manage Plan →" blue button
+- Payment method card: Visa •••• 4242 icon, "Update →" link
+- "Cancel Subscription" red text link (de-emphasized, bottom)
+
+RIGHT column:
+- Usage meters (2×2 grid of progress cards):
+  * "Subscribers: 8,240 / 50,000" (16% filled, green)
+  * "Websites: 3 / 10" (30%, green)
+  * "AI Credits: 342 / 1,500" (23%, green)
+  * "Team Seats: 3 / 10" (30%, green)
+  Warning state: amber at 80%, red at 100% with "Upgrade" button inline
+
+- Invoice history table: Date / Invoice No / Amount / Status / Download PDF icon
+  Status badges: green "Paid" / amber "Pending" / red "Failed" + "Retry" button
+
+- "Upgrade Plan" modal (appears on button click): plan comparison table, price toggle, "Proceed to Pay" Razorpay button
+
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: ACCOUNT SETTINGS
+
+Layout (left vertical tabs 25% / content 75%):
+Tab list: Profile · Security · Notifications · Workspace
+
+PROFILE TAB (default):
+- Avatar circle (48px initials) with "Change photo" button overlay
+- Name input + Email input (with "re-verify email" link if changed)
+- "Save Changes" button
+
+SECURITY TAB:
+- Change password section: Current / New / Confirm inputs + "Update Password" button
+- Two-Factor Authentication: toggle switch + status "Disabled". Enable flow: QR code shown + "Enter 6-digit code" input + "Enable 2FA" button. Manual code shown below QR
+- Active Sessions table: Device icon / Location / Last Active / "Log out" button per row. "Log out all other devices" text link at bottom
+
+NOTIFICATIONS TAB:
+- Toggle list: Product updates / Billing alerts / Weekly digest / Delivery failure alerts — each with toggle + description
+
+WORKSPACE TAB:
+- Workspace name input
+- Default timezone select dropdown
+- Default sending domain input + verification status badge
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: WEBSITE SWITCHER / MANAGE SITES
+
+Layout:
+- Header: "Your Websites" + "Add Website +" button
+- Search input: "Search sites..."
+- Usage notice (amber, if near limit): "Using 3 of 10 sites on Growth plan · Upgrade for more"
+- Website card grid (3 columns):
+  Each card: favicon (16px icon), domain name, site name, subscriber count badge, status pill (🟢 Live / 🔴 Not Detected / 🟡 Pending), last active timestamp, three-dot menu (Edit / Delete / View Integration)
+  Active site: blue border glow, "Active" pill
+  "Add Website" card: dashed border card with "+" icon + "Add a new website" text — same size as site cards
+- Clicking a card switches the active dashboard context (animated transition)
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: ADMIN DASHBOARD (internal staff only)
+
+Important: This is the INTERNAL staff panel. Show a warning banner "🔒 Staff Access Only — prontly.in/admin" at very top in amber.
+
+Layout (same sidebar structure but with admin nav items: Dashboard · Accounts · Sites · Billing · Blog · System · Coupons · Audit & Flags):
+
+MAIN CONTENT:
+- KPI row (6 cards): MRR (₹2,84,000) / Active Accounts (1,247) / Platform Subscribers (18.4M) / Sends Today (2.3M) / Delivery Success Rate (99.1%) / Support Tickets (12)
+- 2-column split:
+  Left (60%): Revenue trend line chart (last 90 days, monthly MRR) + Signup trend bar chart below
+  Right (40%): 
+  * System Alerts feed: severity badge (🔴 Error / 🟡 Warning) + message + timestamp. "0 active alerts" green state
+  * Recent Signups: 5 rows — avatar+email, plan badge, time ago
+  * Failed Payments: 3 rows — email, amount, "Retry" button
+- Bottom: platform-wide stats — notifications sent this month, avg CTR across platform, churn rate
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: ADMIN USER & ACCOUNT MANAGEMENT
+
+Layout:
+- Header: "Accounts" + search bar "Search by name, email, domain..."
+- Filter row: Plan (All/Free/Starter/Growth/Scale) + Status (All/Active/Suspended) + Signup date range
+- Data table (full width):
+  Columns: Avatar+Name / Email / Plan badge / MRR / Sites / Status / Signup Date / Actions
+  Plan badges: colored pills (gray=Free, blue=Starter, purple=Growth, gold=Scale)
+  Status: green "Active" / red "Suspended" / amber "Past Due"
+  Actions: "View" + 3-dot menu (Impersonate / Suspend / Reset Password)
+- Row click → RIGHT SIDE PANEL SLIDES IN (40%):
+  * Account detail: avatar, name, email, plan, join date
+  * Sites list: 2-3 domains with install status
+  * Recent campaign count
+  * Subscription status + payment method
+  * Action buttons: "Impersonate Account" (amber, audit warning modal) + "Suspend Account" (red, requires reason textarea)
+  * Activity timeline: last 5 actions with timestamps
+
+IMPERSONATE modal: amber warning "This action will be logged. Enter reason:", textarea, "Impersonate →" button
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: ADMIN WEBSITE OVERSIGHT
+
+Layout:
+- Header: "Website Oversight" + "Export" button
+- Filter chips: All / Live / Broken Installation / Flagged for Review / Disabled
+- Search: "Search by domain or owner..."
+- Data table:
+  Columns: Favicon+Domain / Owner Email / Subscribers / Install Status / Last Send / Flag Status / Actions
+  Install status: 🟢 Live / 🔴 Broken / 🟡 Pending
+  Flag status: none (empty) / 🚩 "Flagged" amber / 🚫 "Disabled" red
+  Actions: "View Owner" link + 3-dot menu: Flag for Review / Disable Sending / View Integration
+- "Disable Sending" action → modal: reason required textarea + confirm button (red)
+- Flagged sites have amber left border on their table row
+- BULK ACTIONS bar (appears on selection): "Flag Selected" + "Disable Sending for Selected" buttons
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: ADMIN SUBSCRIPTION & REVENUE MANAGEMENT
+
+Layout:
+- KPI row: MRR (₹2,84,000 +12%) / ARPU (₹228) / Monthly Churn (1.2%) / Failed Payments (7)
+- Revenue trend chart: area chart showing MRR growth over last 6 months
+- Tab navigation: Overview · Failed Payments · Cancellations · Coupons
+
+FAILED PAYMENTS TAB:
+Table: Email / Plan / Amount / Failed Date / Attempts / Status / Actions
+Status: "1st attempt failed" / "Grace period" / "Service paused"
+Actions: "Retry Charge" blue button + "Contact Account" icon
+
+COUPONS TAB:
+- "Create Coupon +" button
+- Coupon table: Code / Type (% or flat) / Value / Redemptions / Expiry / Status / Deactivate
+- Create Coupon modal: code input (auto-generate option) / type select / value / max uses / expiry date / eligible plans checkboxes
+
+CANCELLATIONS TAB:
+Table: Email / Plan / Cancellation Date / Reason / MRR Lost / Retention Offer shown
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: BLOG CMS (content management)
+
+Layout (list view by default, editor view on click):
+
+LIST VIEW:
+- Header: "Blog Posts" + "New Post +" button
+- Status filter tabs: All · Draft · Scheduled · Published
+- Posts table: Title / Category / Author / Status / Publish Date / Actions (Edit / Preview / Delete)
+- Status: "Draft" gray / "Scheduled" blue with datetime / "Published" green with date
+
+EDITOR VIEW (split pane):
+Left 55% — editor:
+- Title input (large, 24px, no border, placeholder "Post title...")
+- Rich-text toolbar: Bold / Italic / H2 / H3 / Link / Quote / Image / Code block
+- MDX body editor area (scrollable)
+- Auto-save indicator: "Saved 2s ago" (top right, subtle)
+
+Right 45% — settings panel (scrollable):
+- Status toggle: Draft → Schedule → Publish
+- Publish / Schedule datetime picker
+- Category select + Tags input (comma-separated, turns into chips)
+- Featured image upload (drag & drop zone, R2 preview)
+- SEO section: Meta title input (60 char counter) / Meta description (160 char counter) / Slug (auto from title)
+- OG Image upload
+
+Bottom bar: "Save Draft" + "Publish Now" (or "Schedule") primary buttons
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: DELIVERY MONITORING & SYSTEM HEALTH
+
+Layout:
+- TOP STATUS BANNER: "🟢 All Systems Operational" (green) or "🟡 Partial Degradation — FCM latency elevated" (amber) or "🔴 Outage Detected" (red)
+- 4 Metric cards: FCM Success Rate (99.1%) / Avg Delivery Latency (340ms) / Queue Depth (0 pending) / API Error Rate (0.02%) — each with sparkline, threshold lines
+- 2×2 time-series charts (last 24h):
+  * FCM Success Rate over time (line, green)
+  * Delivery Latency p95 over time (line, blue)
+  * Queue Depth (area, blue fill)
+  * API Error Rate (line, red if > threshold)
+- Chart controls: 1h / 6h / 24h / 7d range selector
+- Error Log table (bottom): Timestamp / Error Type / Site Domain / Error Code / Count / "Acknowledge" button
+  Row grouping by error type with expand/collapse
+- "Acknowledge Incident +" button top right opens modal with description + severity dropdown
+
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: COUPONS & DISCOUNTS
+
+Layout:
+- Header: "Coupons" + "Create Coupon +" button
+- Coupons data table:
+  Columns: Code (monospace) / Type (% or Flat) / Value / Eligible Plans / Expiry / Redemptions / Status / Actions
+  Status: "Active" green / "Expired" gray / "Fully Redeemed" amber
+  Actions: "Deactivate" text link (red on hover)
+- Top stats row: Total Active Coupons · Total Redemptions · Most Used Code · Avg Discount Amount
+
+CREATE COUPON MODAL:
+- Code input + "Auto-generate" button
+- Discount type: "Percentage" / "Flat Amount" radio
+- Value input (% or ₹)
+- Max redemptions input (leave blank for unlimited)
+- Expiry date picker
+- Eligible plans checkboxes: All / Starter / Growth / Scale
+- "Create Coupon" primary button
+
+Design a dark premium glassmorphism SaaS UI screen for "Prontly Notify" — a browser push notification platform. 
+
+Global style rules:
+- Background: #0F172A (deep navy), surface cards: #111827 with subtle glass effect
+- Primary: #3B82F6 (blue), secondary: #60A5FA, accent: #93C5FD
+- Text: #F8FAFC primary, #94A3B8 secondary, #64748B muted
+- Font: Sora for headings, Inter for body/data
+- Cards: semi-transparent (#111827 at 60% opacity), 1px border rgba(255,255,255,0.08), border-radius 12px, subtle backdrop blur
+- Buttons: primary filled #3B82F6 with hover glow, ghost variant with thin border
+- No light mode. Dark premium always.
+- Status badges: green for active/live, amber for pending, red for failed
+- Navigation: left sidebar 260px on desktop (icon + label), bottom tab bar on mobile
+
+Screen: AUDIT LOGS & FEATURE FLAGS
+
+SUPER ADMIN ONLY banner: "🔒 Super Admin Access Required" at top
+
+Tab navigation: Audit Logs · Feature Flags
+
+AUDIT LOGS TAB:
+- Filter bar: Actor search / Action type dropdown (all types: account.suspend / site.disable_sending / impersonate / feature_flag.update...) / Date range picker
+- "Export CSV" button
+- Audit log table: Timestamp / Actor (avatar+email) / Action (colored badge) / Target / Reason / Metadata expand arrow
+  Action badge colors: red for destructive / blue for config / amber for impersonate
+  Expanded row: shows metadata JSON in code block (before/after values)
+  Table is IMMUTABLE — no edit/delete actions anywhere
+
+FEATURE FLAGS TAB:
+- Flags table: Flag Name / Description / Status (On/Off/Rollout toggle) / Rollout % / Eligible Plans / Last Modified
+  Status: toggle switch (green=On, gray=Off, blue=Rollout with %)
+  Rollout %: slider input (0-100) that appears when Rollout status selected
+  Changing rollout → saves immediately + creates audit log entry (shown as toast "Audit entry created")
+
+  Mobile navigation system for Prontly Notify — three states on 375px viewport.
+
+STATE 1 — DEFAULT CLOSED (floating pill, full width - 32px):
+Position: 16px from top, left 16px right 16px, border-radius 999px
+Background: rgba(17,24,39,0.76), backdrop-blur 20px, border 1px rgba(255,255,255,0.1)
+Height: 52px
+Content:
+- Left: 16px blue icon square (border-radius 5px) + "Prontly" 13px #F8FAFC Sora weight 600
+- Right: "Start Free" filled blue pill button 11px padding 6px 14px + Hamburger icon 20px (#94A3B8) with 8px gap
+
+STATE 2 — OPEN MOBILE MENU (full screen overlay):
+Background: rgba(10,14,26,0.97), backdrop-blur 24px
+Border-radius: same as header pill top, becomes 0 0 24px 24px (only bottom rounded)
+Height: auto, min-height 340px
+Appears below the header pill with smooth slide-down animation (0.3s ease, translateY -20px → 0, opacity 0→1)
+
+Content inside open menu:
+- X close button in same position as hamburger, 20px, color #F8FAFC
+- Navigation links stacked vertically centered:
+  * "Product" 18px #F8FAFC weight 500, padding 14px 20px, full-width touchable area
+  * "Pricing" same
+  * "Docs" same
+  * "Blog" same
+  Divider between each: 1px rgba(255,255,255,0.05)
+- Bottom section (separate from links, margin-top 16px):
+  * "Log in" ghost button full-width 48px height border-radius 12px
+  * "Start Free →" filled blue button full-width 48px height border-radius 12px
+  * Both side by side in 2-column grid, gap 8px
+- Very bottom: "Join 2,400+ websites" micro-text 11px #475569 centered
+
+STATE 3 — DASHBOARD MOBILE (bottom tab bar replaces floating header):
+Position: fixed bottom 0, full width, safe-area-inset-bottom consideration
+Background: rgba(15,23,42,0.95) backdrop-blur 20px
+Border-top: 1px solid rgba(255,255,255,0.08)
+Height: 64px + safe area
+Content: 5 tabs evenly spaced
+- Tab item: icon 22px + label 10px below, gap 4px, centered
+  * Home: ti-layout-dashboard — "Home"
+  * Subscribers: ti-users — "Subscribers"  
+  * Campaigns: ti-send — "Campaigns"
+  * Analytics: ti-chart-bar — "Analytics"
+  * More: ti-dots — "More"
+- Active tab: icon + label in #3B82F6, with tiny 3px blue dot below label
+- Inactive: rgba(148,163,184,0.6)
+- "More" opens slide-up drawer: full remaining nav items (Automation, Segments, AI Tools, Integration, Team, Billing, Settings)
+
+TRANSITIONS:
+- Menu open/close: 0.28s ease cubic-bezier(0.4,0,0.2,1)
+- Tab switch: icon scale 1→1.1→1 on select, color fade 0.15s
+- Backdrop: fade 0.2s
+
+Glass effect specification for Prontly Notify — apply consistently across all components.
+
+GLASS EFFECT VARIANTS (use by context):
+
+1. NAVBAR GLASS (floating pill header):
+background: rgba(17, 24, 39, 0.72)
+backdrop-filter: blur(20px) saturate(180%)
+-webkit-backdrop-filter: blur(20px) saturate(180%)
+border: 1px solid rgba(255, 255, 255, 0.10)
+box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)
+
+2. CARD GLASS (feature cards, dashboard cards):
+background: rgba(17, 24, 39, 0.60)
+backdrop-filter: blur(12px)
+border: 1px solid rgba(255, 255, 255, 0.07)
+border-radius: 16px
+box-shadow: 0 4px 24px rgba(0,0,0,0.3)
+Hover state: border-color rgba(59, 130, 246, 0.25), box-shadow adds 0 0 0 1px rgba(59,130,246,0.1)
+
+3. MODAL / DIALOG GLASS:
+background: rgba(15, 23, 42, 0.90)
+backdrop-filter: blur(24px) saturate(200%)
+border: 1px solid rgba(255, 255, 255, 0.12)
+border-radius: 20px
+box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05)
+Overlay behind modal: rgba(0,0,0,0.65) backdrop
+
+4. HERO PANEL GLASS (split-screen panels like login left panel):
+background: rgba(30, 41, 59, 0.50)
+backdrop-filter: blur(16px)
+border-right: 1px solid rgba(255,255,255,0.06)
+
+5. DROPDOWN GLASS (mega menu, select dropdowns):
+background: rgba(17, 24, 39, 0.95)
+backdrop-filter: blur(20px)
+border: 1px solid rgba(255, 255, 255, 0.10)
+border-radius: 16px
+box-shadow: 0 16px 48px rgba(0,0,0,0.5)
+
+6. TOAST / NOTIFICATION GLASS:
+background: rgba(30, 41, 59, 0.90)
+backdrop-filter: blur(16px)
+border: 1px solid rgba(255,255,255,0.10)
+border-radius: 12px
+box-shadow: 0 8px 24px rgba(0,0,0,0.4)
+Success toast: left border 3px solid #22C55E
+Error toast: left border 3px solid #EF4444
+
+7. CODE BLOCK:
+background: rgba(2, 6, 23, 0.80)
+border: 1px solid rgba(255,255,255,0.08)
+border-radius: 12px
+Copy button floats top-right inside block: glass effect #2 in mini size
+
+AI SUGGESTION CARDS (special variant):
+background: rgba(59, 130, 246, 0.06)
+border: 1px solid rgba(59, 130, 246, 0.20)
+border-radius: 12px
+"AI" badge: background rgba(147, 197, 253, 0.15), color #93C5FD, border-radius 999px, padding 3px 10px, font 11px
+
+USAGE RULES:
+- Always use rgba backgrounds, never solid fills on glass components
+- backdrop-filter requires the parent element to have a defined background (not transparent)
+- Use sparingly — too many blurred layers stack and degrade performance. Max 3 simultaneous blur layers.
+- On mobile: reduce blur from 20px→12px for performance
+- Fallback (when backdrop-filter unsupported): use rgba(17,24,39,0.95) — more opaque solid version
+- Never combine a heavy drop-shadow AND a large blur on the same element — pick one primary depth capture
+
+
+Design the complete page layout system for "Prontly Notify" — a dark premium SaaS platform.
+
+BASE PAGE STRUCTURE (top to bottom):
+1. FLOATING NAVBAR — 52px pill, 16px from top, floating (not in page flow — overlay)
+2. HERO SECTION — first visible section, starts ~80px from top (to clear navbar)
+3. TRUST BAR — logo marquee strip
+4. FEATURES SECTION
+5. HOW IT WORKS — 3 steps
+6. AI FEATURES HIGHLIGHT
+7. PRICING TEASER
+8. TESTIMONIALS
+9. INTEGRATION LOGOS
+10. FINAL CTA BAND
+11. FOOTER
+
+GLOBAL LAYOUT TOKENS:
+- Page background: #0F172A
+- Max content width: 1200px, centered, auto side margins
+- Section padding (vertical): 96px top + bottom on desktop, 64px on mobile
+- Section inner max-width: 1120px
+- Grid gap: 24px standard, 32px on feature grids
+- Column gutter: 24px (desktop), 16px (mobile)
+
+HERO SECTION:
+- Min-height: calc(100vh - 80px) so it fills the first screen
+- Layout: centered column, text-align center
+- Pre-heading badge pill: background rgba(59,130,246,0.12), border 1px rgba(59,130,246,0.3), border-radius 999px, padding 5px 14px, font 12px #93C5FD
+- Main headline: 64px Sora font-weight 700 #F8FAFC line-height 1.1 letter-spacing -0.04em (desktop), 36px mobile
+- Subheadline: 20px Inter #94A3B8 line-height 1.6 max-width 600px centered, margin-top 16px
+- CTA group: margin-top 32px, flex row centered gap 12px
+  Primary button: 48px height, padding 0 28px, border-radius 999px, #3B82F6, 15px font-weight 500
+  Ghost button: same height, border 1px rgba(255,255,255,0.15), color rgba(248,250,252,0.8)
+- Hero visual: notification stack mockup — 500px wide centered, margin-top 64px
+
+TRUST BAR SECTION:
+- Background: rgba(255,255,255,0.02), border-top and border-bottom 1px rgba(255,255,255,0.05)
+- Padding: 24px 0
+- Content: "Trusted by 2,400+ websites" 13px #64748B + marquee of 8 platform logos in 28px height, grayscale 60%, hover: grayscale 0%
+- Marquee speed: 30s loop, pausable on hover
+
+SECTION HEADER PATTERN (reused across all sections):
+- Section label: 12px uppercase letter-spacing 0.1em #3B82F6 weight 500, margin-bottom 12px
+- Section title: 44px Sora weight 700 #F8FAFC line-height 1.2 letter-spacing -0.02em
+- Section subtitle: 18px #94A3B8 max-width 540px (centered sections) or full-width (left-aligned)
+- Always stack vertically, text-align center for centered sections
+
+FEATURE CARDS GRID (3×2 or 2×3 depending on content):
+- Card style: background rgba(17,24,39,0.6), border 1px rgba(255,255,255,0.07), border-radius 16px, padding 28px
+- Card icon: 44px circle, background rgba(59,130,246,0.12), icon 22px #60A5FA centered
+- Card title: 18px #F8FAFC weight 600 margin-top 16px margin-bottom 8px
+- Card description: 14px #94A3B8 line-height 1.6
+- Card hover: border-color rgba(59,130,246,0.3), translateY -4px transition 0.2s
+
+AI FEATURES SECTION:
+- Dark card full-width, background rgba(59,130,246,0.06), border 1px rgba(59,130,246,0.15), border-radius 24px
+- Left: headline + description + feature list with checkmarks
+- Right: animated mockup of AI title generation (input → 3 suggestions)
+- "Powered by AI" badge: gradient border card, sparkle icon
+
+HOW IT WORKS (3-step horizontal):
+- Steps connected by dashed lines
+- Each step: large number (80px, #1E3A8A, Sora, very light), icon circle (48px), title 20px, description 14px
+- Line connector: 1px dashed rgba(59,130,246,0.25)
+
+FINAL CTA BAND:
+- Full-width section, background: subtle blue tint rgba(59,130,246,0.06), border top+bottom rgba(59,130,246,0.12)
+- OR: stay with page background, just centered text + button
+- Large headline 48px, subtext 18px, primary CTA button + "No credit card required" micro-text below button in #64748B
+
+SCROLL ANIMATIONS (subtle):
+- Elements fade up: opacity 0→1, translateY 20px→0, duration 0.5s, staggered 0.1s between items
+- Intersection Observer triggers at 80% threshold
+- Respect prefers-reduced-motion: disable all transforms for users who prefer
+
+RESPONSIVE BREAKPOINTS:
+- Mobile < 768px: single column everywhere, 36px section padding, 32px headlines
+- Tablet 768-1024px: 2-column grids, 56px headlines
+- Desktop > 1024px: full layout, 64px headlines
+
+
+Design a premium dark footer for "Prontly Notify" SaaS platform.
+
+STYLE:
+- Background: #060B14 (slightly deeper than page #0F172A — creates depth separation)
+- Top border: 1px solid rgba(255,255,255,0.06) — very subtle separator from page content
+- Padding: 64px top, 32px bottom
+- Max-width: 1200px centered inside footer
+
+TOP SECTION — 4-column grid (gap: 48px between columns):
+
+COLUMN 1 — Brand (wider, 2fr):
+- Logo: 20px blue square (#3B82F6, border-radius 6px) + "Prontly Notify" text 15px #F8FAFC Sora weight 600
+- Tagline 13px #64748B line-height 1.6: "Browser push notifications for every website. Send smarter campaigns with AI."
+- Social icons row (gap 8px): Twitter/X · GitHub · LinkedIn — each in 28px square, background rgba(255,255,255,0.05), border 1px rgba(255,255,255,0.08), border-radius 6px, icon 14px #64748B, hover: border rgba(255,255,255,0.16), icon color #94A3B8
+- Mini newsletter form below social icons: email input (dark, 11px, height 32px, border rgba(255,255,255,0.1)) + "Subscribe →" inline button (blue, 32px height). Placeholder: "your@email.com"
+
+COLUMN 2 — Product:
+- Header: "Product" 11px #F8FAFC font-weight 600 letter-spacing 0.05em margin-bottom 16px
+- Links (each 13px #64748B, hover #94A3B8, display block, margin-bottom 10px): Features · Pricing · Integrations · API · Changelog · Status
+
+COLUMN 3 — Resources:
+- Header: "Resources"
+- Links: Documentation · Blog · SDK · Webhooks · Case Studies · Security
+
+COLUMN 4 — Company:
+- Header: "Company"
+- Links: About · Careers · Contact · Privacy Policy · Terms of Service · Refund Policy
+
+SEPARATOR: 1px solid rgba(255,255,255,0.06) divider between top section and bottom bar.
+
+BOTTOM BAR (flex, space-between):
+- Left: "© 2026 Prontly Notify. All rights reserved. Made in India 🇮🇳" — 12px #475569
+- Center: mini link row — Privacy · Terms · Cookies — 12px #475569, hover #64748B
+- Right: compliance badge row — GDPR · DPDPA 2023 · SSL Secured — each in small pill: background rgba(255,255,255,0.04), border 1px rgba(255,255,255,0.07), border-radius 4px, padding 3px 8px, 10px #475569
+
+MOBILE (< 768px):
+- Columns stack: brand first, then 3 link columns in a 3-column grid (smaller), then bottom bar stacks vertically centered
+- Newsletter form becomes full-width below tagline
+- Padding reduces to 40px top, 24px bottom
+
+DECORATIVE TOUCH (subtle):
+- Very faint radial gradient circle at footer top-center: rgba(59,130,246,0.04) — 600px diameter, only visible in very dark rooms (keep it EXTREMELY subtle, barely perceptible)
+
+
+Design a floating glassmorphic island navbar for "Prontly Notify" — a dark premium SaaS push notification platform.
+
+STYLE RULES:
+- Page background: #0F172A (deep navy)
+- Navbar does NOT span full width. It floats centered with 64px margin on left and right sides, creating visible space between nav edges and viewport edges
+- Shape: pill / capsule — border-radius: 999px (fully rounded ends)
+- Height: 52px on desktop, 48px on mobile
+- Glass effect: background rgba(17,24,39,0.72), backdrop-filter: blur(20px) saturate(180%), 1px border rgba(255,255,255,0.10)
+- Subtle ambient glow below the pill: box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06)
+- Top margin: 16px from top of viewport
+- Max-width: 760px, centered with auto margins
+
+DESKTOP LAYOUT (inside the pill, left to right):
+[LEFT] Logo area: 8px blue square icon (border-radius 5px, #3B82F6) + "Prontly Notify" text 14px #F8FAFC Sora font weight 600. Auto margin-right pushes everything else right.
+[CENTER] Navigation links: "Product" / "Pricing" / "Docs" / "Blog" — each 13px rgba(248,250,252,0.65), padding 6px 12px, border-radius 999px, hover: rgba(255,255,255,0.08) background, color #F8FAFC. Active link: #93C5FD color. Gap between links: 2px. Wrap center section in margin: 0 16px.
+[RIGHT] "Log in" ghost button: border 1px solid rgba(255,255,255,0.14), color rgba(248,250,252,0.75), 13px, padding 7px 16px, border-radius 999px, hover: border rgba(255,255,255,0.25). Then "Start Free" filled button: background #3B82F6, color #ffffff, 13px, font-weight 500, padding 7px 18px, border-radius 999px, hover: #2563EB, letter-spacing -0.01em. Gap between: 6px.
+
+SCROLL STATE (when page scrolled > 80px):
+- background changes to rgba(10,14,26,0.92) — more opaque, darker
+- border becomes rgba(255,255,255,0.14) — slightly more visible
+- pill padding reduces by 2px top and bottom (tighter)
+- Transition: all 0.25s ease on background, border, padding
+- Logo text optionally hides on mobile leaving only the icon
+
+MOBILE (375px wide):
+- Pill width: calc(100% - 32px), centered, 16px sides
+- Left: logo icon + "Prontly" (shorter name), font-size 13px
+- Center links: hidden (all nav links collapse)
+- Right: hamburger menu icon (3 lines, 20px, rgba(248,250,252,0.7)) + "Start Free" pill button (smaller, 11px, padding 6px 14px)
+- Hamburger opens a full-screen slide-down overlay (same dark glass style) with vertical nav links: Product / Pricing / Docs / Blog / Log in / Start Free (large blue pill)
+- Slide-down overlay: border-radius 0 0 24px 24px, glass background, links are 18px centered, with a close X button top-right
+
+DROPDOWN MENU (on "Product" hover — desktop only):
+- Mega dropdown appears below the navbar pill
+- Background: rgba(17,24,39,0.95), border-radius 16px, border 1px rgba(255,255,255,0.1), backdrop-blur 20px
+- Padding 20px, min-width 300px
+- 4 items in 2×2 grid: icon + title + 1-line desc per item
+  * Bell icon: "Campaigns" — Send targeted push notifications
+  * Robot icon: "AI Tools" — AI-generated titles and scheduling
+  * Users icon: "Segments" — Smart audience targeting
+  * Chart icon: "Analytics" — Track CTR and subscriber growth
+- Smooth fade+translate animation: opacity 0→1, translateY -8px→0 on open
+- Arrow indicator on "Product" link when dropdown open
+
+TYPOGRAPHY: Sora for logo name, Inter for nav links and buttons.
+ACCESSIBILITY: nav element with aria-label="Main navigation". Mobile menu button: aria-expanded toggle. All interactive elements keyboard-focusable with 2px blue focus ring.
+

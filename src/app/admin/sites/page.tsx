@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
-import { cn, formatDate, generateId } from "@/lib/utils";
+import { useToast } from "@/components/ui/Toast";
+import { EmptyState } from "@/components/domain/EmptyState";
+import { cn, formatDate, formatNumber } from "@/lib/utils";
 import {
   Search,
   Globe,
@@ -15,6 +16,7 @@ import {
   Flag,
   ShieldAlert,
   AlertTriangle,
+  Loader2,
 } from "lucide-react";
 
 interface Site {
@@ -32,28 +34,69 @@ interface Site {
 const installFilters = ["All", "Live", "Broken", "Pending"];
 const flagFilters = ["All", "Flagged", "Clear"];
 
-const mockSites: Site[] = [
-  { id: "1", domain: "acme.com", owner: "Acme Corp", ownerEmail: "admin@acme.com", subscribers: 45200, installStatus: "live", lastSend: "2m ago", flagged: false, sendingDisabled: false },
-  { id: "2", domain: "blog.techstart.io", owner: "TechStart Inc", ownerEmail: "dev@techstart.io", subscribers: 12800, installStatus: "live", lastSend: "15m ago", flagged: false, sendingDisabled: false },
-  { id: "3", domain: "media.co", owner: "Media Group", ownerEmail: "contact@media.co", subscribers: 89000, installStatus: "broken", lastSend: "3h ago", flagged: true, sendingDisabled: true },
-  { id: "4", domain: "shop.shopeasy.com", owner: "ShopEasy", ownerEmail: "info@shopeasy.com", subscribers: 6700, installStatus: "live", lastSend: "1h ago", flagged: false, sendingDisabled: false },
-  { id: "5", domain: "devhub.dev", owner: "DevHub", ownerEmail: "team@devhub.dev", subscribers: 3400, installStatus: "pending", lastSend: "Never", flagged: false, sendingDisabled: false },
-  { id: "6", domain: "pixelperfect.io", owner: "Pixel Perfect", ownerEmail: "hello@pixelperfect.io", subscribers: 22100, installStatus: "live", lastSend: "5m ago", flagged: false, sendingDisabled: false },
-  { id: "7", domain: "app.dataflow.io", owner: "DataFlow", ownerEmail: "ops@dataflow.app", subscribers: 15600, installStatus: "broken", lastSend: "1d ago", flagged: true, sendingDisabled: false },
-  { id: "8", domain: "webstack.co", owner: "WebStack", ownerEmail: "contact@webstack.co", subscribers: 890, installStatus: "live", lastSend: "30m ago", flagged: false, sendingDisabled: false },
-];
+async function fetchSites(search?: string, status?: string) {
+  const params = new URLSearchParams({ limit: "100" });
+  if (search) params.set("search", search);
+  if (status && status !== "All") params.set("install_status", status.toLowerCase());
+  const res = await fetch(`/api/v1/admin/sites?${params.toString()}`);
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || "Failed to fetch sites");
+  return json.data as any[];
+}
+
+async function toggleSending(siteId: string) {
+  const res = await fetch(`/api/v1/admin/sites/disable-sending`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ siteId }),
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || "Failed to toggle sending");
+  return json.data;
+}
 
 export default function AdminSites() {
-  const [sites, setSites] = useState<Site[]>(mockSites);
+  const { addToast } = useToast();
+  const [sites, setSites] = useState<Site[]>([]);
   const [search, setSearch] = useState("");
   const [installFilter, setInstallFilter] = useState("All");
   const [flagFilter, setFlagFilter] = useState("All");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [actionModal, setActionModal] = useState<{
     site: Site;
     action: "disable" | "flag" | "unflag";
   } | null>(null);
   const [actionReason, setActionReason] = useState("");
+  const [actioning, setActioning] = useState(false);
+
+  const loadSites = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await fetchSites(
+        search || undefined,
+        installFilter !== "All" ? installFilter : undefined
+      );
+      setSites(data.map((s: any) => ({
+        id: s.id,
+        domain: s.domain || s.name,
+        owner: s.workspace_name,
+        ownerEmail: "",
+        subscribers: s.subscriber_count || 0,
+        installStatus: (s.install_status === "verified" ? "live" : s.install_status) || "pending",
+        lastSend: s.updated_at ? formatDate(s.updated_at) : "Never",
+        flagged: false,
+        sendingDisabled: s.sending_enabled === 0,
+      })));
+    } catch (err: any) {
+      addToast(err.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  }, [search, installFilter, addToast]);
+
+  useEffect(() => {
+    loadSites();
+  }, [loadSites]);
 
   const filteredSites = useMemo(() => {
     return sites.filter((s) => {
@@ -71,22 +114,33 @@ export default function AdminSites() {
     });
   }, [sites, search, installFilter, flagFilter]);
 
-  const handleAction = () => {
+  const handleAction = async () => {
     if (!actionModal || !actionReason.trim()) return;
-    setSites((prev) =>
-      prev.map((s) => {
-        if (s.id !== actionModal.site.id) return s;
-        if (actionModal.action === "disable") {
-          return { ...s, sendingDisabled: !s.sendingDisabled };
-        }
-        if (actionModal.action === "flag" || actionModal.action === "unflag") {
-          return { ...s, flagged: !s.flagged };
-        }
-        return s;
-      })
-    );
-    setActionModal(null);
-    setActionReason("");
+    setActioning(true);
+    try {
+      if (actionModal.action === "disable") {
+        await toggleSending(actionModal.site.id);
+        setSites((prev) =>
+          prev.map((s) =>
+            s.id === actionModal.site.id ? { ...s, sendingDisabled: !s.sendingDisabled } : s
+          )
+        );
+        addToast(`Sending ${actionModal.site.sendingDisabled ? "enabled" : "disabled"} for ${actionModal.site.domain}`, "success");
+      } else {
+        setSites((prev) =>
+          prev.map((s) =>
+            s.id === actionModal.site.id ? { ...s, flagged: !s.flagged } : s
+          )
+        );
+        addToast(`Site ${actionModal.site.flagged ? "unflagged" : "flagged"}`, "success");
+      }
+      setActionModal(null);
+      setActionReason("");
+    } catch (err: any) {
+      addToast(err.message, "error");
+    } finally {
+      setActioning(false);
+    }
   };
 
   const columns: Column<Site>[] = [
@@ -141,12 +195,9 @@ export default function AdminSites() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-text-primary">Website Oversight</h1>
-        <p className="mt-1 text-sm text-text-muted">
-          Monitor and manage registered websites
-        </p>
+        <p className="mt-1 text-sm text-text-muted">Monitor and manage registered websites</p>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
@@ -193,15 +244,18 @@ export default function AdminSites() {
         </div>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={filteredSites}
-        keyExtractor={(s) => s.id}
-        loading={loading}
-        sortable
-      />
+      {!loading && filteredSites.length === 0 ? (
+        <EmptyState icon={<Globe className="size-12" />} title="No sites found" description="Try adjusting your search or filters" />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filteredSites}
+          keyExtractor={(s) => s.id}
+          loading={loading}
+          sortable
+        />
+      )}
 
-      {/* Action Modal */}
       <Modal
         open={!!actionModal}
         onClose={() => { setActionModal(null); setActionReason(""); }}
@@ -236,13 +290,12 @@ export default function AdminSites() {
             error={actionReason.length > 0 && actionReason.length < 10 ? "Must be at least 10 characters" : undefined}
           />
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => { setActionModal(null); setActionReason(""); }}>
-              Cancel
-            </Button>
+            <Button variant="outline" onClick={() => { setActionModal(null); setActionReason(""); }}>Cancel</Button>
             <Button
               variant={actionModal?.action === "disable" ? "destructive" : "secondary"}
-              disabled={actionReason.trim().length < 10}
+              disabled={actionReason.trim().length < 10 || actioning}
               onClick={handleAction}
+              loading={actioning}
             >
               Confirm
             </Button>

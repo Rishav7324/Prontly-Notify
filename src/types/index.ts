@@ -193,3 +193,142 @@ export interface Invoice {
   paidAt?: string;
   pdfUrl?: string;
 }
+
+export interface WorkspaceMember {
+  id: string;
+  workspaceId: string;
+  userId: string | null;
+  invitedEmail: string;
+  role: "owner" | "admin" | "member";
+  siteAccess: string;
+  status: "active" | "pending";
+  invitedAt: string;
+  joinedAt: string | null;
+  name?: string;
+  email?: string;
+  avatarUrl?: string;
+}
+
+export interface SubscriberAttribute {
+  id: string;
+  subscriberId: string;
+  key: string;
+  value: string;
+  updatedAt: string;
+}
+
+export interface CampaignDelivery {
+  id: string;
+  campaignId: string;
+  subscriberId: string;
+  status: "pending" | "delivered" | "failed" | "clicked";
+  errorCode?: string;
+  sentAt?: string;
+  deliveredAt?: string;
+  clickedAt?: string;
+}
+
+export interface Plan {
+  id: string;
+  name: string;
+  priceMonthly: number;
+  priceAnnual: number;
+  subscriberLimit: number;
+  siteLimit: number;
+  aiCreditLimit: number;
+  teamSeatLimit: number;
+  features: Record<string, boolean>;
+}
+
+export interface Subscription {
+  id: string;
+  workspaceId: string;
+  planId: string;
+  razorpaySubscriptionId?: string;
+  status: "active" | "past_due" | "canceled" | "trialing";
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Coupon {
+  id: string;
+  code: string;
+  type: "percentage" | "fixed";
+  value: number;
+  maxRedemptions: number;
+  redemptionCount: number;
+  eligiblePlanIds: string[];
+  expiresAt?: string;
+  status: "active" | "expired" | "disabled";
+  createdAt: string;
+}
+
+export interface AiUsage {
+  id: string;
+  workspaceId: string;
+  month: string;
+  feature: string;
+  creditsUsed: number;
+}
+
+export interface AuditLog {
+  id: string;
+  actorUserId: string;
+  action: string;
+  targetType?: string;
+  targetId?: string;
+  reason?: string;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+}
+
+export interface FeatureFlag {
+  id: string;
+  key: string;
+  enabled: boolean;
+  description?: string;
+  workspaceId?: string;
+  updatedAt: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  bodyMdx?: string;
+  excerpt?: string;
+  featuredImageUrl?: string;
+  category?: string;
+  tags: string[];
+  status: "draft" | "scheduled" | "published";
+  seoTitle?: string;
+  seoDescription?: string;
+  authorId?: string;
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AutomationRun {
+  id: string;
+  automationId: string;
+  subscriberId: string;
+  currentStepId?: string;
+  status: "active" | "completed" | "exited";
+  nextActionAt?: string;
+  startedAt: string;
+  completedAt?: string;
+}
+
+export interface Session {
+  id: string;
+  workspaceId: string;
+  userId: string;
+  token: string;
+  userAgent?: string;
+  ip?: string;
+  expiresAt: string;
+  createdAt: string;
+}

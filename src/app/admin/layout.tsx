@@ -20,6 +20,7 @@ import {
   LogOut,
   Settings,
 } from "lucide-react";
+import { ToastProvider } from "@/components/ui/Toast";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -171,7 +172,7 @@ export default function AdminLayout({
           </div>
         </header>
 
-        <main className="flex-1 p-6 lg:p-8">{children}</main>
+        <main className="flex-1 p-6 lg:p-8"><ToastProvider>{children}</ToastProvider></main>
       </div>
     </div>
   );

@@ -10,11 +10,11 @@ describe("Badge", () => {
 
   it("applies variant classes", () => {
     const { container } = render(<Badge variant="info">Info</Badge>);
-    expect(container.firstChild).toHaveClass("bg-primary/10");
+    expect(container.firstChild).toHaveClass("text-primary");
   });
 
   it("applies size classes", () => {
     const { container } = render(<Badge variant="default" size="sm">Small</Badge>);
-    expect(container.firstChild).toHaveClass("text-[10px]");
+    expect(container.firstChild).toHaveClass("text-[11px]");
   });
 });

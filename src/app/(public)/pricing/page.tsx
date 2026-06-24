@@ -1,137 +1,236 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { Check, X, HelpCircle, ArrowRight } from "lucide-react";
-import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
+import { useState, useEffect } from "react";
+import { useToast } from "@/components/ui/Toast";
+import { Loader2, ArrowRight, Check, X } from "lucide-react";
+import { PricingCard } from "@/components/domain/PricingCard";
 import { Accordion } from "@/components/ui/Accordion";
 import { Badge } from "@/components/ui/Badge";
+import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
 
-const plans = [
+interface Plan {
+  id: string;
+  name: string;
+  description: string;
+  monthly_price: number;
+  annual_price: number | null;
+  subscriber_limit: number | string;
+  site_limit: number | string;
+  ai_credits: number | string;
+  team_seats: number | string;
+  features: string[];
+  is_featured: boolean;
+}
+
+interface ComparisonFeature {
+  label: string;
+  getValue: (plan: Plan) => string | boolean;
+}
+
+const fallbackPlans: Plan[] = [
   {
+    id: "free",
     name: "Free",
-    price: { monthly: "₹0", annual: "₹0" },
-    period: { monthly: "/mo", annual: "/mo" },
-    desc: "Perfect for testing the waters.",
+    description: "Perfect for testing the waters.",
+    monthly_price: 0,
+    annual_price: 0,
+    subscriber_limit: 1000,
+    site_limit: 1,
+    ai_credits: 10,
+    team_seats: 1,
     features: [
-      "Up to 2,000 subscribers",
-      "1 website",
-      "10 AI credits / mo",
-      "Basic analytics",
-      "Standard support",
+      "Up to 1,000 subscribers",
+      "1 site",
+      "10 AI credits / month",
+      "1 team seat",
     ],
-    cta: "Get Started",
-    href: "/signup",
-    popular: false,
+    is_featured: false,
   },
   {
+    id: "starter",
     name: "Starter",
-    price: { monthly: "₹999", annual: "₹999" },
-    period: { monthly: "/mo", annual: "/mo" },
-    desc: "For growing blogs and small stores.",
+    description: "For growing blogs and small stores.",
+    monthly_price: 999,
+    annual_price: 9999,
+    subscriber_limit: 10000,
+    site_limit: 3,
+    ai_credits: 50,
+    team_seats: 5,
     features: [
       "Up to 10,000 subscribers",
-      "3 websites",
-      "100 AI credits / mo",
-      "Advanced analytics",
-      "Email support",
+      "3 sites",
+      "50 AI credits / month",
+      "5 team seats",
     ],
-    cta: "Start Free Trial",
-    href: "/signup?plan=starter",
-    popular: false,
+    is_featured: false,
   },
   {
+    id: "growth",
     name: "Growth",
-    price: { monthly: "₹2,999", annual: "₹2,499" },
-    period: { monthly: "/mo", annual: "/mo" },
-    desc: "For serious publishers and SaaS teams.",
+    description: "For serious publishers and SaaS teams.",
+    monthly_price: 2999,
+    annual_price: 29999,
+    subscriber_limit: 100000,
+    site_limit: 10,
+    ai_credits: 200,
+    team_seats: 20,
     features: [
-      "Up to 50,000 subscribers",
-      "10 websites",
-      "500 AI credits / mo",
-      "Full analytics suite",
-      "Priority support",
-      "Team members (up to 3)",
+      "Up to 100,000 subscribers",
+      "10 sites",
+      "200 AI credits / month",
+      "20 team seats",
     ],
-    cta: "Start Free Trial",
-    href: "/signup?plan=growth",
-    popular: true,
+    is_featured: true,
   },
   {
+    id: "scale",
     name: "Scale",
-    price: { monthly: "₹7,999", annual: "₹6,999" },
-    period: { monthly: "/mo", annual: "/mo" },
-    desc: "For high-volume businesses and agencies.",
+    description: "For high-volume businesses and agencies.",
+    monthly_price: 7999,
+    annual_price: 79999,
+    subscriber_limit: "1,000,000",
+    site_limit: 50,
+    ai_credits: "Unlimited",
+    team_seats: "Unlimited",
     features: [
-      "Up to 200,000 subscribers",
-      "Unlimited websites",
+      "Up to 1,000,000 subscribers",
+      "50 sites",
       "Unlimited AI credits",
-      "Enterprise analytics",
-      "Dedicated support",
-      "Unlimited team members",
-      "API access",
+      "Unlimited team seats",
     ],
-    cta: "Contact Sales",
-    href: "/contact",
-    popular: false,
+    is_featured: false,
   },
 ];
 
-const comparisonFeatures = [
-  { label: "Subscriber limit", free: "2,000", starter: "10,000", growth: "50,000", scale: "200,000" },
-  { label: "Websites", free: "1", starter: "3", growth: "10", scale: "Unlimited" },
-  { label: "AI credits / mo", free: "10", starter: "100", growth: "500", scale: "Unlimited" },
-  { label: "AI title generation", free: true, starter: true, growth: true, scale: true },
-  { label: "Smart scheduling", free: false, starter: true, growth: true, scale: true },
-  { label: "Behavioral automation", free: false, starter: "1 flow", growth: "5 flows", scale: "Unlimited" },
-  { label: "Segmentation", free: "Basic", starter: "Basic", growth: "Advanced", scale: "Advanced" },
-  { label: "Team members", free: false, starter: false, growth: "Up to 3", scale: "Unlimited" },
-  { label: "API access", free: false, starter: false, growth: false, scale: true },
-  { label: "Priority support", free: false, starter: false, growth: true, scale: true },
-  { label: "Dedicated support", free: false, starter: false, growth: false, scale: true },
-  { label: "Custom reports", free: false, starter: false, growth: true, scale: true },
+const comparisonFeatures: ComparisonFeature[] = [
+  {
+    label: "Subscriber Limit",
+    getValue: (p) =>
+      typeof p.subscriber_limit === "number"
+        ? `Up to ${p.subscriber_limit.toLocaleString("en-IN")}`
+        : `Up to ${p.subscriber_limit}`,
+  },
+  {
+    label: "Site Limit",
+    getValue: (p) =>
+      typeof p.site_limit === "number" ? String(p.site_limit) : String(p.site_limit),
+  },
+  {
+    label: "AI Credits",
+    getValue: (p) =>
+      typeof p.ai_credits === "number"
+        ? `${p.ai_credits.toLocaleString("en-IN")} / mo`
+        : String(p.ai_credits),
+  },
+  {
+    label: "Team Seats",
+    getValue: (p) =>
+      typeof p.team_seats === "number"
+        ? `Up to ${p.team_seats}`
+        : String(p.team_seats),
+  },
+  { label: "API Access", getValue: (p) => p.name === "Scale" },
+  { label: "Custom Domain", getValue: (p) => p.name !== "Free" },
+  {
+    label: "Automation",
+    getValue: (p) => p.name === "Growth" || p.name === "Scale",
+  },
+  {
+    label: "Segments",
+    getValue: (p) =>
+      p.name === "Growth" || p.name === "Scale" ? "Advanced" : "Basic",
+  },
+  {
+    label: "Priority Support",
+    getValue: (p) => p.name === "Growth" || p.name === "Scale",
+  },
+  { label: "SSO/SAML", getValue: (p) => p.name === "Scale" },
 ];
 
 const faqItems = [
   {
     title: "Can I switch plans at any time?",
-    content: "Yes — you can upgrade or downgrade your plan at any time. Upgrades take effect immediately, and downgrades apply at the start of your next billing cycle.",
-  },
-  {
-    title: "What payment methods do you accept?",
-    content: "We accept all major credit/debit cards, UPI, net banking, and Razorpay-powered payment methods. All prices are in INR and include applicable taxes.",
+    content:
+      "Yes — you can upgrade or downgrade your plan at any time. Upgrades take effect immediately, and downgrades apply at the start of your next billing cycle.",
   },
   {
     title: "Is there a free trial for paid plans?",
-    content: "Yes — every paid plan comes with a 14-day free trial. No credit card required to start. You only pay after the trial ends.",
+    content:
+      "Yes — every paid plan comes with a 14-day free trial. No credit card required to start. You only pay after the trial ends.",
   },
   {
-    title: "What happens when I exceed my subscriber limit?",
-    content: "We'll notify you via email and in-app. You can still send notifications, but new subscriber collection will be paused until you upgrade.",
+    title: "What payment methods do you accept?",
+    content:
+      "We accept all major credit/debit cards, UPI, net banking, and Razorpay-powered payment methods. All prices are in INR and include applicable taxes.",
   },
   {
     title: "Can I cancel anytime?",
-    content: "Absolutely. You can cancel your subscription from the Billing settings. Your plan remains active until the end of the current billing period.",
+    content:
+      "Absolutely. You can cancel your subscription from the Billing settings. Your plan remains active until the end of the current billing period.",
+  },
+  {
+    title: "What happens if I exceed my subscriber or usage limits?",
+    content:
+      "We'll notify you via email and in-app. You can still send notifications, but new subscriber collection will be paused until you upgrade to a higher tier.",
   },
 ];
 
-function CheckIcon() {
-  return <Check className="size-4 text-primary" />;
+function formatINR(amount: number): string {
+  return new Intl.NumberFormat("en-IN").format(amount);
 }
 
-function XIcon() {
-  return <X className="size-4 text-text-muted" />;
+function getPrice(plan: Plan, annual: boolean): string {
+  if (annual) {
+    const annualPrice =
+      plan.annual_price ?? Math.round(plan.monthly_price * 12 * 0.9);
+    return annualPrice === 0 ? "₹0" : `₹${formatINR(annualPrice)}`;
+  }
+  return plan.monthly_price === 0 ? "₹0" : `₹${formatINR(plan.monthly_price)}`;
 }
 
-function CellValue({ value }: { value: string | boolean | number }) {
+function getPeriod(plan: Plan, annual: boolean): string {
+  if (annual) return "/yr";
+  return plan.monthly_price === 0 ? "" : "/mo";
+}
+
+function CellValue({ value }: { value: string | boolean }) {
   if (typeof value === "boolean") {
-    return value ? <CheckIcon /> : <XIcon />;
+    return value ? (
+      <Check className="mx-auto size-4 text-primary" />
+    ) : (
+      <X className="mx-auto size-4 text-text-muted" />
+    );
   }
   return <span className="text-sm text-text-secondary">{value}</span>;
 }
 
 export default function PricingPage() {
   const [annual, setAnnual] = useState(false);
+  const [plans, setPlans] = useState<Plan[]>(fallbackPlans);
+  const [loading, setLoading] = useState(true);
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    fetch("/api/v1/billing/plans")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setPlans(data.data);
+        }
+      })
+      .catch(() => {
+        addToast("Failed to load plans. Showing default pricing.", "warning");
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <Loader2 className="size-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -145,17 +244,20 @@ export default function PricingPage() {
             offers: plans.map((p) => ({
               "@type": "Offer",
               name: p.name,
-              price: p.price[annual ? "annual" : "monthly"].replace("₹", ""),
+              price: getPrice(p, annual).replace("₹", "").replace(",", ""),
               priceCurrency: "INR",
-              description: p.desc,
+              description: p.description,
             })),
           }),
         }}
       />
-      {/* Header */}
+
+      {/* Hero */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="text-center">
-          <Badge variant="info" className="mb-4">Pricing</Badge>
+          <Badge variant="info" className="mb-4">
+            Pricing
+          </Badge>
           <h1 className="font-display mb-4 text-4xl font-bold md:text-5xl">
             Simple, transparent pricing
           </h1>
@@ -165,12 +267,14 @@ export default function PricingPage() {
           </p>
 
           {/* Toggle */}
-          <div className="mx-auto mb-12 inline-flex items-center gap-3 rounded-xl border border-border bg-surface p-1.5">
+          <div className="mx-auto mb-12 inline-flex items-center rounded-xl border border-border bg-surface p-1.5">
             <button
               type="button"
               onClick={() => setAnnual(false)}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                !annual ? "bg-primary text-white" : "text-text-secondary hover:text-text-primary"
+                !annual
+                  ? "bg-primary text-white shadow-sm"
+                  : "text-text-secondary hover:text-text-primary"
               }`}
             >
               Monthly
@@ -178,59 +282,48 @@ export default function PricingPage() {
             <button
               type="button"
               onClick={() => setAnnual(true)}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                annual ? "bg-primary text-white" : "text-text-secondary hover:text-text-primary"
+              className={`relative rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                annual
+                  ? "bg-primary text-white shadow-sm"
+                  : "text-text-secondary hover:text-text-primary"
               }`}
             >
               Annual
-              <span className="ml-1.5 text-xs opacity-80">Save ~17%</span>
+              <span
+                className={`ml-1.5 rounded-full bg-success/20 px-1.5 py-0.5 text-[10px] font-semibold text-success transition-opacity ${
+                  annual ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                Save 20%
+              </span>
             </button>
           </div>
 
           {/* Plan Cards */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {plans.map((plan) => (
-              <div
-                key={plan.name}
-                className={`relative flex flex-col rounded-xl border p-6 text-left ${
-                  plan.popular
-                    ? "border-primary/40 bg-surface shadow-lg shadow-primary/10"
-                    : "border-border bg-surface"
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge variant="primary">Most Popular</Badge>
-                  </div>
-                )}
-                <h3 className="mb-1 text-lg font-semibold">{plan.name}</h3>
-                <p className="mb-4 text-sm text-text-secondary">{plan.desc}</p>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold">
-                    {annual ? plan.price.annual : plan.price.monthly}
-                  </span>
-                  <span className="text-text-muted">
-                    {annual ? plan.period.annual : plan.period.monthly}
-                  </span>
-                </div>
-                <ul className="mb-8 flex-1 space-y-3">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-sm text-text-secondary">
-                      <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={plan.href}
-                  className={`block rounded-xl px-4 py-2.5 text-center text-sm font-semibold transition-all ${
-                    plan.popular
-                      ? "bg-primary text-white hover:bg-primary-600"
-                      : "border border-border text-text-primary hover:bg-white/5"
-                  }`}
-                >
-                  {plan.cta}
-                </Link>
+              <div key={plan.id} className="transition-all duration-300">
+                <PricingCard
+                  name={plan.name}
+                  price={getPrice(plan, annual)}
+                  period={getPeriod(plan, annual)}
+                  description={plan.description}
+                  features={plan.features}
+                  cta={
+                    plan.monthly_price === 0
+                      ? "Get Started"
+                      : plan.is_featured
+                        ? "Start Free Trial"
+                        : "Get Started"
+                  }
+                  onCta={() => {
+                    window.location.href =
+                      plan.monthly_price === 0
+                        ? "/signup"
+                        : `/signup?plan=${plan.id}`;
+                  }}
+                  featured={plan.is_featured}
+                />
               </div>
             ))}
           </div>
@@ -247,23 +340,37 @@ export default function PricingPage() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-border bg-surface">
-                  <th className="px-6 py-4 text-sm font-semibold text-text-primary">Feature</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-text-primary">Free</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-text-primary">Starter</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-primary">Growth</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-text-primary">Scale</th>
+                  <th className="sticky left-0 z-10 bg-surface px-6 py-4 text-sm font-semibold text-text-primary">
+                    Feature
+                  </th>
+                  {plans.map((p) => (
+                    <th
+                      key={p.id}
+                      className={`px-6 py-4 text-sm font-semibold ${
+                        p.is_featured ? "text-primary" : "text-text-primary"
+                      }`}
+                    >
+                      {p.name}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {comparisonFeatures.map((row) => (
-                  <tr key={row.label} className="border-b border-border last:border-0">
-                    <td className="flex items-center gap-2 px-6 py-4 text-sm font-medium text-text-primary">
-                      {row.label}
+                {comparisonFeatures.map((feat, idx) => (
+                  <tr
+                    key={feat.label}
+                    className={`border-b border-border last:border-0 ${
+                      idx % 2 === 1 ? "bg-white/[0.03]" : ""
+                    }`}
+                  >
+                    <td className="sticky left-0 z-10 bg-surface px-6 py-4 text-sm font-medium text-text-primary">
+                      {feat.label}
                     </td>
-                    <td className="px-6 py-4"><CellValue value={row.free} /></td>
-                    <td className="px-6 py-4"><CellValue value={row.starter} /></td>
-                    <td className="px-6 py-4"><CellValue value={row.growth} /></td>
-                    <td className="px-6 py-4"><CellValue value={row.scale} /></td>
+                    {plans.map((p) => (
+                      <td key={p.id} className="px-6 py-4">
+                        <CellValue value={feat.getValue(p)} />
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
@@ -278,25 +385,25 @@ export default function PricingPage() {
           <h2 className="font-display mb-8 text-center text-3xl font-bold">
             Billing & plan FAQ
           </h2>
-          <Accordion items={faqItems} />
+          <Accordion items={faqItems} type="multiple" />
         </div>
       </section>
 
       {/* Enterprise */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
         <Card variant="featured" className="text-center">
           <CardTitle className="text-2xl">Need a custom plan?</CardTitle>
-          <CardDescription className="mx-auto mb-6 max-w-xl mt-2">
+          <CardDescription className="mx-auto mb-6 mt-2 max-w-xl">
             We offer custom pricing for high-volume senders, enterprises, and
             agencies with specific requirements.
           </CardDescription>
-          <Link
+          <a
             href="/contact"
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-primary-600"
           >
-            Contact Sales
+            Talk to Enterprise Sales
             <ArrowRight className="size-4" />
-          </Link>
+          </a>
         </Card>
       </section>
     </div>

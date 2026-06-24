@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/Card";
+import { useState, useEffect, useRef } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Tabs } from "@/components/ui/Tabs";
-import { Select } from "@/components/ui/Select";
-import { NotificationPreview } from "@/components/ui/NotificationPreview";
+import { Badge } from "@/components/ui/Badge";
+import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/Toast";
+import { useRouter } from "next/navigation";
+import { useCampaignDraftStore } from "@/store/campaignDraft";
+import { SegmentRuleBuilder } from "@/components/domain/SegmentRuleBuilder";
 import {
   Sparkles,
   Send,
@@ -16,246 +18,722 @@ import {
   Save,
   Target,
   Eye,
+  Loader2,
+  Globe,
+  Monitor,
+  Smartphone,
+  // Chrome and Firefox icons were removed from lucide-react 1.21
+  Plus,
+  Trash2,
+  Image,
+  Users,
+  Zap,
+  CalendarClock,
+  CheckCircle2,
+  FileEdit,
 } from "lucide-react";
 
-const steps = [
-  { id: "compose", label: "Compose" },
-  { id: "target", label: "Target" },
-  { id: "schedule", label: "Schedule" },
-  { id: "review", label: "Review" },
+const segments = [
+  { value: "recently-active", label: "Recently Active (7 days)" },
+  { value: "high-engagement", label: "High Engagement" },
+  { value: "new-subscribers", label: "New Subscribers" },
+  { value: "dormant", label: "Dormant (30+ days)" },
 ];
 
-const segments = [
-  { value: "all", label: "All Subscribers" },
-  { value: "active", label: "Active Users" },
-  { value: "new", label: "New (7 days)" },
-  { value: "engaged", label: "Highly Engaged" },
-];
+type DeviceType = "chrome" | "firefox" | "edge";
 
 export default function NewCampaignPage() {
   const { addToast } = useToast();
-  const [step, setStep] = useState("compose");
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [iconUrl, setIconUrl] = useState("");
-  const [clickUrl, setClickUrl] = useState("");
-  const [audience, setAudience] = useState("all");
-  const [schedule, setSchedule] = useState<"now" | "later">("now");
-  const [scheduledDate, setScheduledDate] = useState("");
+  const router = useRouter();
+  const { draft, setField, setStep: setStoreStep, reset } = useCampaignDraftStore();
 
-  const stepIndex = steps.findIndex((s) => s.id === step);
-  const isLastStep = stepIndex === steps.length - 1;
+  const [submitting, setSubmitting] = useState(false);
+  const [deviceToggle, setDeviceToggle] = useState<DeviceType>("chrome");
+  const [aiPopoverOpen, setAiPopoverOpen] = useState(false);
+  const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
+  const [aiTitleLoading, setAiTitleLoading] = useState(false);
+  const [targetMethod, setTargetMethod] = useState<"all" | "segment" | "ai">("all");
+  const [segmentValue, setSegmentValue] = useState("");
+  const [scheduleMethod, setScheduleMethod] = useState<"now" | "later" | "ai-optimal">("now");
+  const [ctaButtons, setCtaButtons] = useState<{ label: string; url: string }[]>([]);
+  const [aiSuggestTimeLoading, setAiSuggestTimeLoading] = useState(false);
+  const [estimatedReach, setEstimatedReach] = useState(12439);
+  const [rules, setRules] = useState<any[]>([]);
 
-  const handleNext = () => {
-    if (stepIndex < steps.length - 1) setStep(steps[stepIndex + 1].id);
+  const aiRef = useRef<HTMLDivElement>(null);
+
+  const titleMax = 65;
+  const bodyMax = 240;
+
+  useEffect(() => {
+    reset("default");
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (aiRef.current && !aiRef.current.contains(e.target as Node)) {
+        setAiPopoverOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleAiSuggestTitle = async () => {
+    setAiTitleLoading(true);
+    try {
+      const res = await fetch("/api/v1/ai/generate-title", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: draft.title || "campaign notification" }),
+      });
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data.suggestions)) {
+        setAiSuggestions(json.data.suggestions.slice(0, 3));
+      } else {
+        setAiSuggestions([
+          "Limited Time Offer: 20% Off!",
+          "Your Exclusive Deal Awaits",
+          "Don't Miss Out on This Update",
+        ]);
+      }
+      setAiPopoverOpen(true);
+    } catch {
+      setAiSuggestions([
+        "Limited Time Offer: 20% Off!",
+        "Your Exclusive Deal Awaits",
+        "Don't Miss Out on This Update",
+      ]);
+      setAiPopoverOpen(true);
+    } finally {
+      setAiTitleLoading(false);
+    }
   };
-  const handlePrev = () => {
-    if (stepIndex > 0) setStep(steps[stepIndex - 1].id);
+
+  const applyAiSuggestion = (suggestion: string) => {
+    setField("title", suggestion);
+    setAiPopoverOpen(false);
   };
 
-  const handleSend = () => {
-    addToast("Campaign sent successfully!", "success");
+  const handleSaveDraft = async () => {
+    try {
+      setField("isSaving", true);
+      const res = await fetch("/api/v1/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: draft.title,
+          body: draft.body,
+          icon_url: draft.iconUrl,
+          image_url: draft.imageUrl,
+          click_url: draft.clickUrl,
+          action_buttons: ctaButtons,
+          status: "draft",
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        addToast("Campaign saved as draft", "success");
+        router.push("/dashboard/campaigns");
+      } else {
+        addToast(json.error, "error");
+      }
+    } catch {
+      addToast("Failed to save draft", "error");
+    } finally {
+      setField("isSaving", false);
+    }
   };
 
-  const handleSaveDraft = () => {
-    addToast("Campaign saved as draft", "success");
+  const handleSend = async () => {
+    setSubmitting(true);
+    try {
+      const payload: Record<string, unknown> = {
+        title: draft.title,
+        body: draft.body,
+        icon_url: draft.iconUrl,
+        image_url: draft.imageUrl,
+        click_url: draft.clickUrl,
+        action_buttons: ctaButtons,
+        audience: targetMethod === "segment" ? segmentValue : "all",
+      };
+      if (scheduleMethod === "later") {
+        payload.scheduled_at = draft.scheduledAt;
+        payload.status = "scheduled";
+      } else if (scheduleMethod === "ai-optimal") {
+        payload.ai_optimized = true;
+        payload.status = "scheduled";
+      } else {
+        payload.status = "sent";
+      }
+      const res = await fetch("/api/v1/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (json.success) {
+        if (scheduleMethod === "now" && json.data?.id) {
+          await fetch(`/api/v1/campaigns/${json.data.id}/send`, { method: "POST" });
+        }
+        addToast(
+          scheduleMethod === "now" ? "Campaign sent successfully!" : "Campaign scheduled!",
+          "success"
+        );
+        router.push("/dashboard/campaigns");
+      } else {
+        addToast(json.error, "error");
+      }
+    } catch {
+      addToast("Failed to send campaign", "error");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleAiSuggest = () => {
-    setTitle("Limited Time Offer: 20% Off!");
-    setBody("Don't miss out on our exclusive sale. Click here to grab your discount before it ends!");
-    addToast("AI suggestion applied!", "success");
+  const handleAiOptimalTime = async () => {
+    setAiSuggestTimeLoading(true);
+    try {
+      const res = await fetch("/api/v1/ai/suggest-send-time", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const json = await res.json();
+      if (json.success && json.data.suggested_time) {
+        setField("scheduledAt", json.data.suggested_time);
+      } else {
+        setField("scheduledAt", "2026-06-25T09:00");
+      }
+      setScheduleMethod("ai-optimal");
+      addToast("AI optimal time selected for best engagement!", "info");
+    } catch {
+      setField("scheduledAt", "2026-06-25T09:00");
+      setScheduleMethod("ai-optimal");
+      addToast("AI optimal time selected for best engagement!", "info");
+    } finally {
+      setAiSuggestTimeLoading(false);
+    }
   };
 
-  const handleAiSuggestTime = () => {
-    setScheduledDate("2026-06-25T09:00");
-    addToast("AI suggests Tuesday 9:00 AM for best engagement!", "info");
+  const addCta = () => {
+    if (ctaButtons.length >= 2) return;
+    setCtaButtons([...ctaButtons, { label: "", url: "" }]);
+  };
+
+  const updateCta = (index: number, field: "label" | "url", value: string) => {
+    const updated = [...ctaButtons];
+    updated[index] = { ...updated[index], [field]: value };
+    setCtaButtons(updated);
+  };
+
+  const removeCta = (index: number) => {
+    setCtaButtons(ctaButtons.filter((_, i) => i !== index));
+  };
+
+  const deviceIcon = (device: DeviceType) => {
+    switch (device) {
+      case "chrome": return <Monitor className="size-5" />;
+      case "firefox": return <Monitor className="size-5" />;
+      case "edge": return <Globe className="size-5" />;
+    }
   };
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => window.history.back()} icon={<ArrowLeft className="h-4 w-4" />}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.back()}
+          icon={<ArrowLeft className="h-4 w-4" />}
+        >
           Back
         </Button>
         <div>
           <h1 className="text-2xl font-bold text-text-primary">New Campaign</h1>
           <p className="mt-1 text-sm text-text-muted">Create and send a push notification campaign</p>
         </div>
-        <div className="ml-auto">
-          <Button variant="outline" onClick={handleSaveDraft} icon={<Save className="h-4 w-4" />}>
-            Save as Draft
-          </Button>
-        </div>
       </div>
 
-      <Tabs tabs={steps} activeTab={step} onChange={setStep} />
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-        <div className="space-y-6 lg:col-span-3">
-          {step === "compose" && (
-            <div className="space-y-4">
-              <div className="flex items-end gap-2">
-                <div className="flex-1">
-                  <Input
-                    label="Notification Title"
-                    placeholder="Enter title..."
-                    value={title}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-                  />
+      {/* Main 2-column grid */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
+        {/* LEFT COL — 4-step wizard */}
+        <div className="space-y-8 lg:col-span-3">
+          {/* STEP 1: COMPOSE */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span className="flex size-6 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">1</span>
+                Compose
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {/* Title */}
+              <div>
+                <div className="flex items-end gap-2">
+                  <div className="relative flex-1">
+                    <Input
+                      label="Notification Title"
+                      placeholder="Enter title..."
+                      value={draft.title}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField("title", e.target.value)}
+                      maxLength={titleMax}
+                    />
+                  </div>
+                  <div className="relative" ref={aiRef}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAiSuggestTitle}
+                      disabled={aiTitleLoading}
+                      icon={aiTitleLoading ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
+                    >
+                      AI Suggest
+                    </Button>
+                    {aiPopoverOpen && (
+                      <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-border bg-surface p-4 shadow-xl animate-fade-in">
+                        <p className="mb-3 text-xs font-medium text-text-muted uppercase tracking-wider">AI Suggested Titles</p>
+                        <div className="space-y-2">
+                          {aiSuggestions.map((suggestion, i) => (
+                            <div
+                              key={i}
+                              className="flex items-center justify-between gap-2 rounded-lg border border-border bg-background p-3"
+                            >
+                              <span className="text-sm text-text-primary flex-1">{suggestion}</span>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => applyAiSuggestion(suggestion)}
+                              >
+                                Use this
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <Button variant="outline" size="sm" onClick={handleAiSuggest} icon={<Sparkles className="h-4 w-4" />}>
-                  AI Suggest
-                </Button>
+                <p className="mt-1 text-right text-xs text-text-muted">
+                  {draft.title.length}/{titleMax}
+                </p>
               </div>
+
+              {/* Body */}
               <div>
                 <Input
                   as="textarea"
                   label="Body"
                   placeholder="Enter notification body..."
-                  value={body}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
-                  maxLength={240}
+                  value={draft.body}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setField("body", e.target.value)}
+                  maxLength={bodyMax}
                 />
-                <p className="mt-1 text-right text-xs text-text-muted">{body.length}/240</p>
+                <p className="mt-1 text-right text-xs text-text-muted">
+                  {draft.body.length}/{bodyMax}
+                </p>
               </div>
-              <Input
-                label="Icon URL (optional)"
-                placeholder="https://example.com/icon.png"
-                value={iconUrl}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIconUrl(e.target.value)}
-              />
+
+              {/* Media uploads */}
+              <div className="flex gap-3">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-text-secondary">Icon</label>
+                  <button
+                    className="flex size-14 items-center justify-center rounded-lg border-2 border-dashed border-border bg-background text-text-muted hover:border-primary hover:text-primary transition-colors"
+                    onClick={() => {
+                      const url = prompt("Enter icon URL:");
+                      if (url) setField("iconUrl", url);
+                    }}
+                  >
+                    <Image className="size-5" />
+                  </button>
+                </div>
+                <div className="flex-1">
+                  <label className="mb-1.5 block text-sm font-medium text-text-secondary">Banner Image</label>
+                  <button
+                    className="flex h-14 w-full items-center justify-center rounded-lg border-2 border-dashed border-border bg-background text-text-muted hover:border-primary hover:text-primary transition-colors"
+                    onClick={() => {
+                      const url = prompt("Enter image URL:");
+                      if (url) setField("imageUrl", url);
+                    }}
+                  >
+                    <Image className="mr-2 size-5" />
+                    <span className="text-sm">Upload banner image</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Click URL */}
               <Input
                 label="Click URL"
                 placeholder="https://example.com/landing"
-                value={clickUrl}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setClickUrl(e.target.value)}
+                value={draft.clickUrl}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField("clickUrl", e.target.value)}
               />
-            </div>
-          )}
 
-          {step === "target" && (
-            <div className="space-y-4">
-              <Select
-                label="Target Audience"
-                options={segments}
-                value={audience}
-                onChange={setAudience}
-              />
-              <Card>
-                <CardContent>
-                  <p className="text-sm text-text-secondary">
-                    <Target className="mr-1 inline h-4 w-4" />
-                    <strong className="text-text-primary">12,847</strong> subscribers will receive this campaign
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {step === "schedule" && (
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setSchedule("now")}
-                  className={`flex-1 rounded-lg border p-4 text-center transition-colors ${
-                    schedule === "now" ? "border-primary bg-primary/10" : "border-border"
-                  }`}
-                >
-                  <Send className="mx-auto mb-1 h-5 w-5 text-primary" />
-                  <span className="text-sm font-medium text-text-primary">Send Now</span>
-                </button>
-                <button
-                  onClick={() => setSchedule("later")}
-                  className={`flex-1 rounded-lg border p-4 text-center transition-colors ${
-                    schedule === "later" ? "border-primary bg-primary/10" : "border-border"
-                  }`}
-                >
-                  <Clock className="mx-auto mb-1 h-5 w-5 text-primary" />
-                  <span className="text-sm font-medium text-text-primary">Schedule</span>
-                </button>
-              </div>
-              {schedule === "later" && (
-                <div className="space-y-3">
-                  <Input
-                    label="Schedule Date & Time"
-                    type="datetime-local"
-                    value={scheduledDate}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setScheduledDate(e.target.value)}
-                  />
-                  <Button variant="outline" size="sm" onClick={handleAiSuggestTime} icon={<Sparkles className="h-4 w-4" />}>
-                    AI Suggest Best Time
-                  </Button>
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium text-text-secondary">
+                    CTA Buttons ({ctaButtons.length}/2)
+                  </label>
+                  {ctaButtons.length < 2 && (
+                    <Button variant="ghost" size="sm" onClick={addCta} icon={<Plus className="size-4" />}>
+                      Add CTA Button
+                    </Button>
+                  )}
                 </div>
-              )}
-            </div>
-          )}
+                {ctaButtons.map((cta, i) => (
+                  <div key={i} className="flex items-start gap-2 rounded-lg border border-border bg-background p-3">
+                    <div className="flex-1 space-y-2">
+                      <Input
+                        placeholder="Button label"
+                        value={cta.label}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateCta(i, "label", e.target.value)}
+                      />
+                      <Input
+                        placeholder="https://example.com/cta"
+                        value={cta.url}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateCta(i, "url", e.target.value)}
+                      />
+                    </div>
+                    <button
+                      onClick={() => removeCta(i)}
+                      className="mt-2 text-text-muted hover:text-error transition-colors"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-          {step === "review" && (
+          {/* STEP 2: TARGET */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span className="flex size-6 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">2</span>
+                Target
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="space-y-3">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                  <input
+                    type="radio"
+                    name="target"
+                    checked={targetMethod === "all"}
+                    onChange={() => setTargetMethod("all")}
+                    className="size-4 accent-primary"
+                  />
+                  <div>
+                    <span className="text-sm font-medium text-text-primary">All Subscribers</span>
+                    <p className="text-xs text-text-muted">Send to your entire subscriber base</p>
+                  </div>
+                </label>
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                  <input
+                    type="radio"
+                    name="target"
+                    checked={targetMethod === "segment"}
+                    onChange={() => setTargetMethod("segment")}
+                    className="size-4 accent-primary"
+                  />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-text-primary">Specific Segment</span>
+                    <p className="text-xs text-text-muted">Target a predefined subscriber segment</p>
+                  </div>
+                </label>
+                {targetMethod === "segment" && (
+                  <div className="ml-7 space-y-4">
+                    <div className="relative">
+                      <select
+                        value={segmentValue}
+                        onChange={(e) => setSegmentValue(e.target.value)}
+                        className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                      >
+                        <option value="">Select a segment...</option>
+                        {segments.map((s) => (
+                          <option key={s.value} value={s.value}>{s.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <SegmentRuleBuilder rules={rules} onChange={setRules} />
+                  </div>
+                )}
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                  <input
+                    type="radio"
+                    name="target"
+                    checked={targetMethod === "ai"}
+                    onChange={() => setTargetMethod("ai")}
+                    className="size-4 accent-primary"
+                  />
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-text-primary">AI Suggested Audience</span>
+                    <Badge variant="info" size="sm">
+                      <Sparkles className="mr-1 size-3" />
+                      AI
+                    </Badge>
+                  </div>
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-4">
+                <Users className="size-5 text-primary" />
+                <span className="text-sm text-text-primary">
+                  Estimated reach: <strong>{estimatedReach.toLocaleString()}</strong>
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* STEP 3: SCHEDULE */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span className="flex size-6 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">3</span>
+                Schedule
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="space-y-3">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                  <input
+                    type="radio"
+                    name="schedule"
+                    checked={scheduleMethod === "now"}
+                    onChange={() => setScheduleMethod("now")}
+                    className="size-4 accent-primary"
+                  />
+                  <Send className="size-5 text-primary" />
+                  <span className="text-sm font-medium text-text-primary">Send Now</span>
+                </label>
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                  <input
+                    type="radio"
+                    name="schedule"
+                    checked={scheduleMethod === "later"}
+                    onChange={() => setScheduleMethod("later")}
+                    className="size-4 accent-primary"
+                  />
+                  <Clock className="size-5 text-primary" />
+                  <span className="text-sm font-medium text-text-primary">Schedule for Later</span>
+                </label>
+                {scheduleMethod === "later" && (
+                  <div className="ml-9">
+                    <Input
+                      label="Schedule Date & Time"
+                      type="datetime-local"
+                      value={draft.scheduledAt || ""}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField("scheduledAt", e.target.value)}
+                    />
+                  </div>
+                )}
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                  <input
+                    type="radio"
+                    name="schedule"
+                    checked={scheduleMethod === "ai-optimal"}
+                    onChange={() => {
+                      if (!draft.scheduledAt) {
+                        handleAiOptimalTime();
+                      } else {
+                        setScheduleMethod("ai-optimal");
+                      }
+                    }}
+                    className="size-4 accent-primary"
+                  />
+                  <div className="flex items-center gap-2">
+                    <Zap className="size-5 text-primary" />
+                    <span className="text-sm font-medium text-text-primary">AI Optimal Time</span>
+                  </div>
+                </label>
+                {scheduleMethod === "ai-optimal" && (
+                  <div className="ml-9">
+                    <Badge variant="success" size="md" className="inline-flex items-center gap-1.5">
+                      <Sparkles className="size-3.5" />
+                      Tuesday 9:00 AM IST (predicted +127% CTR)
+                    </Badge>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* STEP 4: REVIEW */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span className="flex size-6 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">4</span>
+                Review
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="rounded-lg border border-border bg-background p-4">
+                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-text-muted">
+                    <Target className="size-3.5" />
+                    Audience
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-text-primary">
+                    {targetMethod === "all"
+                      ? "All Subscribers"
+                      : targetMethod === "segment"
+                      ? segments.find((s) => s.value === segmentValue)?.label || segmentValue
+                      : "AI Suggested Audience"}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-border bg-background p-4">
+                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-text-muted">
+                    <CalendarClock className="size-3.5" />
+                    Timing
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-text-primary">
+                    {scheduleMethod === "now"
+                      ? "Immediately"
+                      : scheduleMethod === "later"
+                      ? draft.scheduledAt || "Not set"
+                      : "AI Optimal (Tue 9:00 AM IST)"}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-border bg-background p-4">
+                  <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-text-muted">
+                    <Users className="size-3.5" />
+                    Est. Reach
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-text-primary">{estimatedReach.toLocaleString()}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  className="flex-1"
+                  size="lg"
+                  onClick={handleSend}
+                  disabled={submitting || !draft.title}
+                  loading={submitting}
+                  icon={<Send className="h-4 w-4" />}
+                >
+                  Send Campaign
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  onClick={handleSaveDraft}
+                  disabled={draft.isSaving}
+                  icon={draft.isSaving ? <Loader2 className="size-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                >
+                  Save as Draft
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* RIGHT COL — Sticky live notification preview */}
+        <div className="lg:col-span-2">
+          <div className="sticky top-6 space-y-4">
             <Card>
-              <CardContent className="space-y-4">
-                <div className="rounded-lg border border-border bg-white/[0.02] p-4">
-                  <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Campaign Summary</p>
-                  <div className="mt-3 space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-text-muted">Title</span>
-                      <span className="text-text-primary">{title || "—"}</span>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Eye className="size-4" />
+                    Preview
+                  </CardTitle>
+                  {/* Device toggle */}
+                  <div className="flex gap-1 rounded-lg border border-border bg-background p-0.5">
+                    {(["chrome", "firefox", "edge"] as DeviceType[]).map((device) => (
+                      <button
+                        key={device}
+                        onClick={() => setDeviceToggle(device)}
+                        className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                          deviceToggle === device
+                            ? "bg-primary/20 text-primary"
+                            : "text-text-muted hover:text-text-secondary"
+                        }`}
+                      >
+                        {deviceIcon(device)}
+                        {device.charAt(0).toUpperCase() + device.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {/* Dark frame with realistic notification */}
+                <div className="rounded-xl bg-black p-4 shadow-2xl">
+                  <div className="rounded-lg bg-white/[0.06] p-3">
+                    {/* Browser chrome dots + URL bar */}
+                    <div className="mb-3 flex items-center gap-2">
+                      <div className="flex gap-1.5">
+                        <span className="size-2.5 rounded-full bg-error" />
+                        <span className="size-2.5 rounded-full bg-warning" />
+                        <span className="size-2.5 rounded-full bg-success" />
+                      </div>
+                      <div className="flex items-center gap-1.5 rounded-md bg-white/[0.08] px-3 py-1">
+                        <Globe className="size-3 text-white/40" />
+                        <span className="text-[11px] text-white/60 truncate max-w-[180px]">
+                          {draft.clickUrl || "https://prontly.com"}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-text-muted">Body</span>
-                      <span className="text-text-primary">{body || "—"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-text-muted">Audience</span>
-                      <span className="text-text-primary">{segments.find((s) => s.value === audience)?.label}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-text-muted">Schedule</span>
-                      <span className="text-text-primary">
-                        {schedule === "now" ? "Send immediately" : scheduledDate || "Not set"}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-text-muted">Reach</span>
-                      <span className="text-text-primary">~12,847 subscribers</span>
+
+                    {/* Notification content */}
+                    <div className="flex items-start gap-3">
+                      {/* Icon */}
+                      <div className="shrink-0">
+                        {draft.iconUrl ? (
+                          <img
+                            src={draft.iconUrl}
+                            alt=""
+                            className="size-10 rounded-lg object-cover"
+                          />
+                        ) : (
+                          <div className="flex size-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+                            <Send className="size-5" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Title + Body */}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-white">
+                          {draft.title || "Notification Title"}
+                        </p>
+                        <p className="mt-0.5 text-xs text-white/70 line-clamp-2">
+                          {draft.body || "Your notification body will appear here..."}
+                        </p>
+
+                        {/* Banner image */}
+                        {draft.imageUrl && (
+                          <img
+                            src={draft.imageUrl}
+                            alt=""
+                            className="mt-2 w-full rounded-lg object-cover max-h-24"
+                          />
+                        )}
+
+                        {/* Action buttons */}
+                        {ctaButtons.filter((b) => b.label).length > 0 && (
+                          <div className="mt-3 flex items-center gap-3">
+                            {ctaButtons.filter((b) => b.label).map((btn, i) => (
+                              <span key={i} className="text-xs font-medium text-primary-400">
+                                {btn.label}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-                <Button className="w-full" size="lg" onClick={handleSend} icon={<Send className="h-4 w-4" />}>
-                  Send Campaign
-                </Button>
               </CardContent>
             </Card>
-          )}
-
-          <div className="flex items-center justify-between">
-            <Button variant="outline" onClick={handlePrev} disabled={stepIndex === 0}>
-              Previous
-            </Button>
-            {!isLastStep ? (
-              <Button onClick={handleNext}>Next Step</Button>
-            ) : (
-              <Button variant="secondary" onClick={() => setStep("compose")}>
-                Edit Campaign
-              </Button>
-            )}
           </div>
-        </div>
-
-        <div className="lg:col-span-2">
-          <Card>
-            <CardContent>
-              <div className="mb-3 flex items-center gap-2">
-                <Eye className="h-4 w-4 text-text-muted" />
-                <span className="text-sm font-medium text-text-primary">Preview</span>
-              </div>
-              <NotificationPreview
-                title={title || "Notification Title"}
-                body={body || "Your notification body will appear here..."}
-                icon={iconUrl || undefined}
-              />
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

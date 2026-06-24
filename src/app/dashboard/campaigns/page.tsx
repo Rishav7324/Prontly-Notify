@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { DataTable, type Column } from "@/components/ui/DataTable";
-import { StateContainer } from "@/components/ui/StateContainer";
+import { EmptyState } from "@/components/domain/EmptyState";
 import { DropdownMenu } from "@/components/ui/DropdownMenu";
 import { useToast } from "@/components/ui/Toast";
 import { formatDate, formatNumber } from "@/lib/utils";
@@ -17,6 +17,7 @@ import {
   BarChart3,
   Trash2,
   Send,
+  Loader2,
 } from "lucide-react";
 
 interface Campaign {
@@ -28,32 +29,66 @@ interface Campaign {
   ctr: number;
 }
 
-const mockCampaigns: Campaign[] = [
-  { id: "1", title: "Summer Sale Blast", status: "sent", sentDate: "2026-06-20", delivered: 8450, ctr: 5.2 },
-  { id: "2", title: "New Feature v2.0", status: "sent", sentDate: "2026-06-18", delivered: 6200, ctr: 3.8 },
-  { id: "3", title: "Weekly Newsletter", status: "scheduled", sentDate: "2026-06-25", delivered: 0, ctr: 0 },
-  { id: "4", title: "Re-engagement Flow", status: "draft", sentDate: null, delivered: 0, ctr: 0 },
-  { id: "5", title: "Flash Sale", status: "failed", sentDate: "2026-06-15", delivered: 2100, ctr: 1.2 },
-  { id: "6", title: "Product Update", status: "draft", sentDate: null, delivered: 0, ctr: 0 },
-];
-
 const statusVariant = (s: Campaign["status"]) =>
   ({ sent: "success", scheduled: "info", draft: "default", failed: "error" } as const)[s];
 
 export default function CampaignsPage() {
   const { addToast } = useToast();
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "sent" | "scheduled" | "draft" | "failed">("all");
-  const [state] = useState<"default" | "loading" | "empty" | "error">("default");
 
-  const filtered = filter === "all" ? mockCampaigns : mockCampaigns.filter((c) => c.status === filter);
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/v1/campaigns");
+        const json = await res.json();
+        if (json.success) setCampaigns(json.data);
+      } catch {
+        addToast("Failed to load campaigns", "error");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [addToast]);
+
+  const filtered = filter === "all" ? campaigns : campaigns.filter((c) => c.status === filter);
 
   const chips = [
-    { key: "all", label: "All", count: mockCampaigns.length },
-    { key: "sent", label: "Sent", count: mockCampaigns.filter((c) => c.status === "sent").length },
-    { key: "scheduled", label: "Scheduled", count: mockCampaigns.filter((c) => c.status === "scheduled").length },
-    { key: "draft", label: "Draft", count: mockCampaigns.filter((c) => c.status === "draft").length },
-    { key: "failed", label: "Failed", count: mockCampaigns.filter((c) => c.status === "failed").length },
+    { key: "all", label: "All", count: campaigns.length },
+    { key: "sent", label: "Sent", count: campaigns.filter((c) => c.status === "sent").length },
+    { key: "scheduled", label: "Scheduled", count: campaigns.filter((c) => c.status === "scheduled").length },
+    { key: "draft", label: "Draft", count: campaigns.filter((c) => c.status === "draft").length },
+    { key: "failed", label: "Failed", count: campaigns.filter((c) => c.status === "failed").length },
   ] as const;
+
+  const handleDuplicate = async (id: string) => {
+    try {
+      const res = await fetch(`/api/v1/campaigns/${id}/duplicate`, { method: "POST" });
+      const json = await res.json();
+      if (json.success) {
+        addToast("Campaign duplicated", "success");
+        setCampaigns((prev) => [json.data, ...prev]);
+      } else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to duplicate campaign", "error");
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/v1/campaigns/${id}`, { method: "DELETE" });
+      const json = await res.json();
+      if (json.success) {
+        addToast("Campaign deleted", "success");
+        setCampaigns((prev) => prev.filter((c) => c.id !== id));
+      } else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to delete campaign", "error");
+    }
+  };
 
   const columns: Column<Campaign>[] = [
     { key: "title", label: "Campaign", render: (c) => <span className="font-medium text-text-primary">{c.title}</span> },
@@ -69,15 +104,23 @@ export default function CampaignsPage() {
           align="end"
           trigger={<MoreVertical className="h-4 w-4 text-text-muted" />}
           items={[
-            { label: "Duplicate", icon: <Copy className="h-4 w-4" />, onClick: () => addToast("Campaign duplicated", "success") },
+            { label: "Duplicate", icon: <Copy className="h-4 w-4" />, onClick: () => handleDuplicate(c.id) },
             { label: c.status === "draft" ? "Edit" : "View", icon: <Edit className="h-4 w-4" />, onClick: () => addToast("Opening campaign...", "info") },
             { label: "Analytics", icon: <BarChart3 className="h-4 w-4" />, onClick: () => addToast("Loading analytics...", "info") },
-            { label: "Delete", icon: <Trash2 className="h-4 w-4" />, destructive: true, onClick: () => addToast("Campaign deleted", "error") },
+            { label: "Delete", icon: <Trash2 className="h-4 w-4" />, destructive: true, onClick: () => handleDelete(c.id) },
           ]}
         />
       ),
     },
   ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -105,22 +148,25 @@ export default function CampaignsPage() {
         ))}
       </div>
 
-      <StateContainer
-        state={state}
-        emptyMessage="No campaigns match your filters."
-        emptyAction={
-          <Link href="/dashboard/campaigns/new">
-            <Button icon={<Send className="h-4 w-4" />}>Create your first campaign</Button>
-          </Link>
-        }
-      >
+      {campaigns.length === 0 ? (
+        <EmptyState
+          icon={<Send className="h-8 w-8" />}
+          title="No campaigns yet"
+          description='Click "New Campaign" to get started.'
+          action={
+            <Link href="/dashboard/campaigns/new">
+              <Button icon={<Send className="h-4 w-4" />}>Create your first campaign</Button>
+            </Link>
+          }
+        />
+      ) : (
         <DataTable
           columns={columns}
           data={filtered}
           keyExtractor={(c) => c.id}
-          emptyMessage="No campaigns yet. Click &quot;New Campaign&quot; to get started."
+          emptyMessage="No campaigns match your filters."
         />
-      </StateContainer>
+      )}
     </div>
   );
 }

@@ -1,31 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { StateContainer } from "@/components/ui/StateContainer";
-import { AISuggestionCard } from "@/components/ui/AISuggestionCard";
-import { useToast } from "@/components/ui/Toast";
-import { formatNumber, formatDate } from "@/lib/utils";
+import { DataTable, type Column } from "@/components/ui/DataTable";
+import { DropdownMenu } from "@/components/ui/DropdownMenu";
+import { EmptyState } from "@/components/domain/EmptyState";
+import { KPIStatCard } from "@/components/domain/KPIStatCard";
+import { useToast } from "@/hooks/useToast";
+import { useActiveSite } from "@/hooks/useActiveSite";
+import { formatNumber, formatDate, cn } from "@/lib/utils";
 import Link from "next/link";
 import {
   Users,
   Send,
   MousePointerClick,
   Megaphone,
-  TrendingUp,
-  ArrowUpRight,
-  ArrowDownRight,
+  Loader2,
+  Bot,
+  RefreshCw,
+  Plus,
+  MoreHorizontal,
+  Eye,
+  Edit,
+  Copy,
+  Trash2,
+  UserPlus,
+  CalendarClock,
+  Activity,
 } from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
-interface KpiData {
-  label: string;
-  value: string;
-  change: number;
-  icon: React.ReactNode;
-  sparkline: number[];
-}
+type DateRange = "7d" | "30d" | "90d";
 
 interface Campaign {
   id: string;
@@ -36,149 +51,430 @@ interface Campaign {
   ctr: number;
 }
 
-const kpis: KpiData[] = [
-  { label: "Total Subscribers", value: "12,847", change: 12.5, icon: <Users className="h-5 w-5" />, sparkline: [120, 180, 150, 210, 190, 240, 230, 280, 260, 300, 290, 320] },
-  { label: "Sends Today", value: "3,421", change: 8.2, icon: <Send className="h-5 w-5" />, sparkline: [200, 180, 220, 190, 240, 210, 260, 230, 280, 250, 300, 280] },
-  { label: "Avg CTR", value: "4.8%", change: -0.3, icon: <MousePointerClick className="h-5 w-5" />, sparkline: [4.2, 4.5, 4.3, 4.7, 4.6, 4.9, 4.8, 5.0, 4.7, 4.8, 4.6, 4.8] },
-  { label: "Active Campaigns", value: "6", change: 2, icon: <Megaphone className="h-5 w-5" />, sparkline: [2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 5, 6] },
-];
-
-function Sparkline({ data, color }: { data: number[]; color: string }) {
-  const w = 80;
-  const h = 28;
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const range = max - min || 1;
-  const points = data.map((v, i) => `${(i / (data.length - 1)) * w},${h - ((v - min) / range) * h}`).join(" ");
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="h-7 w-20" preserveAspectRatio="none">
-      <polyline fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" points={points} />
-    </svg>
-  );
+interface ActivityItem {
+  id: string;
+  type: "subscriber" | "campaign" | "click" | "scheduled";
+  text: string;
+  timestamp: string;
 }
 
-const mockCampaigns: Campaign[] = [
-  { id: "1", title: "Summer Sale Blast", status: "sent", sentDate: "2026-06-20", delivered: 8450, ctr: 5.2 },
-  { id: "2", title: "New Feature Announcement", status: "sent", sentDate: "2026-06-18", delivered: 6200, ctr: 3.8 },
-  { id: "3", title: "Weekly Digest", status: "scheduled", sentDate: "2026-06-25", delivered: 0, ctr: 0 },
-  { id: "4", title: "Re-engagement Flow", status: "draft", sentDate: "", delivered: 0, ctr: 0 },
-  { id: "5", title: "Product Update v2.1", status: "failed", sentDate: "2026-06-15", delivered: 2100, ctr: 1.2 },
+type KpiCard = {
+  label: string;
+  value: string;
+  delta?: { value: number; isPositive: boolean };
+  sparklineData?: number[];
+  icon: React.ReactNode;
+};
+
+const dateRangeOptions: { value: DateRange; label: string }[] = [
+  { value: "7d", label: "7 days" },
+  { value: "30d", label: "30 days" },
+  { value: "90d", label: "90 days" },
 ];
 
-export default function DashboardHome() {
-  const { addToast } = useToast();
-  const [state] = useState<"default" | "loading" | "empty" | "error">("default");
+const statusVariant: Record<Campaign["status"], "success" | "info" | "default" | "error"> = {
+  sent: "success",
+  scheduled: "info",
+  draft: "default",
+  failed: "error",
+};
 
-  const statusVariant = (s: Campaign["status"]) =>
-    ({ sent: "success", scheduled: "info", draft: "default", failed: "error" } as const)[s];
+const statusLabel: Record<Campaign["status"], string> = {
+  sent: "Sent",
+  scheduled: "Scheduled",
+  draft: "Draft",
+  failed: "Failed",
+};
+
+function activityIcon(type: ActivityItem["type"], className?: string) {
+  const cn = className ?? "size-4";
+  switch (type) {
+    case "subscriber":
+      return <UserPlus className={cn} />;
+    case "campaign":
+      return <Send className={cn} />;
+    case "click":
+      return <MousePointerClick className={cn} />;
+    case "scheduled":
+      return <CalendarClock className={cn} />;
+  }
+}
+
+function timeAgo(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
+}
+
+export default function DashboardHome() {
+  const toast = useToast();
+  const { activeSite } = useActiveSite();
+  const [loading, setLoading] = useState(true);
+  const [dateRange, setDateRange] = useState<DateRange>("30d");
+  const [kpis, setKpis] = useState<KpiCard[]>([]);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [growthData, setGrowthData] = useState<{ label: string; value: number }[]>([]);
+  const [aiSummary, setAiSummary] = useState("");
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [regenerating, setRegenerating] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    if (!activeSite) return;
+    const siteId = activeSite.id;
+    setLoading(true);
+    try {
+      const [summaryRes, campaignsRes, aiRes, growthRes, activityRes] = await Promise.all([
+        fetch(`/api/v1/sites/${siteId}/dashboard-summary?range=${dateRange}`),
+        fetch(`/api/v1/campaigns?range=${dateRange}`),
+        fetch(`/api/v1/ai/analytics-summary?siteId=${siteId}&range=${dateRange}`),
+        fetch(`/api/v1/sites/${siteId}/subscriber-growth?range=${dateRange}`),
+        fetch(`/api/v1/sites/${siteId}/recent-activity?range=${dateRange}`),
+      ]);
+
+      const summaryJson = await summaryRes.json();
+      const campaignsJson = await campaignsRes.json();
+      const aiJson = await aiRes.json();
+      const growthJson = await growthRes.json();
+      const activityJson = await activityRes.json();
+
+      if (summaryJson.success) {
+        const d = summaryJson.data;
+        setKpis([
+          {
+            label: "Total Subscribers",
+            value: formatNumber(d.total_subscribers ?? 0),
+            delta: { value: Math.abs(d.subscriber_growth ?? 0), isPositive: (d.subscriber_growth ?? 0) >= 0 },
+            sparklineData: d.subscriber_trend ?? [],
+            icon: <Users className="size-5" />,
+          },
+          {
+            label: "Sends Today",
+            value: formatNumber(d.sends_today ?? 0),
+            delta: { value: Math.abs(d.sends_change ?? 0), isPositive: (d.sends_change ?? 0) >= 0 },
+            sparklineData: d.sends_trend ?? [],
+            icon: <Send className="size-5" />,
+          },
+          {
+            label: "Avg CTR",
+            value: `${(d.avg_ctr ?? 0).toFixed(1)}%`,
+            delta: { value: Math.abs(d.ctr_change ?? 0), isPositive: (d.ctr_change ?? 0) >= 0 },
+            sparklineData: d.ctr_trend ?? [],
+            icon: <MousePointerClick className="size-5" />,
+          },
+          {
+            label: "Active Campaigns",
+            value: String(d.active_campaigns ?? 0),
+            delta: { value: Math.abs(d.campaigns_change ?? 0), isPositive: (d.campaigns_change ?? 0) >= 0 },
+            sparklineData: d.campaigns_trend ?? [],
+            icon: <Megaphone className="size-5" />,
+          },
+        ]);
+      }
+      if (campaignsJson.success) setCampaigns(campaignsJson.data ?? []);
+      if (aiJson.success) setAiSummary(aiJson.data.summary ?? "");
+      if (growthJson.success) setGrowthData(growthJson.data ?? []);
+      if (activityJson.success) setActivity(activityJson.data ?? []);
+    } catch {
+      toast.error("Failed to load dashboard data");
+    } finally {
+      setLoading(false);
+    }
+  }, [activeSite, dateRange, toast]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleRegenerate = async () => {
+    if (!activeSite) return;
+    setRegenerating(true);
+    try {
+      const res = await fetch(`/api/v1/ai/analytics-summary?siteId=${activeSite.id}&range=${dateRange}`, {
+        method: "POST",
+      });
+      const json = await res.json();
+      if (json.success) setAiSummary(json.data.summary ?? "");
+    } catch {
+      toast.error("Failed to regenerate insight");
+    } finally {
+      setRegenerating(false);
+    }
+  };
+
+  const campaignColumns: Column<Campaign>[] = [
+    {
+      key: "title",
+      label: "Title",
+      sortable: true,
+      render: (c) => (
+        <span className="font-medium text-text-primary">{c.title}</span>
+      ),
+    },
+    {
+      key: "status",
+      label: "Status",
+      sortable: true,
+      render: (c) => (
+        <Badge variant={statusVariant[c.status]} size="sm">
+          {statusLabel[c.status]}
+        </Badge>
+      ),
+    },
+    {
+      key: "delivered",
+      label: "Sent",
+      sortable: true,
+      render: (c) => (
+        <span className="tabular-nums text-text-secondary">{formatNumber(c.delivered)}</span>
+      ),
+      hideOnMobile: true,
+    },
+    {
+      key: "ctr",
+      label: "CTR",
+      sortable: true,
+      render: (c) => (
+        <span className="tabular-nums text-text-secondary">{c.ctr}%</span>
+      ),
+      hideOnMobile: true,
+    },
+    {
+      key: "sentDate",
+      label: "Date",
+      sortable: true,
+      render: (c) => (
+        <span className="text-text-muted">{c.sentDate ? formatDate(c.sentDate) : "—"}</span>
+      ),
+      hideOnMobile: true,
+    },
+    {
+      key: "actions",
+      label: "",
+      render: (c) => (
+        <DropdownMenu
+          align="end"
+          trigger={<MoreHorizontal className="size-4" />}
+          items={[
+            { label: "View", icon: <Eye className="size-4" />, onClick: () => {} },
+            { label: "Edit", icon: <Edit className="size-4" />, onClick: () => {} },
+            { label: "Duplicate", icon: <Copy className="size-4" />, onClick: () => {} },
+            { label: "Delete", icon: <Trash2 className="size-4" />, onClick: () => {}, destructive: true },
+          ]}
+        />
+      ),
+    },
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="size-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-text-primary">Dashboard</h1>
-        <p className="mt-1 text-sm text-text-muted">Welcome back! Here&apos;s your overview.</p>
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-text-primary">Dashboard</h1>
+          <p className="mt-1 text-sm text-text-muted">Welcome back! Here&apos;s your overview.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          {/* Date range selector */}
+          <div className="flex overflow-hidden rounded-lg border border-border bg-surface">
+            {dateRangeOptions.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setDateRange(opt.value)}
+                className={cn(
+                  "px-3 py-1.5 text-xs font-medium transition-colors",
+                  dateRange === opt.value
+                    ? "bg-primary text-white"
+                    : "text-text-muted hover:text-text-primary"
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          <Link href="/dashboard/campaigns/new">
+            <Button icon={<Plus className="size-4" />}>New Campaign</Button>
+          </Link>
+        </div>
       </div>
 
+      {/* KPI Row */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((kpi) => (
-          <Card key={kpi.label}>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-text-muted">
-                  {kpi.icon}
-                  <span className="text-sm">{kpi.label}</span>
-                </div>
-                <Badge variant={kpi.change >= 0 ? "success" : "error"} size="sm">
-                  {kpi.change >= 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-                  {Math.abs(kpi.change)}%
-                </Badge>
-              </div>
-              <p className="mt-3 text-3xl font-bold text-text-primary">{kpi.value}</p>
-              <div className="mt-2 flex items-end justify-between">
-                <span className="text-xs text-text-muted">vs last period</span>
-                <Sparkline data={kpi.sparkline} color="#3B82F6" />
-              </div>
-            </CardContent>
-          </Card>
+          <KPIStatCard
+            key={kpi.label}
+            label={kpi.label}
+            value={kpi.value}
+            delta={kpi.delta}
+            sparklineData={kpi.sparklineData}
+            icon={kpi.icon}
+          />
         ))}
       </div>
 
+      {/* 2-Column Split */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Left: Subscriber Growth Chart */}
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Recent Campaigns</CardTitle>
-              <Link href="/dashboard/campaigns">
-                <Button variant="ghost" size="sm">View all</Button>
-              </Link>
+              <CardTitle>Subscriber Growth</CardTitle>
             </CardHeader>
             <CardContent>
-              <StateContainer
-                state={state}
-                emptyMessage="No campaigns yet. Start your first one!"
-                emptyAction={
-                  <Link href="/dashboard/campaigns/new">
-                    <Button icon={<Send className="h-4 w-4" />}>Create Campaign</Button>
-                  </Link>
-                }
-              >
-                <div className="divide-y divide-border">
-                  {mockCampaigns.map((c) => (
-                    <div key={c.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-text-primary">{c.title}</p>
-                        <p className="mt-0.5 text-xs text-text-muted">
-                          {c.sentDate ? formatDate(c.sentDate) : "Not sent yet"}
-                        </p>
+              {growthData.length > 0 ? (
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={growthData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="growthFill" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.3} />
+                          <stop offset="100%" stopColor="#3B82F6" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                      <XAxis
+                        dataKey="label"
+                        tick={{ fontSize: 11, fill: "#64748B" }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 11, fill: "#64748B" }}
+                        axisLine={false}
+                        tickLine={false}
+                        tickFormatter={(v) => formatNumber(v)}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          background: "#111827",
+                          border: "1px solid rgba(255,255,255,0.08)",
+                          borderRadius: 8,
+                          fontSize: 13,
+                        }}
+                        labelStyle={{ color: "#94A3B8" }}
+                        formatter={(value: any) => { const n = typeof value === "number" ? value : 0; return [formatNumber(n), "Subscribers"]; }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="value"
+                        stroke="#3B82F6"
+                        strokeWidth={2}
+                        fill="url(#growthFill)"
+                        dot={{ r: 3, fill: "#3B82F6", stroke: "#111827", strokeWidth: 2 }}
+                        activeDot={{ r: 5, fill: "#3B82F6", stroke: "#111827", strokeWidth: 2 }}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center py-12">
+                  <p className="text-sm text-text-muted">No growth data available for this period.</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right: AI Insight + Recent Activity */}
+        <div className="space-y-6">
+          {/* AI Insight Card */}
+          <div className="relative rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 p-[1px]">
+            <div className="rounded-xl bg-surface p-4 h-full">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center justify-center rounded-lg bg-primary/15 p-2">
+                    <Bot className="size-4 text-primary" />
+                  </span>
+                  <span className="text-sm font-semibold text-text-primary">AI Insight</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  loading={regenerating}
+                  icon={<RefreshCw className="size-3.5" />}
+                  onClick={handleRegenerate}
+                >
+                  Regenerate
+                </Button>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+                {aiSummary || "No insights available yet. Check back after sending more campaigns."}
+              </p>
+            </div>
+          </div>
+
+          {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="size-4 text-text-muted" />
+                Recent Activity
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {activity.length > 0 ? (
+                <div className="space-y-4">
+                  {activity.slice(0, 4).map((item) => (
+                    <div key={item.id} className="flex items-start gap-3">
+                      <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-white/[0.04]">
+                        {activityIcon(item.type)}
                       </div>
-                      <div className="flex items-center gap-4 pl-4">
-                        <div className="hidden text-right sm:block">
-                          <p className="text-xs text-text-muted">{formatNumber(c.delivered)} delivered</p>
-                          <p className="text-xs text-text-muted">{c.ctr}% CTR</p>
-                        </div>
-                        <Badge variant={statusVariant(c.status)} size="sm">
-                          {c.status}
-                        </Badge>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm text-text-secondary">{item.text}</p>
+                        <p className="mt-0.5 text-xs text-text-muted">{timeAgo(item.timestamp)}</p>
                       </div>
                     </div>
                   ))}
                 </div>
-              </StateContainer>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>AI Insights</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <AISuggestionCard
-                onAccept={() => addToast("Suggestion accepted!", "success")}
-                onReject={() => addToast("Suggestion dismissed", "info")}
-              >
-                Your&nbsp;CTR is&nbsp;12% higher on&nbsp;Tuesdays. Consider scheduling your next campaign
-                for&nbsp;Tuesday morning to&nbsp;maximize engagement.
-              </AISuggestionCard>
-              <AISuggestionCard
-                onAccept={() => addToast("Suggestion accepted!", "success")}
-                onReject={() => addToast("Suggestion dismissed", "info")}
-              >
-                Your subscriber list grew&nbsp;8% this&nbsp;week. Try sending a&nbsp;welcome re-engagement
-                campaign to&nbsp;new subscribers.
-              </AISuggestionCard>
-              <div className="rounded-lg border border-primary/20 bg-primary/[0.03] p-4">
-                <p className="text-xs text-text-muted">
-                  <TrendingUp className="mr-1 inline h-3 w-3" />
-                  AI predicts&nbsp;15% growth in&nbsp;engagement if&nbsp;you increase sending frequency
-                  to&nbsp;3x/week.
-                </p>
-              </div>
+              ) : (
+                <p className="py-4 text-center text-sm text-text-muted">No recent activity.</p>
+              )}
             </CardContent>
           </Card>
         </div>
       </div>
+
+      {/* Recent Campaigns Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Campaigns</CardTitle>
+          <Link href="/dashboard/campaigns">
+            <Button variant="ghost" size="sm">View all</Button>
+          </Link>
+        </CardHeader>
+        <CardContent>
+          {campaigns.length === 0 ? (
+            <EmptyState
+              icon={<Send className="size-8" />}
+              title="No campaigns yet"
+              description="Start your first campaign!"
+              action={
+                <Link href="/dashboard/campaigns/new">
+                  <Button icon={<Plus className="size-4" />}>Create Campaign</Button>
+                </Link>
+              }
+            />
+          ) : (
+            <DataTable
+              columns={campaignColumns}
+              data={campaigns}
+              sortable
+              keyExtractor={(c) => c.id}
+            />
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

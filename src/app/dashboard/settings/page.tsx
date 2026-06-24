@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -15,11 +15,11 @@ import {
   Bell,
   Building2,
   Camera,
-  Key,
   Smartphone,
   LogOut,
-  Clock,
+  Loader2,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 const settingsTabs = [
   { id: "profile", label: "Profile" },
@@ -35,17 +35,15 @@ const timezones = [
   { value: "pacific/auckland", label: "Pacific/Auckland (NZST)" },
 ];
 
-const activeSessions = [
-  { device: "Chrome on macOS", location: "Mumbai, India", lastActive: "Active now", current: true },
-  { device: "Safari on iPhone", location: "Mumbai, India", lastActive: "2 hours ago", current: false },
-];
-
 export default function SettingsPage() {
   const { addToast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState("profile");
-  const [name, setName] = useState("John Doe");
-  const [email, setEmail] = useState("john@example.com");
-  const [workspaceName, setWorkspaceName] = useState("My Company");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [workspaceName, setWorkspaceName] = useState("");
   const [timezone, setTimezone] = useState("asia/kolkata");
   const [twoFA, setTwoFA] = useState(false);
   const [notifications, setNotifications] = useState({
@@ -55,6 +53,102 @@ export default function SettingsPage() {
     billingAlerts: true,
     teamInvites: true,
   });
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/v1/users/me");
+        const json = await res.json();
+        if (json.success) {
+          const u = json.data;
+          setName(u.name ?? "");
+          setEmail(u.email ?? "");
+          setAvatar(u.avatar_url ?? "");
+          setWorkspaceName(u.workspace_name ?? u.company ?? "");
+          setTimezone(u.timezone ?? "asia/kolkata");
+          setTwoFA(u.two_factor_enabled ?? false);
+          if (u.notification_preferences) {
+            setNotifications((prev) => ({ ...prev, ...u.notification_preferences }));
+          }
+        }
+      } catch {
+        addToast("Failed to load profile", "error");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [addToast]);
+
+  const handleSaveProfile = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/v1/users/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email }),
+      });
+      const json = await res.json();
+      if (json.success) addToast("Profile updated!", "success");
+      else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to update profile", "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveWorkspace = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/v1/users/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspace_name: workspaceName, timezone }),
+      });
+      const json = await res.json();
+      if (json.success) addToast("Workspace settings saved!", "success");
+      else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to save workspace settings", "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveNotifications = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/v1/users/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notification_preferences: notifications }),
+      });
+      const json = await res.json();
+      if (json.success) addToast("Notification preferences saved!", "success");
+      else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to save notification preferences", "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="mt-2 h-4 w-64" />
+        </div>
+        <div className="space-y-4">
+          <Skeleton variant="card" />
+          <Skeleton variant="card" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -74,21 +168,25 @@ export default function SettingsPage() {
             <div className="flex items-center gap-4">
               <div className="relative">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-xl font-bold text-primary">
-                  JD
+                  {avatar ? (
+                    <img src={avatar} alt="" className="h-16 w-16 rounded-full object-cover" />
+                  ) : (
+                    name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() || "U"
+                  )}
                 </div>
                 <button className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white shadow">
                   <Camera className="h-3 w-3" />
                 </button>
               </div>
               <div>
-                <p className="font-medium text-text-primary">{name}</p>
+                <p className="font-medium text-text-primary">{name || "User"}</p>
                 <p className="text-sm text-text-muted">{email}</p>
               </div>
             </div>
             <Input label="Full Name" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
             <Input label="Email" type="email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
             <div className="flex justify-end">
-              <Button onClick={() => addToast("Profile updated!", "success")}>Save Changes</Button>
+              <Button onClick={handleSaveProfile} loading={saving}>Save Changes</Button>
             </div>
           </CardContent>
         </Card>
@@ -131,25 +229,18 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <div className="divide-y divide-border">
-                {activeSessions.map((session, i) => (
-                  <div key={i} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
-                    <div className="flex items-center gap-3">
-                      <Smartphone className="h-4 w-4 text-text-muted" />
-                      <div>
-                        <p className="text-sm text-text-primary">
-                          {session.device}
-                          {session.current && <Badge variant="success" size="sm" className="ml-2">Current</Badge>}
-                        </p>
-                        <p className="text-xs text-text-muted">{session.location} · {session.lastActive}</p>
-                      </div>
+                <div className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
+                  <div className="flex items-center gap-3">
+                    <Smartphone className="h-4 w-4 text-text-muted" />
+                    <div>
+                      <p className="text-sm text-text-primary">
+                        Current Session
+                        <Badge variant="success" size="sm" className="ml-2">Current</Badge>
+                      </p>
+                      <p className="text-xs text-text-muted">Active now</p>
                     </div>
-                    {!session.current && (
-                      <Button variant="ghost" size="sm" onClick={() => addToast("Session revoked", "warning")}>
-                        <LogOut className="h-3.5 w-3.5" />
-                      </Button>
-                    )}
                   </div>
-                ))}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -183,7 +274,7 @@ export default function SettingsPage() {
               </div>
             ))}
             <div className="flex justify-end pt-2">
-              <Button onClick={() => addToast("Notification preferences saved!", "success")}>Save Preferences</Button>
+              <Button onClick={handleSaveNotifications} loading={saving}>Save Preferences</Button>
             </div>
           </CardContent>
         </Card>
@@ -207,7 +298,7 @@ export default function SettingsPage() {
               onChange={setTimezone}
             />
             <div className="flex justify-end pt-2">
-              <Button onClick={() => addToast("Workspace settings saved!", "success")}>Save Changes</Button>
+              <Button onClick={handleSaveWorkspace} loading={saving}>Save Changes</Button>
             </div>
           </CardContent>
         </Card>

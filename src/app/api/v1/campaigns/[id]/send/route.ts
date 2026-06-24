@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { requireAuth } from "@/lib/auth/guards";
 import { executeQuery } from "@/lib/db";
+import { sendCampaign } from "@/lib/fcm/campaign-sender";
 
 function ok(data: any) {
   return Response.json({ success: true, data });
@@ -13,9 +14,9 @@ export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const auth = await requireAuth();
-    const { id } = await params;
 
     const campaigns = await executeQuery<any>(
       `SELECT c.*, s.sending_enabled, s.id as site_id
@@ -35,31 +36,25 @@ export async function POST(
       return err("Sending is disabled for this site", 403);
     }
 
-    const subscribers = await executeQuery<any>(
-      `SELECT id, fcm_token FROM subscribers WHERE site_id = ? AND status = 'active'`,
-      [campaign.site_id]
-    );
-
-    if (subscribers.length === 0) {
-      return err("No subscribers to send to", 400);
-    }
-
     await executeQuery(
-      "UPDATE campaigns SET status = 'sending', sent_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+      "UPDATE campaigns SET status = 'sending', updated_at = CURRENT_TIMESTAMP WHERE id = ?",
       [id]
     );
 
-    await executeQuery(
-      "UPDATE campaign_stats SET sent_count = ?, updated_at = CURRENT_TIMESTAMP WHERE campaign_id = ?",
-      [subscribers.length, id]
-    );
+    const result = await sendCampaign(id, campaign.site_id);
 
     return ok({
-      sent: true,
-      subscriber_count: subscribers.length,
-      message: `Campaign queued for delivery to ${subscribers.length} subscribers`,
+      sent: result.sent,
+      failed: result.failed,
+      unregistered: result.unregistered,
+      total: result.total,
+      message: `Campaign sent to ${result.total} subscribers (${result.sent} delivered, ${result.failed} failed, ${result.unregistered} unregistered)`,
     });
   } catch (error: any) {
+    await executeQuery(
+      "UPDATE campaigns SET status = 'failed', updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+      [id]
+    ).catch(() => {});
     return err(error.message, error.statusCode || 500);
   }
 }

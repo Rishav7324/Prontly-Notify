@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -9,15 +9,15 @@ import { Drawer } from "@/components/ui/Drawer";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useToast } from "@/components/ui/Toast";
+import { EmptyState } from "@/components/domain/EmptyState";
 import { cn, formatDate, generateId } from "@/lib/utils";
 import {
   Search,
-  Filter,
   UserX,
   UserCheck,
   KeyRound,
   Eye,
-  EyeOff,
   AlertTriangle,
   Clock,
   Globe,
@@ -26,6 +26,8 @@ import {
   Mail,
   Shield,
   ShieldAlert,
+  Loader2,
+  Users,
 } from "lucide-react";
 
 interface Account {
@@ -40,40 +42,71 @@ interface Account {
   avatar: string;
 }
 
-interface AuditEntry {
-  id: string;
-  action: string;
-  target: string;
-  timestamp: string;
-  actor: string;
-}
-
-const mockAccounts: Account[] = [
-  { id: "1", name: "Acme Corp", email: "admin@acme.com", plan: "Enterprise", mrr: 2999, sites: 12, status: "active", signupDate: "2024-01-15", avatar: "AC" },
-  { id: "2", name: "TechStart Inc", email: "dev@techstart.io", plan: "Business", mrr: 1499, sites: 5, status: "active", signupDate: "2024-03-22", avatar: "TI" },
-  { id: "3", name: "Media Group", email: "contact@media.co", plan: "Enterprise", mrr: 4999, sites: 8, status: "active", signupDate: "2024-02-10", avatar: "MG" },
-  { id: "4", name: "ShopEasy", email: "info@shopeasy.com", plan: "Pro", mrr: 299, sites: 3, status: "suspended", signupDate: "2024-05-01", avatar: "SE" },
-  { id: "5", name: "DevHub", email: "team@devhub.dev", plan: "Free", mrr: 0, sites: 1, status: "active", signupDate: "2024-06-12", avatar: "DH" },
-  { id: "6", name: "Pixel Perfect", email: "hello@pixelperfect.io", plan: "Business", mrr: 999, sites: 7, status: "trial", signupDate: "2024-07-08", avatar: "PP" },
-  { id: "7", name: "DataFlow", email: "ops@dataflow.app", plan: "Pro", mrr: 499, sites: 2, status: "active", signupDate: "2024-04-18", avatar: "DF" },
-  { id: "8", name: "WebStack", email: "contact@webstack.co", plan: "Free", mrr: 0, sites: 1, status: "suspended", signupDate: "2024-03-30", avatar: "WS" },
-];
-
 const plans = ["All Plans", "Free", "Pro", "Business", "Enterprise"];
 const statuses = ["All Statuses", "active", "suspended", "trial"];
 
+async function fetchAccounts(search?: string, plan?: string) {
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  if (plan && plan !== "All Plans") params.set("plan", plan.toLowerCase());
+  const res = await fetch(`/api/v1/admin/accounts?${params.toString()}`);
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || "Failed to fetch accounts");
+  return { accounts: json.data, meta: json.meta };
+}
+
+async function suspendAccount(id: string, reason: string) {
+  const res = await fetch(`/api/v1/admin/accounts/${id}/suspend`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ reason }),
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || "Failed to suspend account");
+  return json.data;
+}
+
 export default function AdminAccounts() {
-  const [accounts, setAccounts] = useState<Account[]>(mockAccounts);
+  const { addToast } = useToast();
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [search, setSearch] = useState("");
   const [planFilter, setPlanFilter] = useState("All Plans");
   const [statusFilter, setStatusFilter] = useState("All Statuses");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [suspendModal, setSuspendModal] = useState<Account | null>(null);
   const [suspendReason, setSuspendReason] = useState("");
   const [impersonateModal, setImpersonateModal] = useState<Account | null>(null);
+  const [suspending, setSuspending] = useState(false);
 
-  const auditLog: AuditEntry[] = useMemo(() => [], []);
+  const loadAccounts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { accounts: data } = await fetchAccounts(
+        search || undefined,
+        planFilter !== "All Plans" ? planFilter : undefined
+      );
+      setAccounts(data.map((a: any) => ({
+        id: a.id,
+        name: a.name || a.owner_name,
+        email: a.owner_email,
+        plan: a.plan_name || "Free",
+        mrr: 0,
+        sites: a.site_count || 0,
+        status: a.subscription_status === "active" ? "active" : a.subscription_status === "past_due" ? "suspended" : "trial",
+        signupDate: a.created_at,
+        avatar: (a.name || a.owner_name || "??").split(" ").map((s: string) => s[0]).join("").slice(0, 2).toUpperCase(),
+      })));
+    } catch (err: any) {
+      addToast(err.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  }, [search, planFilter, addToast]);
+
+  useEffect(() => {
+    loadAccounts();
+  }, [loadAccounts]);
 
   const filteredAccounts = useMemo(() => {
     return accounts.filter((a) => {
@@ -86,17 +119,26 @@ export default function AdminAccounts() {
     });
   }, [accounts, search, planFilter, statusFilter]);
 
-  const handleSuspend = () => {
+  const handleSuspend = async () => {
     if (!suspendModal || !suspendReason.trim()) return;
-    setAccounts((prev) =>
-      prev.map((a) =>
-        a.id === suspendModal.id
-          ? { ...a, status: a.status === "suspended" ? "active" : "suspended" }
-          : a
-      )
-    );
-    setSuspendModal(null);
-    setSuspendReason("");
+    setSuspending(true);
+    try {
+      await suspendAccount(suspendModal.id, suspendReason);
+      setAccounts((prev) =>
+        prev.map((a) =>
+          a.id === suspendModal.id
+            ? { ...a, status: a.status === "suspended" ? "active" as const : "suspended" as const }
+            : a
+        )
+      );
+      addToast(suspendModal.status === "suspended" ? "Account reinstated" : "Account suspended", "success");
+      setSuspendModal(null);
+      setSuspendReason("");
+    } catch (err: any) {
+      addToast(err.message, "error");
+    } finally {
+      setSuspending(false);
+    }
   };
 
   const handleImpersonate = () => {
@@ -138,12 +180,9 @@ export default function AdminAccounts() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-text-primary">Account Management</h1>
-        <p className="mt-1 text-sm text-text-muted">
-          User & account oversight
-        </p>
+        <p className="mt-1 text-sm text-text-muted">User & account oversight</p>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
@@ -190,20 +229,22 @@ export default function AdminAccounts() {
         </div>
       </div>
 
-      {/* Accounts Table + Detail Drawer */}
-      <div className="flex gap-6">
-        <div className="flex-1 min-w-0">
-          <DataTable
-            columns={columns}
-            data={filteredAccounts}
-            keyExtractor={(a) => a.id}
-            loading={loading}
-            sortable
-          />
+      {!loading && filteredAccounts.length === 0 ? (
+        <EmptyState icon={<Users className="size-12" />} title="No accounts found" description="Try adjusting your search or filters" />
+      ) : (
+        <div className="flex gap-6">
+          <div className="flex-1 min-w-0">
+            <DataTable
+              columns={columns}
+              data={filteredAccounts}
+              keyExtractor={(a) => a.id}
+              loading={loading}
+              sortable
+            />
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Detail Drawer (clicking row opens) */}
       <Drawer
         open={!!selectedAccount}
         onClose={() => setSelectedAccount(null)}
@@ -211,7 +252,6 @@ export default function AdminAccounts() {
       >
         {selectedAccount && (
           <div className="space-y-6">
-            {/* Profile */}
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/20 text-lg font-bold text-primary">
                 {selectedAccount.avatar}
@@ -225,7 +265,6 @@ export default function AdminAccounts() {
               </div>
             </div>
 
-            {/* Subscription */}
             <div className="rounded-lg border border-border bg-background p-4">
               <h4 className="mb-3 text-sm font-semibold text-text-primary flex items-center gap-2">
                 <CreditCard className="size-4 text-text-muted" />
@@ -243,7 +282,6 @@ export default function AdminAccounts() {
               </div>
             </div>
 
-            {/* Websites */}
             <div className="rounded-lg border border-border bg-background p-4">
               <h4 className="mb-3 text-sm font-semibold text-text-primary flex items-center gap-2">
                 <Globe className="size-4 text-text-muted" />
@@ -252,7 +290,6 @@ export default function AdminAccounts() {
               <p className="text-sm text-text-muted">Coming soon</p>
             </div>
 
-            {/* Recent Activity */}
             <div className="rounded-lg border border-border bg-background p-4">
               <h4 className="mb-3 text-sm font-semibold text-text-primary flex items-center gap-2">
                 <Activity className="size-4 text-text-muted" />
@@ -261,7 +298,6 @@ export default function AdminAccounts() {
               <p className="text-sm text-text-muted">Coming soon</p>
             </div>
 
-            {/* Actions */}
             <div className="space-y-2">
               <Button
                 variant="secondary"
@@ -291,7 +327,6 @@ export default function AdminAccounts() {
         )}
       </Drawer>
 
-      {/* Suspend/Reinstate Modal */}
       <Modal
         open={!!suspendModal}
         onClose={() => { setSuspendModal(null); setSuspendReason(""); }}
@@ -315,21 +350,19 @@ export default function AdminAccounts() {
             error={suspendReason.length > 0 && suspendReason.length < 10 ? "Must be at least 10 characters" : undefined}
           />
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => { setSuspendModal(null); setSuspendReason(""); }}>
-              Cancel
-            </Button>
+            <Button variant="outline" onClick={() => { setSuspendModal(null); setSuspendReason(""); }}>Cancel</Button>
             <Button
               variant={suspendModal?.status === "suspended" ? "primary" : "destructive"}
-              disabled={suspendReason.trim().length < 10}
+              disabled={suspendReason.trim().length < 10 || suspending}
               onClick={handleSuspend}
+              loading={suspending}
             >
-              Confirm
+              {suspendModal?.status === "suspended" ? "Reinstate" : "Confirm"}
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Impersonate Modal */}
       <Modal
         open={!!impersonateModal}
         onClose={() => setImpersonateModal(null)}
@@ -340,9 +373,7 @@ export default function AdminAccounts() {
             <ShieldAlert className="mt-0.5 size-5 shrink-0 text-warning" />
             <div>
               <p className="text-sm font-medium text-text-primary">Security Notice</p>
-              <p className="mt-1 text-sm text-text-secondary">
-                You are about to impersonate {impersonateModal?.name}. This action will be logged and is subject to audit review.
-              </p>
+              <p className="mt-1 text-sm text-text-secondary">You are about to impersonate {impersonateModal?.name}. This action will be logged and is subject to audit review.</p>
             </div>
           </div>
           <div className="text-sm text-text-muted">

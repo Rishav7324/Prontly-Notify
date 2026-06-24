@@ -1,14 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Toggle } from "@/components/ui/Toggle";
 import { Modal } from "@/components/ui/Modal";
-import { Select } from "@/components/ui/Select";
-import { Input } from "@/components/ui/Input";
-import { StateContainer } from "@/components/ui/StateContainer";
+import { EmptyState } from "@/components/domain/EmptyState";
 import { useToast } from "@/components/ui/Toast";
 import {
   Plus,
@@ -17,9 +15,9 @@ import {
   Send,
   Split,
   Trash2,
-  GripVertical,
   Users,
   MousePointerClick,
+  Loader2,
 } from "lucide-react";
 
 type StepKind = "wait" | "send" | "condition";
@@ -45,48 +43,87 @@ const templates = [
   { id: "abandoned", name: "Abandoned Content", description: "Remind users about unfinished reads", icon: Timer },
 ];
 
-const emptySteps: Step[] = [
-  { id: "1", kind: "wait", label: "Wait 1 day", config: { duration: "1" } },
-  { id: "2", kind: "send", label: "Send welcome notification", config: { title: "Welcome!" } },
-  { id: "3", kind: "wait", label: "Wait 3 days", config: { duration: "3" } },
-  { id: "4", kind: "condition", label: "If clicked", config: { metric: "clicked" } },
-  { id: "5", kind: "send", label: "Send follow-up", config: { title: "Still interested?" } },
-];
-
-const mockAutomations: Automation[] = [
-  { id: "1", name: "Welcome Series", active: true, triggered: 1250, steps: emptySteps },
-  { id: "2", name: "Re-engagement", active: false, triggered: 430, steps: emptySteps },
-];
-
 const stepIcons: Record<StepKind, React.ReactNode> = {
   wait: <Timer className="h-4 w-4 text-warning" />,
   send: <Send className="h-4 w-4 text-primary" />,
   condition: <Split className="h-4 w-4 text-info" />,
 };
 
-const stepColors: Record<StepKind, string> = {
-  wait: "border-l-warning",
-  send: "border-l-primary",
-  condition: "border-l-info",
-};
-
 export default function AutomationPage() {
   const { addToast } = useToast();
-  const [automations, setAutomations] = useState<Automation[]>(mockAutomations);
+  const [automations, setAutomations] = useState<Automation[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showTemplate, setShowTemplate] = useState(false);
-  const [state] = useState<"default" | "loading" | "empty" | "error">("default");
+  const [toggling, setToggling] = useState<string | null>(null);
 
-  const toggleActive = (id: string) => {
-    setAutomations((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, active: !a.active } : a))
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/v1/automations");
+        const json = await res.json();
+        if (json.success) setAutomations(json.data);
+      } catch {
+        addToast("Failed to load automations", "error");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [addToast]);
+
+  const toggleActive = async (id: string, current: boolean) => {
+    setToggling(id);
+    try {
+      const res = await fetch(`/api/v1/automations/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ active: !current }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setAutomations((prev) =>
+          prev.map((a) => (a.id === id ? { ...a, active: !a.active } : a))
+        );
+        addToast("Automation status updated", "success");
+      } else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to update automation", "error");
+    } finally {
+      setToggling(null);
+    }
+  };
+
+  const handleSelectTemplate = async (templateId: string) => {
+    try {
+      const template = templates.find((t) => t.id === templateId);
+      const res = await fetch("/api/v1/automations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: template?.name ?? "New Automation",
+          template_id: templateId,
+          active: false,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setAutomations((prev) => [...prev, json.data]);
+        addToast("New automation created from template!", "success");
+        setShowTemplate(false);
+      } else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to create automation", "error");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     );
-    addToast("Automation status updated", "success");
-  };
-
-  const handleSelectTemplate = () => {
-    setShowTemplate(false);
-    addToast("New automation created from template!", "success");
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -100,15 +137,18 @@ export default function AutomationPage() {
         </Button>
       </div>
 
-      <StateContainer
-        state={state}
-        emptyMessage="No automations yet. Create your first drip campaign."
-        emptyAction={
-          <Button onClick={() => setShowTemplate(true)} icon={<Plus className="h-4 w-4" />}>
-            Create Automation
-          </Button>
-        }
-      >
+      {automations.length === 0 ? (
+        <EmptyState
+          icon={<Workflow className="h-8 w-8" />}
+          title="No automations yet"
+          description="Create your first drip campaign."
+          action={
+            <Button onClick={() => setShowTemplate(true)} icon={<Plus className="h-4 w-4" />}>
+              Create Automation
+            </Button>
+          }
+        />
+      ) : (
         <div className="space-y-4">
           {automations.map((auto) => (
             <Card key={auto.id}>
@@ -123,7 +163,8 @@ export default function AutomationPage() {
                   </div>
                   <Toggle
                     checked={auto.active}
-                    onChange={() => toggleActive(auto.id)}
+                    onChange={() => toggleActive(auto.id, auto.active)}
+                    disabled={toggling === auto.id}
                     label={auto.active ? "Active" : "Paused"}
                   />
                 </div>
@@ -132,9 +173,7 @@ export default function AutomationPage() {
                   {auto.steps.map((step, i) => (
                     <div key={step.id} className="flex">
                       <div className="flex flex-col items-center">
-                        <div
-                          className={`flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface ${stepColors[step.kind].replace("border-l-", "")}`}
-                        >
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface">
                           {stepIcons[step.kind]}
                         </div>
                         {i < auto.steps.length - 1 && (
@@ -165,14 +204,14 @@ export default function AutomationPage() {
             </Card>
           ))}
         </div>
-      </StateContainer>
+      )}
 
       <Modal open={showTemplate} onClose={() => setShowTemplate(false)} title="Choose a Template" size="lg">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {templates.map((t) => (
             <button
               key={t.id}
-              onClick={handleSelectTemplate}
+              onClick={() => handleSelectTemplate(t.id)}
               className="rounded-xl border border-border bg-surface p-4 text-left transition-colors hover:border-primary/50 hover:bg-white/[0.02]"
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">

@@ -1,97 +1,157 @@
-import type { Metadata } from "next";
-import { Badge } from "@/components/ui/Badge";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy | Prontly Notify",
-  description:
-    "Prontly Notify Privacy Policy — how we collect, use, and protect your data.",
+import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/Badge";
+import { Shield, ChevronRight } from "lucide-react";
+
+const sections = [
+  { id: "introduction", label: "1. Introduction" },
+  { id: "information-we-collect", label: "2. Information We Collect" },
+  { id: "how-we-use", label: "3. How We Use Your Information" },
+  { id: "data-sharing", label: "4. Data Sharing & Disclosure" },
+  { id: "data-security", label: "5. Data Security" },
+  { id: "data-retention", label: "6. Data Retention" },
+  { id: "your-rights", label: "7. Your Rights" },
+  { id: "contact", label: "8. Contact" },
+];
+
+const content = {
+  introduction: {
+    heading: "1. Introduction",
+    body: "Prontly Notify (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our push notification platform. By using Prontly Notify, you agree to the collection and use of information in accordance with this policy. If you do not agree, please do not use our services.",
+  },
+  "information-we-collect": {
+    heading: "2. Information We Collect",
+    body: "We collect the following types of information:",
+    list: [
+      "Account Information: When you sign up, we collect your name, email address, and password.",
+      "Website Information: Your website URL, domain, and platform type (WordPress, Shopify, etc.).",
+      "Subscriber Data: Browser tokens, browser type, operating system, and approximate geographic location of your push subscribers.",
+      "Usage Data: Information about how you interact with our platform, including campaign metrics and feature usage.",
+      "Payment Information: Processed securely through Razorpay. We do not store credit card numbers.",
+    ],
+  },
+  "how-we-use": {
+    heading: "3. How We Use Your Information",
+    body: "We use the information we collect to:",
+    list: [
+      "Provide, operate, and maintain our push notification platform",
+      "Process transactions and manage subscriptions",
+      "Send technical notices, updates, and support messages",
+      "Improve our platform through analytics and product research",
+      "Comply with legal obligations and enforce our Terms of Service",
+    ],
+  },
+  "data-sharing": {
+    heading: "4. Data Sharing & Disclosure",
+    body: "We do not sell your personal information. We may share data with:",
+    list: [
+      "Service Providers: Firebase (authentication, push delivery), Cloudflare (infrastructure), Razorpay (payment processing)",
+      "Legal Requirements: When required by law or to protect our rights",
+      "Business Transfers: In connection with a merger, acquisition, or sale of assets",
+    ],
+  },
+  "data-security": {
+    heading: "5. Data Security",
+    body: "We implement appropriate technical and organizational measures to protect your data, including encryption in transit (TLS 1.2+) and at rest, regular security audits, and access controls. However, no method of transmission over the Internet is 100% secure.",
+  },
+  "data-retention": {
+    heading: "6. Data Retention",
+    body: "We retain your account information for as long as your account is active. Upon account deletion, we maintain a 30-day grace period during which recovery is possible, after which data is permanently purged. Subscriber data is retained per your campaign needs and can be exported or deleted at any time.",
+  },
+  "your-rights": {
+    heading: "7. Your Rights",
+    body: "Depending on your jurisdiction, you may have the right to:",
+    list: [
+      "Access, correct, or delete your personal data",
+      "Export your data in a portable format",
+      "Withdraw consent where processing is based on consent",
+      "Lodge a complaint with a data protection authority (India: DPDPA, EU: GDPR, California: CCPA)",
+    ],
+  },
+  contact: {
+    heading: "8. Contact",
+    body: 'For privacy-related inquiries, please contact us at <a href="mailto:privacy@prontly.in" class="text-[#3B82F6] hover:underline">privacy@prontly.in</a> or through our Contact page.',
+  },
 };
 
 export default function PrivacyPage() {
+  const [activeSection, setActiveSection] = useState("introduction");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const headings = document.querySelectorAll("[data-section-id]");
+      let current = "introduction";
+      headings.forEach((h) => {
+        const rect = h.getBoundingClientRect();
+        if (rect.top <= 120) current = h.getAttribute("data-section-id") || current;
+      });
+      setActiveSection(current);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
-      <div className="mb-10">
-        <Badge variant="info" className="mb-4">Legal</Badge>
-        <h1 className="font-display mb-4 text-4xl font-bold">Privacy Policy</h1>
-        <p className="text-sm text-text-muted">Last updated: June 15, 2026</p>
-      </div>
+    <div className="mx-auto max-w-[1200px] px-4 py-24">
+      <div className="flex gap-12">
+        <aside className="hidden w-1/4 shrink-0 lg:block">
+          <nav className="sticky top-24 space-y-1">
+            {sections.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className={`block rounded-lg px-3 py-2 text-sm transition-colors ${
+                  activeSection === s.id
+                    ? "bg-[#3B82F6]/10 text-[#3B82F6] font-medium"
+                    : "text-[#94A3B8] hover:bg-white/5 hover:text-[#F8FAFC]"
+                }`}
+              >
+                {s.label}
+              </a>
+            ))}
+          </nav>
+        </aside>
 
-      <div className="space-y-8 text-sm text-text-secondary leading-relaxed">
-        <section>
-          <h2 className="font-display mb-3 text-xl font-semibold text-text-primary">1. Introduction</h2>
-          <p>
-            Prontly Notify (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our push notification platform.
-          </p>
-          <p className="mt-3">
-            By using Prontly Notify, you agree to the collection and use of information in accordance with this policy. If you do not agree, please do not use our services.
-          </p>
-        </section>
+        <div className="min-w-0 flex-1">
+          <div className="mb-10">
+            <Badge variant="info" className="mb-4">Legal</Badge>
+            <h1 className="font-display text-[32px] font-bold text-[#F8FAFC]">Privacy Policy</h1>
+            <div className="mt-3 inline-flex items-center gap-2 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#111827] px-3 py-1.5 text-xs text-[#64748B]">
+              <Shield className="size-3.5 text-[#3B82F6]" />
+              Last updated: June 15, 2026
+            </div>
+          </div>
 
-        <section>
-          <h2 className="font-display mb-3 text-xl font-semibold text-text-primary">2. Information We Collect</h2>
-          <p className="mb-2">We collect the following types of information:</p>
-          <ul className="list-disc pl-6 space-y-1.5">
-            <li><strong className="text-text-primary">Account Information:</strong> When you sign up, we collect your name, email address, and password.</li>
-            <li><strong className="text-text-primary">Website Information:</strong> Your website URL, domain, and platform type (WordPress, Shopify, etc.).</li>
-            <li><strong className="text-text-primary">Subscriber Data:</strong> Browser tokens, browser type, operating system, and approximate geographic location of your push subscribers.</li>
-            <li><strong className="text-text-primary">Usage Data:</strong> Information about how you interact with our platform, including campaign metrics and feature usage.</li>
-            <li><strong className="text-text-primary">Payment Information:</strong> Processed securely through Razorpay. We do not store credit card numbers.</li>
-          </ul>
-        </section>
+          <div className="mb-8 rounded-xl border border-[#22C55E]/25 bg-[#22C55E]/5 p-4">
+            <div className="flex items-start gap-3">
+              <Shield className="mt-0.5 size-5 shrink-0 text-[#22C55E]" />
+              <div>
+                <p className="text-sm font-semibold text-[#F8FAFC]">GDPR & DPDPA Compliant</p>
+                <p className="mt-1 text-xs text-[#94A3B8]">
+                  Prontly Notify complies with the General Data Protection Regulation (GDPR) and the Digital Personal Data Protection Act (DPDPA) of India. Your data is processed lawfully, fairly, and transparently.
+                </p>
+              </div>
+            </div>
+          </div>
 
-        <section>
-          <h2 className="font-display mb-3 text-xl font-semibold text-text-primary">3. How We Use Your Information</h2>
-          <p className="mb-2">We use the information we collect to:</p>
-          <ul className="list-disc pl-6 space-y-1.5">
-            <li>Provide, operate, and maintain our push notification platform</li>
-            <li>Process transactions and manage subscriptions</li>
-            <li>Send technical notices, updates, and support messages</li>
-            <li>Improve our platform through analytics and product research</li>
-            <li>Comply with legal obligations and enforce our Terms of Service</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2 className="font-display mb-3 text-xl font-semibold text-text-primary">4. Data Sharing & Disclosure</h2>
-          <p className="mb-2">We do not sell your personal information. We may share data with:</p>
-          <ul className="list-disc pl-6 space-y-1.5">
-            <li><strong className="text-text-primary">Service Providers:</strong> Firebase (authentication, push delivery), Cloudflare (infrastructure), Razorpay (payment processing)</li>
-            <li><strong className="text-text-primary">Legal Requirements:</strong> When required by law or to protect our rights</li>
-            <li><strong className="text-text-primary">Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2 className="font-display mb-3 text-xl font-semibold text-text-primary">5. Data Security</h2>
-          <p>
-            We implement appropriate technical and organizational measures to protect your data, including encryption in transit (TLS 1.2+) and at rest, regular security audits, and access controls. However, no method of transmission over the Internet is 100% secure.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="font-display mb-3 text-xl font-semibold text-text-primary">6. Data Retention</h2>
-          <p>
-            We retain your account information for as long as your account is active. Upon account deletion, we maintain a 30-day grace period during which recovery is possible, after which data is permanently purged. Subscriber data is retained per your campaign needs and can be exported or deleted at any time.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="font-display mb-3 text-xl font-semibold text-text-primary">7. Your Rights</h2>
-          <p className="mb-2">Depending on your jurisdiction, you may have the right to:</p>
-          <ul className="list-disc pl-6 space-y-1.5">
-            <li>Access, correct, or delete your personal data</li>
-            <li>Export your data in a portable format</li>
-            <li>Withdraw consent where processing is based on consent</li>
-            <li>Lodge a complaint with a data protection authority (India: DPDPA, EU: GDPR, California: CCPA)</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2 className="font-display mb-3 text-xl font-semibold text-text-primary">8. Contact</h2>
-          <p>
-            For privacy-related inquiries, please contact us at privacy@prontly.in or through our Contact page.
-          </p>
-        </section>
+          {Object.entries(content).map(([id, section]) => (
+            <section key={id} data-section-id={id} id={id} className="mb-10 scroll-mt-28">
+              <h2 className="font-display mb-4 text-xl font-semibold text-[#F8FAFC]">{section.heading}</h2>
+              <p className="text-sm leading-relaxed text-[#94A3B8]" dangerouslySetInnerHTML={{ __html: section.body }} />
+              {"list" in section && section.list && (
+                <ul className="mt-3 space-y-2 pl-5">
+                  {section.list.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-[#94A3B8]">
+                      <ChevronRight className="mt-0.5 size-3.5 shrink-0 text-[#3B82F6]" />
+                      <span dangerouslySetInnerHTML={{ __html: item }} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
       </div>
     </div>
   );

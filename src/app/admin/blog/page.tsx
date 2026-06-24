@@ -1,29 +1,26 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { useState, useEffect, useCallback } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
-import { Tabs } from "@/components/ui/Tabs";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { Modal } from "@/components/ui/Modal";
+import { useToast } from "@/components/ui/Toast";
+import { EmptyState } from "@/components/domain/EmptyState";
 import { cn, formatDate, generateId } from "@/lib/utils";
 import {
   FileText,
   Plus,
   Search,
   CalendarClock,
-  Clock,
-  Eye,
   Image,
   Settings2,
   Globe,
-  Tag,
   Save,
   Send,
   FileEdit,
+  Loader2,
 } from "lucide-react";
 
 interface BlogPost {
@@ -42,14 +39,6 @@ interface BlogPost {
   scheduledDate?: string;
 }
 
-const initialPosts: BlogPost[] = [
-  { id: "1", title: "Introducing AI-Powered Campaigns", status: "published", author: "Sarah Chen", date: "2024-07-15", category: "Product", tags: ["AI", "features"], content: "", metaTitle: "", metaDescription: "", slug: "ai-campaigns", featuredImage: null },
-  { id: "2", title: "Best Practices for Push Notification CTR", status: "draft", author: "Mike Ross", date: "2024-07-12", category: "Guides", tags: ["best-practices", "ctr"], content: "", metaTitle: "", metaDescription: "", slug: "push-ctr-best-practices", featuredImage: null },
-  { id: "3", title: "Q3 2024 Platform Updates", status: "scheduled", author: "Sarah Chen", date: "2024-07-10", category: "Updates", tags: ["product-update"], content: "", metaTitle: "", metaDescription: "", slug: "q3-2024-updates", featuredImage: null, scheduledDate: "2024-07-20" },
-  { id: "4", title: "How to Segment Your Audience", status: "published", author: "Alex Kim", date: "2024-07-08", category: "Guides", tags: ["segmentation"], content: "", metaTitle: "", metaDescription: "", slug: "audience-segmentation", featuredImage: null },
-  { id: "5", title: "Enterprise Security Overview", status: "draft", author: "Mike Ross", date: "2024-07-05", category: "Security", tags: ["security", "enterprise"], content: "", metaTitle: "", metaDescription: "", slug: "enterprise-security", featuredImage: null },
-];
-
 const categories = ["All", "Product", "Guides", "Updates", "Security"];
 const statusFilters = [
   { id: "all", label: "All Posts" },
@@ -58,21 +47,70 @@ const statusFilters = [
   { id: "published", label: "Published" },
 ];
 
+async function fetchPosts(status?: string) {
+  const params = new URLSearchParams({ limit: "50" });
+  if (status && status !== "all") params.set("status", status);
+  const res = await fetch(`/api/v1/admin/blog/posts?${params.toString()}`);
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || "Failed to fetch posts");
+  return { posts: json.data, meta: json.meta };
+}
+
+async function createPost(data: any) {
+  const res = await fetch("/api/v1/admin/blog/posts", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || "Failed to create post");
+  return json.data;
+}
+
 export default function AdminBlog() {
-  const [posts, setPosts] = useState<BlogPost[]>(initialPosts);
+  const { addToast } = useToast();
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const filteredPosts = useMemo(() => {
-    return posts.filter((p) => {
-      const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase());
-      const matchesStatus = statusFilter === "all" || p.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-  }, [posts, search, statusFilter]);
+  const loadPosts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { posts: data } = await fetchPosts(statusFilter !== "all" ? statusFilter : undefined);
+      setPosts(data.map((p: any) => ({
+        id: p.id,
+        title: p.title,
+        status: p.status,
+        author: p.author_id || "Super Admin",
+        date: p.published_at || p.created_at,
+        category: p.category || "Uncategorized",
+        tags: [],
+        content: "",
+        metaTitle: "",
+        metaDescription: "",
+        slug: p.slug,
+        featuredImage: null,
+      })));
+    } catch (err: any) {
+      addToast(err.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  }, [statusFilter, addToast]);
+
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
+
+  const filteredPosts = posts.filter((p) => {
+    const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === "all" || p.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const openEditor = (post?: BlogPost) => {
     if (post) {
@@ -96,20 +134,34 @@ export default function AdminBlog() {
     setEditorOpen(true);
   };
 
-  const savePost = (publish = false) => {
+  const savePost = async (publish = false) => {
     if (!editingPost) return;
-    const updated = { ...editingPost, status: publish ? "published" : editingPost.status };
-    setPosts((prev) => {
-      const idx = prev.findIndex((p) => p.id === updated.id);
-      if (idx >= 0) {
-        const next = [...prev];
-        next[idx] = updated;
-        return next;
+    setSaving(true);
+    try {
+      const body: any = {
+        title: editingPost.title,
+        slug: editingPost.slug || editingPost.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""),
+        category: editingPost.category,
+        excerpt: editingPost.metaDescription || null,
+        status: publish ? "published" : editingPost.status,
+        seo_title: editingPost.metaTitle || null,
+        seo_description: editingPost.metaDescription || null,
+        tags: editingPost.tags,
+        body_mdx: editingPost.content || null,
+      };
+      if (editingPost.scheduledDate) {
+        body.status = "scheduled";
       }
-      return [...prev, updated];
-    });
-    setEditorOpen(false);
-    setEditingPost(null);
+      const result = await createPost(body);
+      addToast(publish ? "Post published" : "Post saved as draft", "success");
+      setEditorOpen(false);
+      setEditingPost(null);
+      loadPosts();
+    } catch (err: any) {
+      addToast(err.message, "error");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const columns: Column<BlogPost>[] = [
@@ -134,9 +186,7 @@ export default function AdminBlog() {
       </div>
     )},
     { key: "actions", label: "Actions", render: (item) => (
-      <Button variant="outline" size="sm" icon={<FileEdit className="size-3.5" />} onClick={() => openEditor(item)}>
-        Edit
-      </Button>
+      <Button variant="outline" size="sm" icon={<FileEdit className="size-3.5" />} onClick={() => openEditor(item)}>Edit</Button>
     )},
   ];
 
@@ -147,12 +197,9 @@ export default function AdminBlog() {
           <h1 className="text-2xl font-bold text-text-primary">Blog CMS</h1>
           <p className="mt-1 text-sm text-text-muted">Create and manage blog posts</p>
         </div>
-        <Button icon={<Plus className="size-4" />} onClick={() => openEditor()}>
-          New Post
-        </Button>
+        <Button icon={<Plus className="size-4" />} onClick={() => openEditor()}>New Post</Button>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
@@ -183,13 +230,15 @@ export default function AdminBlog() {
         </div>
       </div>
 
-      <DataTable columns={columns} data={filteredPosts} keyExtractor={(p) => p.id} loading={loading} sortable />
+      {!loading && filteredPosts.length === 0 ? (
+        <EmptyState icon={<FileText className="size-12" />} title="No posts found" description="Create your first blog post" action={<Button icon={<Plus className="size-4" />} onClick={() => openEditor()}>New Post</Button>} />
+      ) : (
+        <DataTable columns={columns} data={filteredPosts} keyExtractor={(p) => p.id} loading={loading} sortable />
+      )}
 
-      {/* Editor Modal */}
       <Modal open={editorOpen} onClose={() => { setEditorOpen(false); setEditingPost(null); }} title="Edit Post" size="xl">
         {editingPost && (
           <div className="space-y-6 max-h-[70vh] overflow-y-auto">
-            {/* Title */}
             <Input
               label="Title"
               placeholder="Post title..."
@@ -197,7 +246,6 @@ export default function AdminBlog() {
               onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })}
             />
 
-            {/* Content */}
             <Input
               as="textarea"
               label="Content"
@@ -207,14 +255,19 @@ export default function AdminBlog() {
               containerClassName="min-h-[200px]"
             />
 
-            {/* Meta info row */}
             <div className="grid grid-cols-2 gap-4">
-              <Select
-                label="Category"
-                options={categories.filter((c) => c !== "All").map((c) => ({ value: c, label: c }))}
-                value={editingPost.category}
-                onChange={(v) => setEditingPost({ ...editingPost, category: v })}
-              />
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-text-secondary">Category</label>
+                <select
+                  value={editingPost.category}
+                  onChange={(e) => setEditingPost({ ...editingPost, category: e.target.value })}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-text-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                >
+                  {categories.filter((c) => c !== "All").map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
               <Input
                 label="Tags"
                 placeholder="Comma separated"
@@ -223,7 +276,6 @@ export default function AdminBlog() {
               />
             </div>
 
-            {/* Featured Image */}
             <div>
               <label className="mb-1.5 block text-sm font-medium text-text-secondary">Featured Image</label>
               <div className="flex items-center gap-4 rounded-lg border border-border bg-background p-4">
@@ -246,7 +298,6 @@ export default function AdminBlog() {
               </div>
             </div>
 
-            {/* SEO Panel */}
             <div className="rounded-lg border border-border bg-background p-4">
               <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-text-primary">
                 <Settings2 className="size-4 text-text-muted" />
@@ -276,7 +327,6 @@ export default function AdminBlog() {
               </div>
             </div>
 
-            {/* Publish/Schedule controls */}
             <div className="flex items-center justify-between rounded-lg border border-border bg-background p-4">
               <div className="flex items-center gap-3">
                 <Input
@@ -288,15 +338,15 @@ export default function AdminBlog() {
                 />
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" icon={<Save className="size-4" />} onClick={() => savePost(false)}>
+                <Button variant="outline" icon={<Save className="size-4" />} onClick={() => savePost(false)} loading={saving}>
                   Save Draft
                 </Button>
                 {editingPost.scheduledDate ? (
-                  <Button variant="primary" icon={<CalendarClock className="size-4" />} onClick={() => savePost(false)}>
+                  <Button variant="primary" icon={<CalendarClock className="size-4" />} onClick={() => savePost(false)} loading={saving}>
                     Schedule
                   </Button>
                 ) : (
-                  <Button variant="primary" icon={<Send className="size-4" />} onClick={() => savePost(true)}>
+                  <Button variant="primary" icon={<Send className="size-4" />} onClick={() => savePost(true)} loading={saving}>
                     Publish
                   </Button>
                 )}

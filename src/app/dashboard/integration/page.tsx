@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Tabs } from "@/components/ui/Tabs";
 import { useToast } from "@/components/ui/Toast";
+import { useActiveSite } from "@/hooks/useActiveSite";
 import {
   Copy,
   CheckCircle2,
@@ -17,6 +18,7 @@ import {
   Blocks,
   Code2,
   Database,
+  Loader2,
 } from "lucide-react";
 
 const platforms = [
@@ -27,36 +29,101 @@ const platforms = [
   { id: "rest", label: "REST API", icon: <Database className="h-4 w-4" /> },
 ];
 
-const apiSnippet = `// Prontly Notify SDK
-import { ProntlyClient } from "@prontly/sdk";
-
-const prontly = new ProntlyClient({
-  siteId: "YOUR_SITE_ID",
-  apiKey: "YOUR_API_KEY",
-});
-
-prontly.subscribe();`;
-
-const swSnippet = `// service-worker.js
-importScripts("https://cdn.prontly.com/sdk/service-worker.js");`;
-
-const checklist = [
-  { label: "SDK script loaded on all pages", done: false },
-  { label: "Service worker registered", done: false },
-  { label: "HTTPS enabled", done: true },
-  { label: "VAPID keys configured", done: false },
-  { label: "Permission prompt triggered", done: false },
-];
-
 export default function IntegrationPage() {
   const { addToast } = useToast();
+  const { activeSite } = useActiveSite();
   const [activePlatform, setActivePlatform] = useState("custom");
-  const [installed] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [installed, setInstalled] = useState(false);
+  const [apiSnippet, setApiSnippet] = useState("");
+  const [swSnippet, setSwSnippet] = useState("");
+  const [checklist, setChecklist] = useState<{ label: string; done: boolean }[]>([
+    { label: "SDK script loaded on all pages", done: false },
+    { label: "Service worker registered", done: false },
+    { label: "HTTPS enabled", done: true },
+    { label: "VAPID keys configured", done: false },
+    { label: "Permission prompt triggered", done: false },
+  ]);
+  const [testing, setTesting] = useState(false);
+
+  useEffect(() => {
+    if (!activeSite) return;
+    const siteId = activeSite.id;
+    async function load() {
+      setLoading(true);
+      try {
+        const [snippetRes, verifyRes] = await Promise.all([
+          fetch(`/api/v1/sites/${siteId}/sdk-snippet`),
+          fetch(`/api/v1/sites/${siteId}/verify-install`),
+        ]);
+        const snippetJson = await snippetRes.json();
+        const verifyJson = await verifyRes.json();
+
+        if (snippetJson.success) {
+          setApiSnippet(snippetJson.data.snippet ?? snippetJson.data.sdk_code ?? "// SDK code here");
+          setSwSnippet(snippetJson.data.service_worker ?? snippetJson.data.sw_code ?? "// Service worker code here");
+        } else {
+          setApiSnippet(`// Prontly Notify SDK\nconst prontly = new ProntlyClient({ siteId: "${siteId}" });\nprontly.subscribe();`);
+          setSwSnippet('importScripts("https://cdn.prontly.com/sdk/service-worker.js");');
+        }
+
+        if (verifyJson.success) {
+          setInstalled(verifyJson.data.installed ?? false);
+          if (verifyJson.data.checklist) {
+            setChecklist(verifyJson.data.checklist);
+          }
+        }
+      } catch {
+        setApiSnippet(`// Prontly Notify SDK\nconst prontly = new ProntlyClient({ siteId: "${siteId}" });\nprontly.subscribe();`);
+        setSwSnippet('importScripts("https://cdn.prontly.com/sdk/service-worker.js");');
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [activeSite]);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     addToast("Copied to clipboard!", "success");
   };
+
+  const handleTestInstallation = async () => {
+    if (!activeSite) return;
+    setTesting(true);
+    try {
+      const res = await fetch(`/api/v1/sites/${activeSite.id}/verify-install`);
+      const json = await res.json();
+      if (json.success) {
+        setInstalled(json.data.installed ?? false);
+        addToast(json.data.installed ? "Installation verified!" : "Installation not detected", json.data.installed ? "success" : "warning");
+      }
+    } catch {
+      addToast("Failed to verify installation", "error");
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  const handleSendTest = async () => {
+    if (!activeSite) return;
+    try {
+      const res = await fetch(`/api/v1/sites/${activeSite.id}/send-test-notification`, { method: "POST" });
+      const json = await res.json();
+      if (json.success) addToast("Test notification sent!", "success");
+      else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to send test notification", "error");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -151,7 +218,8 @@ export default function IntegrationPage() {
             <CardContent className="space-y-4">
               <Button
                 className="w-full"
-                onClick={() => addToast("Testing installation...", "info")}
+                onClick={handleTestInstallation}
+                loading={testing}
                 icon={<TestTube className="h-4 w-4" />}
               >
                 Test Installation
@@ -159,9 +227,9 @@ export default function IntegrationPage() {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={() => addToast("Verification in progress...", "info")}
+                onClick={handleSendTest}
               >
-                Verify Setup
+                Send Test Notification
               </Button>
             </CardContent>
           </Card>

@@ -1,17 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Select } from "@/components/ui/Select";
 import { Input } from "@/components/ui/Input";
 import { DataTable, type Column } from "@/components/ui/DataTable";
-import { StateContainer } from "@/components/ui/StateContainer";
+import { EmptyState } from "@/components/domain/EmptyState";
 import { AISuggestionCard } from "@/components/ui/AISuggestionCard";
 import { useToast } from "@/components/ui/Toast";
 import { formatDate, formatNumber } from "@/lib/utils";
-import { Plus, Users, X, Sparkles, Shuffle, Hash } from "lucide-react";
+import { Plus, Users, X, Sparkles, Shuffle, Hash, Loader2 } from "lucide-react";
 
 interface Segment {
   id: string;
@@ -27,12 +27,6 @@ interface Condition {
   operator: string;
   value: string;
 }
-
-const mockSegments: Segment[] = [
-  { id: "1", name: "Active Users", count: 8450, type: "dynamic", lastUpdated: "2026-06-22" },
-  { id: "2", name: "Newsletter Engaged", count: 3200, type: "dynamic", lastUpdated: "2026-06-20" },
-  { id: "3", name: "Q2 Campaign Opens", count: 1800, type: "static", lastUpdated: "2026-06-15" },
-];
 
 const attributes = [
   { value: "subscribed_at", label: "Subscribed Date" },
@@ -51,20 +45,32 @@ const operators = [
   { value: "lte", label: "≤" },
 ];
 
-const columns: Column<Segment>[] = [
-  { key: "name", label: "Name", render: (s) => <span className="font-medium text-text-primary">{s.name}</span> },
-  { key: "count", label: "Subscribers", render: (s) => formatNumber(s.count) },
-  { key: "type", label: "Type", render: (s) => <Badge variant={s.type === "dynamic" ? "info" : "default"} size="sm">{s.type}</Badge> },
-  { key: "lastUpdated", label: "Last Updated", render: (s) => formatDate(s.lastUpdated) },
-];
-
 export default function SegmentsPage() {
   const { addToast } = useToast();
+  const [segments, setSegments] = useState<Segment[]>([]);
+  const [loading, setLoading] = useState(true);
   const [conditions, setConditions] = useState<Condition[]>([
     { id: "1", attribute: "country", operator: "eq", value: "India" },
   ]);
   const [logic, setLogic] = useState<"and" | "or">("and");
-  const [state] = useState<"default" | "loading" | "empty" | "error">("default");
+  const [previewCount, setPreviewCount] = useState<number | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/v1/segments");
+        const json = await res.json();
+        if (json.success) setSegments(json.data);
+      } catch {
+        addToast("Failed to load segments", "error");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [addToast]);
 
   const addCondition = () => {
     setConditions((prev) => [
@@ -77,11 +83,54 @@ export default function SegmentsPage() {
     setConditions((prev) => prev.filter((c) => c.id !== id));
   };
 
-  const updateCondition = (id: string, field: keyof Condition, value: string) => {
-    setConditions((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, [field]: value } : c))
-    );
+  const handlePreviewCount = async () => {
+    setPreviewLoading(true);
+    try {
+      const res = await fetch("/api/v1/segments/preview-count", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conditions, logic }),
+      });
+      const json = await res.json();
+      if (json.success) setPreviewCount(json.data.count ?? json.data.estimated_count);
+    } catch {
+      addToast("Failed to preview count", "error");
+    } finally {
+      setPreviewLoading(false);
+    }
   };
+
+  const handleCreateSegment = async () => {
+    try {
+      const res = await fetch("/api/v1/segments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: `Segment ${Date.now()}`, conditions, logic }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        addToast("Segment created!", "success");
+        setSegments((prev) => [json.data, ...prev]);
+      } else addToast(json.error, "error");
+    } catch {
+      addToast("Failed to create segment", "error");
+    }
+  };
+
+  const columns: Column<Segment>[] = [
+    { key: "name", label: "Name", render: (s) => <span className="font-medium text-text-primary">{s.name}</span> },
+    { key: "count", label: "Subscribers", render: (s) => formatNumber(s.count) },
+    { key: "type", label: "Type", render: (s) => <Badge variant={s.type === "dynamic" ? "info" : "default"} size="sm">{s.type}</Badge> },
+    { key: "lastUpdated", label: "Last Updated", render: (s) => formatDate(s.lastUpdated) },
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -90,7 +139,7 @@ export default function SegmentsPage() {
           <h1 className="text-2xl font-bold text-text-primary">Segments</h1>
           <p className="mt-1 text-sm text-text-muted">Segment your audience for targeted campaigns</p>
         </div>
-        <Button onClick={() => addToast("Creating new segment...", "success")} icon={<Plus className="h-4 w-4" />}>
+        <Button onClick={handleCreateSegment} icon={<Plus className="h-4 w-4" />}>
           New Segment
         </Button>
       </div>
@@ -153,19 +202,34 @@ export default function SegmentsPage() {
                 <Select
                   options={attributes}
                   value={c.attribute}
-                  onChange={(v) => updateCondition(c.id, "attribute", v)}
+                  onChange={(v) => {
+                    const newConditions = conditions.map((cond) =>
+                      cond.id === c.id ? { ...cond, attribute: v } : cond
+                    );
+                    setConditions(newConditions);
+                  }}
                   className="w-44"
                 />
                 <Select
                   options={operators}
                   value={c.operator}
-                  onChange={(v) => updateCondition(c.id, "operator", v)}
+                  onChange={(v) => {
+                    const newConditions = conditions.map((cond) =>
+                      cond.id === c.id ? { ...cond, operator: v } : cond
+                    );
+                    setConditions(newConditions);
+                  }}
                   className="w-36"
                 />
                 <Input
                   placeholder="Value"
                   value={c.value}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateCondition(c.id, "value", e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const newConditions = conditions.map((cond) =>
+                      cond.id === c.id ? { ...cond, value: e.target.value } : cond
+                    );
+                    setConditions(newConditions);
+                  }}
                   containerClassName="w-36"
                 />
                 <Button
@@ -187,26 +251,36 @@ export default function SegmentsPage() {
             <div className="flex items-center gap-2 text-sm">
               <Users className="h-4 w-4 text-text-muted" />
               <span className="text-text-muted">Estimated reach:</span>
-              <span className="font-semibold text-text-primary">~3,200 subscribers</span>
+              <span className="font-semibold text-text-primary">
+                {previewCount !== null ? `~${formatNumber(previewCount)} subscribers` : "Click preview"}
+              </span>
             </div>
-            <Button size="sm" onClick={() => addToast("Segment created from rules!", "success")}>
-              <Hash className="mr-1 h-3 w-3" /> Create Segment
-            </Button>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={handlePreviewCount} loading={previewLoading} icon={<Hash className="h-3 w-3" />}>
+                Preview Count
+              </Button>
+              <Button size="sm" onClick={handleCreateSegment}>
+                <Hash className="mr-1 h-3 w-3" /> Create Segment
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      <StateContainer
-        state={state}
-        emptyMessage="No segments yet. Create one using the rule builder above."
-      >
+      {segments.length === 0 ? (
+        <EmptyState
+          icon={<Users className="h-8 w-8" />}
+          title="No segments yet"
+          description="Create one using the rule builder above."
+        />
+      ) : (
         <DataTable
           columns={columns}
-          data={mockSegments}
+          data={segments}
           keyExtractor={(s) => s.id}
           sortable
         />
-      </StateContainer>
+      )}
     </div>
   );
 }
