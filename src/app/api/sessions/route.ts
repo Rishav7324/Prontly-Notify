@@ -1,8 +1,8 @@
 "use server";
 
-import { auth } from "@/lib/firebase/admin";
+import { requireAuth } from "@/lib/auth/guards";
+import { executeQuery, generateUUID } from "@/lib/db";
 import { z } from "zod";
-import { v4 } from "uuid";
 
 const SessionSchema = z.object({
   userAgent: z.string().optional(),
@@ -10,48 +10,54 @@ const SessionSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const session = await auth.verifyRequest(request);
-  if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
-
   try {
+    const auth = await requireAuth();
     const body = await request.json();
     const { userAgent, ip } = SessionSchema.parse(body);
 
-    const token = v4();
+    const token = generateUUID();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
-    const stmt = session.env.DB.prepare(
-      "INSERT INTO sessions (id, workspace_id, user_id, token, user_agent, ip, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    await executeQuery(
+      "INSERT INTO sessions (id, workspace_id, user_id, token, user_agent, ip, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [generateUUID(), auth.workspaceId, auth.userId, token, userAgent ?? null, ip ?? null, expiresAt]
     );
-    await stmt.bind(v4(), session.workspaceId, session.uid, token, userAgent ?? null, ip ?? null, expiresAt).run();
 
     return Response.json({ token, expiresAt });
   } catch (err) {
     if (err instanceof z.ZodError) return Response.json({ error: err.issues }, { status: 400 });
+    if (err instanceof Error && err.message.includes("Missing or invalid")) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
-export async function GET(request: Request) {
-  const session = await auth.verifyRequest(request);
-  if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
-
-  const { results } = await session.env.DB.prepare(
-    "SELECT id, token, user_agent, ip, created_at, expires_at FROM sessions WHERE workspace_id = ? AND user_id = ? AND expires_at > datetime('now') ORDER BY created_at DESC"
-  ).bind(session.workspaceId, session.uid).all();
-
-  return Response.json({ sessions: results });
+export async function GET() {
+  try {
+    const auth = await requireAuth();
+    const results = await executeQuery(
+      "SELECT id, token, user_agent, ip, created_at, expires_at FROM sessions WHERE workspace_id = ? AND user_id = ? AND expires_at > datetime('now') ORDER BY created_at DESC",
+      [auth.workspaceId, auth.userId]
+    );
+    return Response.json({ sessions: results });
+  } catch {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
 }
 
 export async function DELETE(request: Request) {
-  const session = await auth.verifyRequest(request);
-  if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const auth = await requireAuth();
+    const { id } = await request.json();
+    if (!id) return Response.json({ error: "Session ID required" }, { status: 400 });
 
-  const { id } = await request.json();
-  if (!id) return Response.json({ error: "Session ID required" }, { status: 400 });
-
-  await session.env.DB.prepare("DELETE FROM sessions WHERE id = ? AND workspace_id = ? AND user_id = ?")
-    .bind(id, session.workspaceId, session.uid).run();
-
-  return Response.json({ success: true });
+    await executeQuery(
+      "DELETE FROM sessions WHERE id = ? AND workspace_id = ? AND user_id = ?",
+      [id, auth.workspaceId, auth.userId]
+    );
+    return Response.json({ success: true });
+  } catch {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
 }

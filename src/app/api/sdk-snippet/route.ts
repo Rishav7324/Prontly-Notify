@@ -1,22 +1,26 @@
 "use server";
 
-import { auth } from "@/lib/firebase/admin";
+import { requireAuth } from "@/lib/auth/guards";
+import { executeQuery } from "@/lib/db";
 
 export async function GET(request: Request) {
-  const session = await auth.verifyRequest(request);
-  if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const auth = await requireAuth();
+    const { searchParams } = new URL(request.url);
+    const siteId = searchParams.get("siteId");
+    const subscriberId = searchParams.get("subscriberId");
 
-  const { searchParams } = new URL(request.url);
-  const siteId = searchParams.get("siteId");
-  const subscriberId = searchParams.get("subscriberId");
+    if (!siteId) return Response.json({ error: "siteId is required" }, { status: 400 });
 
-  if (!siteId) return Response.json({ error: "siteId is required" }, { status: 400 });
+    const sites = await executeQuery(
+      "SELECT public_key FROM sites WHERE id = ? AND workspace_id = ?",
+      [siteId, auth.workspaceId]
+    );
+    if (!sites || sites.length === 0) return Response.json({ error: "Site not found" }, { status: 404 });
 
-  const site = await session.env.DB.prepare("SELECT * FROM sites WHERE id = ? AND workspace_id = ?")
-    .bind(siteId, session.workspaceId).first();
-  if (!site) return Response.json({ error: "Site not found" }, { status: 404 });
+    const site = sites[0] as { public_key: string };
 
-  const script = `
+    const script = `
 (function() {
   var key = '${site.public_key}';
   var workerUrl = '${process.env.NEXT_PUBLIC_SITE_URL}/sw.js';
@@ -61,10 +65,13 @@ export async function GET(request: Request) {
 })();
 `;
 
-  return new Response(script, {
-    headers: {
-      "Content-Type": "application/javascript",
-      "Cache-Control": "public, max-age=3600",
-    },
-  });
+    return new Response(script, {
+      headers: {
+        "Content-Type": "application/javascript",
+        "Cache-Control": "public, max-age=3600",
+      },
+    });
+  } catch {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
 }

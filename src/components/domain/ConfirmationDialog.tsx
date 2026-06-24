@@ -62,7 +62,7 @@ export function ConfirmationDialog({
         <div className="flex justify-end gap-3 pt-2">
           <Button variant="outline" onClick={onCancel}>{cancelLabel}</Button>
           <Button
-            variant={variant === "danger" ? "danger" : "primary"}
+            variant={variant === "danger" ? "destructive" : "primary"}
             onClick={handleConfirm}
             loading={loading}
             disabled={requireReason && !reason.trim()}
