@@ -36,10 +36,8 @@ export async function POST(
     }
 
     const subscribers = await executeQuery<any>(
-      `SELECT id, fcm_token FROM subscribers
-       WHERE site_id = ? AND status = 'active'
-       ${campaign.segment_id ? `AND id IN (SELECT subscriber_id FROM segment_subscribers WHERE segment_id = ?)` : ""}`,
-      campaign.segment_id ? [campaign.site_id, campaign.segment_id] : [campaign.site_id]
+      `SELECT id, fcm_token FROM subscribers WHERE site_id = ? AND status = 'active'`,
+      [campaign.site_id]
     );
 
     if (subscribers.length === 0) {

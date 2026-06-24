@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, Clock, Share2, Linkedin, Twitter, Facebook, ArrowLeft } from "lucide-react";
+import { Calendar, Clock, Share2, Globe, MessageCircle, ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
 export const metadata: Metadata = {
@@ -154,33 +154,27 @@ export default async function BlogPostPage({ params }: PageProps) {
               Share this post
             </span>
             <div className="flex gap-2">
-              <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(shareUrl)}`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener')}
                 className="flex size-9 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
                 aria-label="Share on Twitter"
               >
-                <Twitter className="size-4" />
-              </a>
-              <a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                <Globe className="size-4" />
+              </button>
+              <button
+                onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener')}
                 className="flex size-9 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
                 aria-label="Share on LinkedIn"
               >
-                <Linkedin className="size-4" />
-              </a>
-              <a
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                <MessageCircle className="size-4" />
+              </button>
+              <button
+                onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener')}
                 className="flex size-9 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
                 aria-label="Share on Facebook"
               >
-                <Facebook className="size-4" />
-              </a>
+                <Share2 className="size-4" />
+              </button>
             </div>
           </div>
 

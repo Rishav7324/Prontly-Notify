@@ -240,7 +240,7 @@ export default function AdminSites() {
               Cancel
             </Button>
             <Button
-              variant={actionModal?.action === "disable" ? "destructive" : "warning"}
+              variant={actionModal?.action === "disable" ? "destructive" : "secondary"}
               disabled={actionReason.trim().length < 10}
               onClick={handleAction}
             >
