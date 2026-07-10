@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, messageId: result.messageId });
   } catch (err: any) {
     return NextResponse.json(
-      { success: false, error: err.message || "Failed to send reset email" },
+      { success: false, error: err?.message || "Failed to send reset email" },
       { status: 500 }
     );
   }

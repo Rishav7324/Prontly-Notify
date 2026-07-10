@@ -80,7 +80,7 @@ export function blogPostingSchema(post: {
         url: `https://notify.prontly.in/blog/${post.slug}`,
         datePublished: post.datePublished,
         dateModified: post.dateModified ?? post.datePublished,
-        image: post.imageUrl ?? "https://notify.prontly.in/og-default.png",
+        image: post.imageUrl ?? "https://notify.prontly.in/og-default.webp",
         author: {
           "@type": "Person",
           name: post.authorName,

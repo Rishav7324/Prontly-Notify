@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description: "Send AI-powered browser push notifications to your website visitors. Free forever plan, no credit card required.",
     url: "https://notify.prontly.in",
     siteName: "Prontly Notify",
-    images: [{ url: "https://notify.prontly.in/og/default.png", width: 1200, height: 630, alt: "Prontly Notify — Browser push notification platform" }],
+    images: [{ url: "https://notify.prontly.in/og/default.webp", width: 1200, height: 630, alt: "Prontly Notify — Browser push notification platform" }],
     locale: "en_IN",
     type: "website",
   },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Prontly Notify — Browser Push Notifications for Websites",
     description: "Send AI-powered browser push notifications to your website visitors. Free forever plan.",
-    images: ["https://notify.prontly.in/og/default.png"],
+    images: ["https://notify.prontly.in/og/default.webp"],
   },
 };
 
