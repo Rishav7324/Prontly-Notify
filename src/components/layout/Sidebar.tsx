@@ -32,7 +32,7 @@ const navItems: NavItem[] = [
   { label: "Automation", href: "/dashboard/automation", icon: Workflow },
   { label: "Segments", href: "/dashboard/segments", icon: Shuffle },
   { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { label: "AI Tools", href: "/dashboard/ai-tools", icon: Sparkles },
+  { label: "AI Tools", href: "/dashboard/ai", icon: Sparkles },
   { label: "Integration", href: "/dashboard/integration", icon: Puzzle },
   { label: "Team", href: "/dashboard/team", icon: UserCircle },
   { label: "API Keys", href: "/dashboard/api-keys", icon: KeyRound },
@@ -46,9 +46,7 @@ export function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 z-30 hidden h-screen w-[260px] flex-col border-r border-border bg-surface lg:flex">
       <div className="flex h-16 items-center gap-3 border-b border-border px-6">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">
-          P
-        </div>
+        <img src="/logo.svg" alt="Prontly Notify" className="h-8 w-8 rounded-lg" />
         <span className="font-display text-lg font-bold text-primary">
           Prontly
         </span>

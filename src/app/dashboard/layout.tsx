@@ -14,7 +14,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Sidebar />
           <div className="flex flex-1 flex-col lg:pl-[260px]">
             <TopBar />
-            <main className="flex-1 px-4 pb-24 pt-6 lg:px-8 lg:pb-6">
+            <main className="flex-1 px-4 pb-24 pt-6 lg:px-8 lg:pb-6 animate-fade-in">
               {children}
             </main>
           </div>
