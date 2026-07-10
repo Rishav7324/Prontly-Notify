@@ -22,21 +22,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
       setUser(user);
       setLoading(false);
-      if (user) {
-        try {
-          const idToken = await user.getIdToken();
-          await fetch("/api/auth/session", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ idToken }),
-          });
-        } catch {
-          // ponytail: session cookie refresh failure is non-fatal
-        }
-      }
     });
     return () => unsubscribe();
   }, []);

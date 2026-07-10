@@ -1,0 +1,40 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="64" y1="64" x2="448" y2="448" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded Squircle -->
+  <rect
+    x="48"
+    y="48"
+    width="416"
+    height="416"
+    rx="104"
+    fill="url(#bg)"
+  />
+
+  <!-- Notification Pulse -->
+  <circle cx="180" cy="256" r="22" fill="white"/>
+
+  <path
+    d="M222 194
+       A74 74 0 0 1 222 318"
+    stroke="white"
+    stroke-width="24"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <path
+    d="M248 150
+       A122 122 0 0 1 248 362"
+    stroke="white"
+    stroke-width="24"
+    stroke-linecap="round"
+    fill="none"
+  />
+</svg>
+
