@@ -40,7 +40,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_FIREBASE_VAPID_KEY: z.string().optional(),
 
   // App
-  NEXT_PUBLIC_APP_URL: z.string().default("http://localhost:3000"),
+  NEXT_PUBLIC_APP_URL: z.string().default("https://notify.prontly.in"),
 
   // Brevo (transactional email)
   BREVO_API_KEY: z.string().optional(),

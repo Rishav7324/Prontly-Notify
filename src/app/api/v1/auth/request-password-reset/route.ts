@@ -25,10 +25,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: rateCheck.reason }, { status: 429 });
     }
 
-    const appUrl = request.nextUrl?.origin || request.headers.get("origin") || undefined;
-
     let link: string;
     try {
+      const appUrl = request.headers.get("origin") || request.nextUrl?.origin || undefined;
       const result = await generatePasswordResetLink(email, appUrl);
       link = result.link;
     } catch (err: any) {
