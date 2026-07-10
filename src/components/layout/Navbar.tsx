@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 
 const navLinks = [
   { label: "Product", href: "/features" },
@@ -13,6 +14,7 @@ const navLinks = [
 ];
 
 export function Navbar() {
+  const { user, loading } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -67,19 +69,31 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 shuffle-0">
-          <Link
-            href="/login"
-            className="hidden md:inline-flex text-[13px] text-smoke px-4 py-1.5 rounded-full border border-stone transition-colors hover:border-ink hover:text-ink"
-          >
-            Log in
-          </Link>
-          <Link
-            href="/signup"
-            className="text-[13px] font-semibold text-eggshell px-4 py-1.5 rounded-full bg-ink transition-all hover:bg-graphite"
-          >
-            Start Free
-          </Link>
+        <div className="flex items-center gap-2">
+          {loading ? null : user ? (
+            <Link
+              href="/dashboard"
+              className="hidden md:inline-flex items-center gap-1.5 text-[13px] font-semibold text-eggshell px-4 py-1.5 rounded-full bg-ink transition-all hover:bg-graphite"
+            >
+              <LayoutDashboard className="h-3.5 w-3.5" />
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="hidden md:inline-flex text-[13px] text-smoke px-4 py-1.5 rounded-full border border-stone transition-colors hover:border-ink hover:text-ink"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/signup"
+                className="text-[13px] font-semibold text-eggshell px-4 py-1.5 rounded-full bg-ink transition-all hover:bg-graphite"
+              >
+                Start Free
+              </Link>
+            </>
+          )}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="md:hidden flex items-center justify-center w-8 h-8 text-ink touch-target"
@@ -105,20 +119,33 @@ export function Navbar() {
             ))}
           </nav>
           <div className="flex flex-col items-center gap-4">
-            <Link
-              href="/login"
-              onClick={() => setMobileOpen(false)}
-              className="text-base text-smoke px-8 py-2.5 rounded-full border border-stone transition-colors hover:border-ink hover:text-ink"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/signup"
-              onClick={() => setMobileOpen(false)}
-              className="text-base font-semibold text-eggshell px-8 py-2.5 rounded-full bg-ink transition-all hover:bg-graphite"
-            >
-              Start Free
-            </Link>
+            {user ? (
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2 text-base font-semibold text-eggshell px-8 py-2.5 rounded-full bg-ink transition-all hover:bg-graphite"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="text-base text-smoke px-8 py-2.5 rounded-full border border-stone transition-colors hover:border-ink hover:text-ink"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => setMobileOpen(false)}
+                  className="text-base font-semibold text-eggshell px-8 py-2.5 rounded-full bg-ink transition-all hover:bg-graphite"
+                >
+                  Start Free
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
