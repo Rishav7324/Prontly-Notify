@@ -14,9 +14,7 @@ function LoginLeftPanel() {
   return (
     <div className="flex flex-col w-full h-full">
       <div className="flex items-center gap-2.5">
-        <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10">
-          <Bell className="size-5 text-primary" />
-        </div>
+        <img src="/logo.svg" alt="Prontly Notify" className="size-9 rounded-lg" />
         <span className="text-lg font-bold text-text-primary">
           Prontly Notify
         </span>
@@ -65,9 +63,7 @@ function DefaultLeftPanel() {
     <div className="relative z-10 max-w-lg">
       <div className="glass rounded-2xl p-10 mb-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-            <Bell className="size-5 text-primary" />
-          </div>
+          <img src="/logo.svg" alt="Prontly Notify" className="size-10 rounded-xl" />
           <span className="text-xl font-bold text-text-primary">
             Prontly Notify
           </span>

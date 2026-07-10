@@ -106,7 +106,7 @@ async function generateOobLink(params: {
   appUrl?: string;
 }): Promise<{ oobCode: string; link: string }> {
   const base = getAppUrl(params.appUrl);
-  const path = params.requestType === "PASSWORD_RESET" ? "reset-password/confirm" : "verify-email/confirm";
+  const path = params.requestType === "PASSWORD_RESET" ? "auth/reset-password/confirm" : "auth/verify-email/confirm";
   const continueUrl = `${base}/${path}`;
 
   const body: Record<string, any> = {

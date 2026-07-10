@@ -153,7 +153,7 @@ function LoginForm() {
         </div>
       )}
 
-      <form onSubmit={handleEmailLogin} className="space-y-4">
+      <form onSubmit={handleEmailLogin} className="space-y-4 animate-fade-up-sm" style={{ animationDelay: "0.05s" }}>
         <Input
           label="Email"
           type="email"
@@ -183,12 +183,12 @@ function LoginForm() {
           </div>
         </div>
 
-        <Button type="submit" loading={loading} className="w-full" size="lg">
+        <Button type="submit" loading={loading} className="w-full transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]" size="lg">
           Log In
         </Button>
       </form>
 
-      <div className="relative my-6">
+      <div className="relative my-6 animate-fade-in" style={{ animationDelay: "0.15s" }}>
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-border" />
         </div>
@@ -199,7 +199,7 @@ function LoginForm() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 animate-fade-up-sm" style={{ animationDelay: "0.2s" }}>
         <OAuthButton
           provider="google"
           onClick={() => handleOAuth("google")}
@@ -212,7 +212,7 @@ function LoginForm() {
         />
       </div>
 
-      <p className="mt-8 text-center text-sm text-text-muted">
+      <p className="mt-8 text-center text-sm text-text-muted animate-fade-in" style={{ animationDelay: "0.3s" }}>
         New here?{" "}
         <Link
           href="/signup"

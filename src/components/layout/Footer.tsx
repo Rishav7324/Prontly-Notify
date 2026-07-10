@@ -68,9 +68,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12">
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-ink text-sm font-bold text-eggshell">
-                P
-              </div>
+              <img src="/logo.svg" alt="Prontly Notify" className="w-9 h-9 rounded-lg" />
               <span className="text-lg font-bold text-ink font-display">
                 Prontly
               </span>

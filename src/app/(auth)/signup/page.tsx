@@ -204,7 +204,7 @@ function SignupForm() {
         </div>
       )}
 
-      <form onSubmit={handleSignup} className="space-y-4">
+      <form onSubmit={handleSignup} className="space-y-4 animate-fade-up-sm" style={{ animationDelay: "0.05s" }}>
         <Input
           label="Full Name"
           type="text"
@@ -259,12 +259,12 @@ function SignupForm() {
           </span>
         </label>
 
-        <Button type="submit" loading={loading} className="w-full" size="lg">
+        <Button type="submit" loading={loading} className="w-full transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]" size="lg">
           Create Account
         </Button>
       </form>
 
-      <div className="relative my-6">
+      <div className="relative my-6 animate-fade-in" style={{ animationDelay: "0.15s" }}>
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-border" />
         </div>
@@ -275,7 +275,7 @@ function SignupForm() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 animate-fade-up-sm" style={{ animationDelay: "0.2s" }}>
         <OAuthButton
           provider="google"
           onClick={() => handleOAuth("google")}
@@ -288,7 +288,7 @@ function SignupForm() {
         />
       </div>
 
-      <p className="mt-8 text-center text-sm text-text-muted">
+      <p className="mt-8 text-center text-sm text-text-muted animate-fade-in" style={{ animationDelay: "0.3s" }}>
         Already have an account?{" "}
         <Link
           href="/login"

@@ -39,11 +39,13 @@ export function Navbar() {
             : "bg-eggshell/70 backdrop-blur-lg"
         )}
       >
-        <div className="flex items-center gap-2 shuffle-0">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-ink text-xs font-bold text-eggshell">
-            P
-          </div>
-          <Link href="/">
+        <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
+            <img
+              src="/logo.svg"
+              alt="Prontly Notify"
+              className="h-6 w-6 rounded-md"
+            />
             <span className="hidden sm:inline text-sm text-ink font-display font-semibold">
               Prontly Notify
             </span>

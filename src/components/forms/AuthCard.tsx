@@ -19,9 +19,7 @@ export function AuthCard({ children, title, subtitle, showBrandPanel = true, cla
         <div className="hidden lg:flex w-[45%] flex-col justify-between bg-surface p-12">
           <div>
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-ink">
-                <span className="text-lg font-bold text-eggshell">P</span>
-              </div>
+              <img src="/logo.svg" alt="Prontly Notify" className="size-10 rounded-xl" />
               <span className="text-xl font-bold text-ink font-display">Prontly</span>
             </div>
             <blockquote className="mt-16 max-w-md">
@@ -44,14 +42,12 @@ export function AuthCard({ children, title, subtitle, showBrandPanel = true, cla
         showBrandPanel && "lg:w-[55%]"
       )}>
         <div className={cn(
-          "w-full max-w-[420px] rounded-2xl border border-border bg-surface-glass p-6 sm:p-8 backdrop-blur-xl",
+          "w-full max-w-[420px] rounded-2xl border border-border bg-surface-glass p-6 sm:p-8 backdrop-blur-xl animate-fade-up",
           className
         )}>
           <div className="mb-6 text-center">
             <div className="mb-2 flex justify-center lg:hidden">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-ink">
-                <span className="text-lg font-bold text-eggshell">P</span>
-              </div>
+              <img src="/logo.svg" alt="Prontly Notify" className="size-10 rounded-xl" />
             </div>
             <h1 className="text-xl font-semibold text-text-primary">{title}</h1>
             {subtitle && <p className="mt-1 text-sm text-text-muted">{subtitle}</p>}
