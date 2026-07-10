@@ -230,6 +230,10 @@ declare module "firebase/auth" {
   export function sendPasswordResetEmail(auth: Auth, email: string, actionCodeSettings?: ActionCodeSettings): Promise<void>;
   export function sendEmailVerification(user: any, actionCodeSettings?: ActionCodeSettings): Promise<void>;
   export function updateProfile(user: any, profile: { displayName?: string; photoURL?: string }): Promise<void>;
+  export function applyActionCode(auth: Auth, oobCode: string): Promise<void>;
+  export function checkActionCode(auth: Auth, oobCode: string): Promise<any>;
+  export function verifyPasswordResetCode(auth: Auth, oobCode: string): Promise<string>;
+  export function confirmPasswordReset(auth: Auth, oobCode: string, newPassword: string): Promise<void>;
   export class GoogleAuthProvider {
     static PROVIDER_ID: string;
     constructor();

@@ -41,6 +41,11 @@ const envSchema = z.object({
 
   // App
   NEXT_PUBLIC_APP_URL: z.string().default("http://localhost:3000"),
+
+  // Brevo (transactional email)
+  BREVO_API_KEY: z.string().optional(),
+  EMAIL_FROM_TRANSACTIONAL: z.string().default("hello@prontly.in"),
+  BREVO_DAILY_SEND_LIMIT: z.string().default("300"),
 });
 
 export function getEnv() {

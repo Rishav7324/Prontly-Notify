@@ -87,23 +87,4 @@ export async function getUserByEmail(email: string) {
   return null;
 }
 
-export async function generatePasswordResetLink(email: string) {
-  const env = getEnv();
-  const apiKey = env.NEXT_PUBLIC_FIREBASE_API_KEY;
-  if (!apiKey) return null;
-  const res = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        requestType: "PASSWORD_RESET",
-        email,
-      }),
-    }
-  );
-  const data = await res.json();
-  return data.oobLink || null;
-}
-
 export { getAdminApp };

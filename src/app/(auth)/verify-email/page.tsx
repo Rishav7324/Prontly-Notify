@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { AuthCard } from "@/components/forms/AuthCard";
 import { ProgressBar } from "@/components/ui/ProgressBar";
-import { Mail, RefreshCw, AlertCircle, CheckCircle2, ExternalLink } from "lucide-react";
+import { Mail, RefreshCw, AlertCircle, CheckCircle2 } from "lucide-react";
 
 function maskEmail(email: string): string {
   const [local, domain] = email.split("@");
@@ -93,10 +93,10 @@ export default function VerifyEmailPage() {
     setResending(true);
     try {
       const idToken = await user.getIdToken();
-      const res = await fetch("/api/v1/auth/send-verification", {
+      const res = await fetch("/api/v1/auth/resend-verification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken, email: user.email }),
+        body: JSON.stringify({ idToken }),
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error || "Failed to send");
@@ -111,7 +111,7 @@ export default function VerifyEmailPage() {
   if (authLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <RefreshCw className="size-6 animate-spin text-[#3B82F6]" />
+        <RefreshCw className="size-6 animate-spin text-primary" />
       </div>
     );
   }
@@ -122,11 +122,11 @@ export default function VerifyEmailPage() {
     return (
       <AuthCard title="Email verified!">
         <div className="text-center">
-          <div className="mx-auto mb-6 flex size-14 items-center justify-center rounded-full bg-[#22C55E]/10">
-            <CheckCircle2 className="size-7 text-[#22C55E]" />
+          <div className="mx-auto mb-6 flex size-14 items-center justify-center rounded-full bg-success/10">
+            <CheckCircle2 className="size-7 text-success" />
           </div>
-          <p className="mb-2 text-sm text-[#94A3B8]">Your email has been verified successfully.</p>
-          <p className="mb-6 text-xs text-[#64748B]">Redirecting to onboarding...</p>
+          <p className="mb-2 text-sm text-text-secondary">Your email has been verified successfully.</p>
+          <p className="mb-6 text-xs text-text-muted">Redirecting to onboarding...</p>
           <ProgressBar value={redirectProgress} size="sm" />
         </div>
       </AuthCard>
@@ -138,28 +138,20 @@ export default function VerifyEmailPage() {
   return (
     <AuthCard title="Verify your email">
       <div className="text-center">
-        <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-[#3B82F6]/10">
-          <svg
-            className="size-8 text-[#3B82F6]"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.5}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-          </svg>
+        <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-primary/5">
+          <Mail className="size-8 text-primary" />
         </div>
 
-        <p className="mb-2 text-sm text-[#94A3B8] leading-relaxed">
+        <p className="mb-2 text-sm text-text-secondary leading-relaxed">
           We sent a verification link to{" "}
-          <span className="font-medium text-[#F8FAFC]">{displayEmail}</span>
+          <span className="font-medium text-text-primary">{displayEmail}</span>
         </p>
-        <p className="mb-8 text-xs text-[#64748B]">
+        <p className="mb-8 text-xs text-text-muted">
           Click the link to verify your account. This page refreshes automatically.
         </p>
 
         {error && (
-          <div className="mb-6 flex items-start gap-3 rounded-lg border border-[#EF4444]/30 bg-[#EF4444]/10 p-3 text-sm text-[#EF4444] text-left">
+          <div className="mb-6 flex items-start gap-3 rounded-lg border border-error/30 bg-error/10 p-3 text-sm text-error text-left">
             <AlertCircle className="mt-0.5 size-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -177,37 +169,16 @@ export default function VerifyEmailPage() {
           {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend email"}
         </Button>
 
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <a
-            href="https://mail.google.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] px-4 py-2.5 text-sm font-medium text-[#F8FAFC] transition-colors hover:bg-black/5"
-          >
-            <ExternalLink className="size-3.5" />
-            Gmail
-          </a>
-          <a
-            href="https://outlook.live.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] px-4 py-2.5 text-sm font-medium text-[#F8FAFC] transition-colors hover:bg-black/5"
-          >
-            <ExternalLink className="size-3.5" />
-            Outlook
-          </a>
-        </div>
-
         <div className="mt-6 space-y-2">
           <Link
             href="/login"
-            className="block text-sm text-[#64748B] hover:text-[#94A3B8] transition-colors"
+            className="block text-sm text-text-muted hover:text-text-secondary transition-colors"
           >
             Change email address
           </Link>
           <Link
             href="/login"
-            className="block text-sm text-[#3B82F6] hover:text-[#60A5FA] transition-colors"
+            className="block text-sm text-primary hover:text-primary-400 transition-colors"
           >
             Back to login
           </Link>
