@@ -97,6 +97,7 @@ export default function FAQPage() {
           <input
             type="text"
             placeholder="Search questions..."
+            aria-label="Search questions"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full rounded-xl border border-border bg-surface py-3 pl-10 pr-4 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30"

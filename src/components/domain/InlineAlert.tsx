@@ -38,7 +38,7 @@ export function InlineAlert({ variant = "info", title, message, dismissible, onD
         <p>{message}</p>
       </div>
       {dismissible && onDismiss && (
-        <button onClick={onDismiss} className="shrink-0 opacity-60 hover:opacity-100 transition-opacity">
+        <button onClick={onDismiss} aria-label="Dismiss" className="shrink-0 opacity-60 hover:opacity-100 transition-opacity">
           <X className="size-4" />
         </button>
       )}

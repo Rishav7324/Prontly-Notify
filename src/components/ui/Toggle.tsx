@@ -38,12 +38,12 @@ export function Toggle({
           checked={checked}
           onChange={(e) => onChange?.(e.target.checked)}
           disabled={disabled}
-          className="sr-only"
+          className="sr-only peer"
           {...props}
         />
         <div
           className={cn(
-            "h-6 w-11 rounded-full transition-colors duration-200",
+            "h-6 w-11 rounded-full transition-colors duration-200 peer-focus-visible:outline-2 peer-focus-visible:outline-primary peer-focus-visible:outline-offset-2",
             checked ? "bg-primary" : "bg-black/15"
           )}
         />

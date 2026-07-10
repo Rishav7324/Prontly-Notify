@@ -149,6 +149,7 @@ export function MobileTabBar() {
           </span>
           <button
             onClick={() => setDrawerOpen(false)}
+            aria-label="Close navigation"
             className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-black/5 hover:text-text-primary"
           >
             <X className="h-5 w-5" />

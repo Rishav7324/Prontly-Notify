@@ -44,7 +44,7 @@ export function ConfirmationDialog({
             <h3 className="text-lg font-semibold text-text-primary">{title}</h3>
             <p className="mt-1 text-sm text-text-muted">{message}</p>
           </div>
-          <button onClick={onCancel} className="text-text-muted hover:text-text-primary">
+          <button onClick={onCancel} aria-label="Close" className="text-text-muted hover:text-text-primary">
             <X className="size-5" />
           </button>
         </div>

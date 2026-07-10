@@ -97,6 +97,7 @@ export function Footer() {
               <input
                 type="email"
                 placeholder="Enter your email"
+                aria-label="Email for newsletter"
                 className="flex-1 h-10 px-3 text-sm rounded-lg bg-eggshell border border-stone text-ink placeholder-ash focus:outline-none focus:border-ink"
               />
               <button

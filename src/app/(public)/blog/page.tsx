@@ -124,6 +124,7 @@ export default function BlogPage() {
                 <input
                   type="email"
                   placeholder="Enter your email"
+                  aria-label="Email for newsletter"
                   className="flex-1 rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-primary/50"
                 />
                 <Button type="submit" size="md">

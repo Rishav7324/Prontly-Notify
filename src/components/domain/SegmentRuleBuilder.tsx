@@ -107,7 +107,7 @@ export function SegmentRuleBuilder({ rules, onChange, className }: SegmentRuleBu
               <span className="text-xs text-text-muted">Condition group {gi + 1}</span>
             </div>
             {rules.length > 1 && (
-              <button onClick={() => removeGroup(group.id)} className="text-text-muted hover:text-error transition-colors">
+              <button onClick={() => removeGroup(group.id)} aria-label="Remove group" className="text-text-muted hover:text-error transition-colors">
                 <X className="size-4" />
               </button>
             )}
@@ -135,7 +135,7 @@ export function SegmentRuleBuilder({ rules, onChange, className }: SegmentRuleBu
                   placeholder="Value"
                   className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-sm text-text-primary flex-1 min-w-[120px]"
                 />
-                <button onClick={() => removeCondition(group.id, condition.id)} className="text-text-muted hover:text-error transition-colors shrink-0">
+                <button onClick={() => removeCondition(group.id, condition.id)} aria-label="Remove condition" className="text-text-muted hover:text-error transition-colors shrink-0">
                   <X className="size-4" />
                 </button>
               </div>
