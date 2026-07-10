@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     const id = generateUUID();
     await executeQuery(
-      "INSERT INTO sites (id, workspace_id, name, domain, category, platform) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO sites (id, workspace_id, name, domain, category, platform, public_key) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [
         id,
         auth.workspaceId,
@@ -76,6 +76,7 @@ export async function POST(request: NextRequest) {
         parsed.data.domain,
         parsed.data.category || null,
         parsed.data.platform || null,
+        generateUUID(),
       ]
     );
 
