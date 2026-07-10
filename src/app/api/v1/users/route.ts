@@ -68,10 +68,7 @@ export async function POST(request: NextRequest) {
       [id, firebaseUid, body.email, body.name]
     );
 
-    const freePlan = await executeQuery<any>(
-      "SELECT id FROM plans WHERE id = 'free' LIMIT 1"
-    );
-    const planId = freePlan.length > 0 ? freePlan[0].id : (await executeQuery<any>("SELECT id FROM plans ORDER BY sort_order LIMIT 1"))[0].id;
+    const planId = body.plan || "free";
 
     const workspaceId = generateUUID();
     await executeQuery(
