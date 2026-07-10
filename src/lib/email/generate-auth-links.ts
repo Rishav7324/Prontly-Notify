@@ -1,7 +1,9 @@
 import "server-only";
 import { getAdminAuth } from "@/lib/auth/firebase-admin";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+function getAppUrl(override?: string): string {
+  return override || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+}
 
 const SCOPE = "https://www.googleapis.com/auth/identitytoolkit";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
@@ -101,8 +103,11 @@ async function generateOobLink(params: {
   requestType: string;
   email?: string;
   idToken?: string;
+  appUrl?: string;
 }): Promise<{ oobCode: string; link: string }> {
-  const continueUrl = `${APP_URL}/auth/${params.requestType === "PASSWORD_RESET" ? "reset-password/confirm" : "verify-email/confirm"}`;
+  const base = getAppUrl(params.appUrl);
+  const path = params.requestType === "PASSWORD_RESET" ? "reset-password/confirm" : "verify-email/confirm";
+  const continueUrl = `${base}/${path}`;
 
   const body: Record<string, any> = {
     requestType: params.requestType,
@@ -137,15 +142,17 @@ async function generateOobLink(params: {
     lang: "en",
     continueUrl,
   });
-  const link = `${APP_URL}/auth/${params.requestType === "PASSWORD_RESET" ? "reset-password/confirm" : "verify-email/confirm"}?${linkParams}`;
+  const link = `${base}/${path}?${linkParams}`;
 
   return { oobCode, link };
 }
 
 export async function generateEmailVerificationLink(
   idToken: string,
-  email?: string
+  email?: string,
+  appUrl?: string
 ): Promise<{ oobCode: string; link: string }> {
+  const base = getAppUrl(appUrl);
   const auth = getAdminAuth();
   if (auth && email && typeof auth.generateEmailVerificationLink === "function") {
     try {
@@ -157,12 +164,14 @@ export async function generateEmailVerificationLink(
       console.warn("Admin SDK generateEmailVerificationLink failed, falling back to OAuth2:", err?.message);
     }
   }
-  return generateOobLink({ requestType: "VERIFY_EMAIL", idToken });
+  return generateOobLink({ requestType: "VERIFY_EMAIL", idToken, appUrl });
 }
 
 export async function generatePasswordResetLink(
-  email: string
+  email: string,
+  appUrl?: string
 ): Promise<{ oobCode: string; link: string }> {
+  const base = getAppUrl(appUrl);
   const auth = getAdminAuth();
   if (auth && typeof auth.generatePasswordResetLink === "function") {
     try {
@@ -174,5 +183,5 @@ export async function generatePasswordResetLink(
       console.warn("Admin SDK generatePasswordResetLink failed, falling back to OAuth2:", err?.message);
     }
   }
-  return generateOobLink({ requestType: "PASSWORD_RESET", email });
+  return generateOobLink({ requestType: "PASSWORD_RESET", email, appUrl });
 }

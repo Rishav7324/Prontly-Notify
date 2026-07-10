@@ -39,9 +39,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: rateCheck.reason }, { status: 429 });
     }
 
+    const appUrl = request.nextUrl?.origin || request.headers.get("origin") || undefined;
+
     let link: string;
     try {
-      const result = await generateEmailVerificationLink(idToken, email);
+      const result = await generateEmailVerificationLink(idToken, email, appUrl);
       link = result.link;
     } catch (err: any) {
       console.error("generateEmailVerificationLink failed:", err?.message, err?.code, err?.stack);

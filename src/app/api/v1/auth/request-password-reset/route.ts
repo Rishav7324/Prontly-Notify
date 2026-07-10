@@ -25,9 +25,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: rateCheck.reason }, { status: 429 });
     }
 
+    const appUrl = request.nextUrl?.origin || request.headers.get("origin") || undefined;
+
     let link: string;
     try {
-      const result = await generatePasswordResetLink(email);
+      const result = await generatePasswordResetLink(email, appUrl);
       link = result.link;
     } catch (err: any) {
       console.error("generatePasswordResetLink failed:", err?.message, err?.code, err?.stack);
