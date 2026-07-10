@@ -91,7 +91,7 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center"
       role="dialog"
       aria-modal="true"
       aria-label={title}
@@ -104,25 +104,27 @@ export function Modal({
       <div
         ref={dialogRef}
         className={cn(
-          "relative w-full rounded-xl bg-surface border border-border shadow-xl animate-fade-in max-h-[85vh] overflow-y-auto",
+          "relative w-full animate-fade-in overflow-y-auto",
+          "inset-0 rounded-none max-h-none sm:max-h-[85vh] sm:rounded-xl sm:max-w-[calc(100vw-2rem)]",
+          "bg-surface border-border shadow-xl sm:border",
           sizeStyles[size]
         )}
       >
         {title && (
-          <div className="flex items-center justify-between border-b border-border px-6 py-4">
-            <h2 className="text-lg font-semibold text-text-primary">
+          <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-6 sm:py-4 sticky top-0 bg-surface z-10">
+            <h2 className="text-base sm:text-lg font-semibold text-text-primary">
               {title}
             </h2>
             <button
               onClick={onClose}
-              className="text-text-muted hover:text-text-secondary transition-colors"
+              className="flex size-8 items-center justify-center rounded-lg text-text-muted hover:text-text-secondary hover:bg-black/5 transition-colors"
               aria-label="Close modal"
             >
               <X className="size-5" />
             </button>
           </div>
         )}
-        <div className="p-6">{children}</div>
+        <div className="p-4 sm:p-6">{children}</div>
       </div>
     </div>
   );

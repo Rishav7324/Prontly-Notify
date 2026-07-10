@@ -110,4 +110,118 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* ── Responsive containers ── */
+  .container-marketing {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  @media (min-width: 768px) {
+    .container-marketing {
+      padding-left: 24px;
+      padding-right: 24px;
+      max-width: 1280px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-marketing {
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+  }
+
+  .container-dashboard {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  @media (min-width: 768px) {
+    .container-dashboard {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-dashboard {
+      padding-left: 32px;
+      padding-right: 32px;
+      max-width: 1440px;
+    }
+  }
+
+  /* ── Section responsive spacing ── */
+  .section-padding {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+  @media (min-width: 768px) {
+    .section-padding {
+      padding-top: 96px;
+      padding-bottom: 96px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .section-padding {
+      padding-top: 128px;
+      padding-bottom: 128px;
+    }
+  }
+
+  /* ── Responsive typography ── */
+  .heading-display {
+    font-size: 36px;
+    line-height: 1.1;
+  }
+  @media (min-width: 768px) {
+    .heading-display {
+      font-size: 56px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .heading-display {
+      font-size: 64px;
+    }
+  }
+
+  .heading-h2 {
+    font-size: 28px;
+    line-height: 1.2;
+  }
+  @media (min-width: 768px) {
+    .heading-h2 {
+      font-size: 36px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .heading-h2 {
+      font-size: 44px;
+    }
+  }
+
+  /* ── Touch targets ── */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Auth card (caps at 420px) ── */
+  .auth-card {
+    width: 100%;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── Mobile safe-area for bottom nav ── */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }

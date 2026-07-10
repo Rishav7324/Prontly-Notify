@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <AuthCard title="Check your inbox">
+      <AuthCard title="Check your inbox" showBrandPanel={false}>
         <div className="text-center">
           <div className="mx-auto mb-6 flex size-14 items-center justify-center rounded-full bg-success/10">
             <CheckCircle2 className="size-7 text-success" />
@@ -105,7 +105,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <AuthCard title="Reset your password">
+    <AuthCard title="Reset your password" showBrandPanel={false}>
       <div className="mb-6 flex justify-center">
         <div className="flex size-12 items-center justify-center rounded-full bg-primary/5">
           <Lock className="size-6 text-primary" />

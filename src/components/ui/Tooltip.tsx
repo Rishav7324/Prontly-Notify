@@ -38,7 +38,7 @@ const arrowStyles: Record<TooltipPosition, string> = {
 export function Tooltip({
   content,
   children,
-  delay = 300,
+  delay = 200,
   position = "top",
   className,
 }: TooltipProps) {
