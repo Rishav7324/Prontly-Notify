@@ -1,4 +1,5 @@
 import "server-only";
+import { getAdminAuth } from "@/lib/auth/firebase-admin";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -28,7 +29,11 @@ async function generateOobLink(params: {
     `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Origin": APP_URL,
+        "Referer": APP_URL + "/",
+      },
       body: JSON.stringify(body),
     }
   );
@@ -54,13 +59,36 @@ async function generateOobLink(params: {
 }
 
 export async function generateEmailVerificationLink(
-  idToken: string
+  idToken: string,
+  email?: string
 ): Promise<{ oobCode: string; link: string }> {
+  const auth = getAdminAuth();
+  if (auth && email && typeof auth.generateEmailVerificationLink === "function") {
+    try {
+      const link = await auth.generateEmailVerificationLink(email);
+      const url = new URL(link);
+      const oobCode = url.searchParams.get("oobCode") || "";
+      return { oobCode, link };
+    } catch (err: any) {
+      console.warn("Admin SDK generateEmailVerificationLink failed, falling back to REST:", err?.message);
+    }
+  }
   return generateOobLink({ requestType: "VERIFY_EMAIL", idToken });
 }
 
 export async function generatePasswordResetLink(
   email: string
 ): Promise<{ oobCode: string; link: string }> {
+  const auth = getAdminAuth();
+  if (auth && typeof auth.generatePasswordResetLink === "function") {
+    try {
+      const link = await auth.generatePasswordResetLink(email);
+      const url = new URL(link);
+      const oobCode = url.searchParams.get("oobCode") || "";
+      return { oobCode, link };
+    } catch (err: any) {
+      console.warn("Admin SDK generatePasswordResetLink failed, falling back to REST:", err?.message);
+    }
+  }
   return generateOobLink({ requestType: "PASSWORD_RESET", email });
 }

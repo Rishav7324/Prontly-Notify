@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     let link: string;
     try {
-      const result = await generateEmailVerificationLink(idToken);
+      const result = await generateEmailVerificationLink(idToken, email);
       link = result.link;
     } catch (err: any) {
       console.error("generateEmailVerificationLink failed:", err?.message, err?.code, err?.stack);

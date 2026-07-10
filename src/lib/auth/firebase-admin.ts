@@ -4,6 +4,18 @@ import { getEnv } from "@/lib/env";
 let adminApp: any = null;
 let adminAuth: any = null;
 
+function parseServiceAccount(raw: string): any {
+  try {
+    return JSON.parse(raw);
+  } catch {
+    try {
+      return JSON.parse(Buffer.from(raw, "base64").toString("utf-8"));
+    } catch {
+      return null;
+    }
+  }
+}
+
 function getAdminApp() {
   if (adminApp) return adminApp;
   try {
@@ -12,17 +24,25 @@ function getAdminApp() {
     if (!env.FIREBASE_SERVICE_ACCOUNT_JSON) {
       return null;
     }
-    const serviceAccount = JSON.parse(
-      Buffer.from(env.FIREBASE_SERVICE_ACCOUNT_JSON, "base64").toString("utf-8")
-    );
-    adminApp = firebaseAdmin.initializeApp({
-      credential: firebaseAdmin.credential.cert(serviceAccount),
-    });
+    const serviceAccount = parseServiceAccount(env.FIREBASE_SERVICE_ACCOUNT_JSON);
+    if (!serviceAccount) return null;
+    if (firebaseAdmin.apps.length === 0) {
+      adminApp = firebaseAdmin.initializeApp({
+        credential: firebaseAdmin.credential.cert(serviceAccount),
+      });
+    } else {
+      adminApp = firebaseAdmin.apps[0];
+    }
     adminAuth = firebaseAdmin.auth();
     return adminApp;
   } catch {
     return null;
   }
+}
+
+export function getAdminAuth() {
+  getAdminApp();
+  return adminAuth;
 }
 
 async function verifyWithRestApi(idToken: string) {
