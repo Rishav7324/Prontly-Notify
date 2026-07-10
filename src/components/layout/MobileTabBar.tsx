@@ -21,7 +21,7 @@ import {
   CreditCard,
   Settings,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import type { Icon as LucideIcon } from "lucide-react";
 
 interface TabItem {
   label: string;

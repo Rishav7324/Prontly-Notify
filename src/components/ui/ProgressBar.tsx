@@ -3,12 +3,21 @@
 import { type HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
+type ProgressBarVariant = "default" | "warning" | "error";
+
 interface ProgressBarProps extends HTMLAttributes<HTMLDivElement> {
   value: number;
   max?: number;
+  variant?: ProgressBarVariant;
   showLabel?: boolean;
   size?: "sm" | "md" | "lg";
 }
+
+const variantStyles: Record<ProgressBarVariant, string> = {
+  default: "bg-primary",
+  warning: "bg-warning",
+  error: "bg-error",
+};
 
 const sizeStyles = {
   sm: "h-1.5",
@@ -19,20 +28,16 @@ const sizeStyles = {
 export function ProgressBar({
   value,
   max = 100,
+  variant,
   showLabel = false,
   size = "md",
   className,
   ...props
 }: ProgressBarProps) {
   const pct = Math.min(Math.max((value / max) * 100, 0), 100);
-  const isWarning = pct >= 80 && pct < 100;
-  const isError = pct >= 100;
 
-  const barColor = isError
-    ? "bg-error"
-    : isWarning
-      ? "bg-warning"
-      : "bg-primary";
+  const resolvedVariant: ProgressBarVariant =
+    variant ?? (pct >= 100 ? "error" : pct >= 80 ? "warning" : "default");
 
   return (
     <div className={cn("flex items-center gap-3", className)} {...props}>
@@ -49,7 +54,7 @@ export function ProgressBar({
         <div
           className={cn(
             "h-full rounded-full transition-all duration-300 ease-out",
-            barColor
+            variantStyles[resolvedVariant]
           )}
           style={{ width: `${pct}%` }}
         />

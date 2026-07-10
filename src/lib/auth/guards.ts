@@ -1,5 +1,5 @@
 import "server-only";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { verifyIdToken } from "@/lib/auth/firebase-admin";
 import { executeQuery } from "@/lib/db";
 
@@ -17,11 +17,19 @@ export interface AuthContext {
 
 export async function requireAuth(): Promise<AuthContext> {
   const headersList = await headers();
+  let token: string | null = null;
+
   const authHeader = headersList.get("authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
+  if (authHeader?.startsWith("Bearer ")) {
+    token = authHeader.slice(7);
+  } else {
+    const cookieStore = await cookies();
+    token = cookieStore.get("__session")?.value ?? null;
+  }
+
+  if (!token) {
     throw new AuthError("Missing or invalid authorization header", 401);
   }
-  const token = authHeader.slice(7);
   const decoded = await verifyIdToken(token);
 
   const users = await executeQuery<any>(

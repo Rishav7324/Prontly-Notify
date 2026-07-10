@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Toggle } from "@/components/ui/Toggle";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { EmptyState } from "@/components/domain/EmptyState";
 import { AnalyticsChart } from "@/components/analytics/AnalyticsChart";
 import { useToast } from "@/components/ui/Toast";
 import { useActiveSite } from "@/hooks/useActiveSite";
-import { formatNumber, formatDate } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
 import {
   Download,
   Sparkles,
@@ -18,9 +19,10 @@ import {
   Send,
   UserMinus,
   RotateCw,
-  Calendar,
   Loader2,
   BarChart3,
+  Radio,
+  Users,
 } from "lucide-react";
 
 interface TopCampaign {
@@ -48,42 +50,63 @@ export default function AnalyticsPage() {
   const [ctrDistData, setCtrDistData] = useState<{ label: string; value: number }[]>([]);
   const [topCampaigns, setTopCampaigns] = useState<TopCampaign[]>([]);
   const [aiSummary, setAiSummary] = useState("");
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [liveSubscribers, setLiveSubscribers] = useState<number | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const fetchData = useCallback(async () => {
+    if (!activeSite) return;
+    const siteId = activeSite.id;
+    try {
+      const [analyticsRes, aiRes, liveRes] = await Promise.all([
+        fetch(`/api/v1/sites/${siteId}/analytics?range=${range}`),
+        fetch("/api/v1/ai/analytics-summary"),
+        fetch(`/api/v1/sites/${siteId}/subscribers/count`),
+      ]);
+      const analyticsJson = await analyticsRes.json();
+      const aiJson = await aiRes.json();
+      const liveJson = await liveRes.json();
+
+      if (analyticsJson.success) {
+        const d = analyticsJson.data;
+        setKpis([
+          { label: "Net Growth", value: `+${formatNumber(d.net_growth ?? 0)}`, change: d.growth_change ?? 0, icon: <TrendingUp className="h-5 w-5" />, color: "text-success" },
+          { label: "Avg CTR", value: `${(d.avg_ctr ?? 0).toFixed(1)}%`, change: d.ctr_change ?? 0, icon: <MousePointerClick className="h-5 w-5" />, color: "text-primary" },
+          { label: "Total Delivered", value: formatNumber(d.total_delivered ?? 0), change: d.delivered_change ?? 0, icon: <Send className="h-5 w-5" />, color: "text-primary" },
+          { label: "Unsubscribe Rate", value: `${(d.unsubscribe_rate ?? 0).toFixed(1)}%`, change: d.unsub_change ?? 0, icon: <UserMinus className="h-5 w-5" />, color: "text-error" },
+        ]);
+        setGrowthData(d.subscriber_growth ?? []);
+        setCampaignPerfData(d.campaign_performance ?? []);
+        setCtrDistData(d.ctr_distribution ?? []);
+        setTopCampaigns(d.top_campaigns ?? []);
+      }
+      if (aiJson.success) setAiSummary(aiJson.data.summary ?? "");
+      if (liveJson.success) setLiveSubscribers(liveJson.data.count ?? liveJson.data.total ?? null);
+    } catch {
+      addToast("Failed to load analytics", "error");
+    } finally {
+      setLoading(false);
+    }
+  }, [activeSite, range, addToast]);
 
   useEffect(() => {
     if (!activeSite) return;
-    const siteId = activeSite.id;
-    async function load() {
-      setLoading(true);
-      try {
-        const [analyticsRes, aiRes] = await Promise.all([
-          fetch(`/api/v1/sites/${siteId}/analytics?range=${range}`),
-          fetch("/api/v1/ai/analytics-summary"),
-        ]);
-        const analyticsJson = await analyticsRes.json();
-        const aiJson = await aiRes.json();
+    fetchData();
+  }, [fetchData]);
 
-        if (analyticsJson.success) {
-          const d = analyticsJson.data;
-          setKpis([
-            { label: "Net Growth", value: `+${formatNumber(d.net_growth ?? 0)}`, change: d.growth_change ?? 0, icon: <TrendingUp className="h-5 w-5" />, color: "text-success" },
-            { label: "Avg CTR", value: `${(d.avg_ctr ?? 0).toFixed(1)}%`, change: d.ctr_change ?? 0, icon: <MousePointerClick className="h-5 w-5" />, color: "text-primary" },
-            { label: "Total Delivered", value: formatNumber(d.total_delivered ?? 0), change: d.delivered_change ?? 0, icon: <Send className="h-5 w-5" />, color: "text-primary" },
-            { label: "Unsubscribe Rate", value: `${(d.unsubscribe_rate ?? 0).toFixed(1)}%`, change: d.unsub_change ?? 0, icon: <UserMinus className="h-5 w-5" />, color: "text-error" },
-          ]);
-          setGrowthData(d.subscriber_growth ?? []);
-          setCampaignPerfData(d.campaign_performance ?? []);
-          setCtrDistData(d.ctr_distribution ?? []);
-          setTopCampaigns(d.top_campaigns ?? []);
-        }
-        if (aiJson.success) setAiSummary(aiJson.data.summary ?? "");
-      } catch {
-        addToast("Failed to load analytics", "error");
-      } finally {
-        setLoading(false);
+  useEffect(() => {
+    if (autoRefresh) {
+      intervalRef.current = setInterval(fetchData, 30_000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     }
-    load();
-  }, [activeSite, range, addToast]);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [autoRefresh, fetchData]);
 
   const handleExport = async () => {
     if (!activeSite) return;
@@ -124,10 +147,43 @@ export default function AnalyticsPage() {
           <h1 className="text-2xl font-bold text-text-primary">Analytics</h1>
           <p className="mt-1 text-sm text-text-muted">Track your notification performance</p>
         </div>
-        <Button variant="outline" onClick={handleExport} icon={<Download className="h-4 w-4" />}>
-          Export CSV
-        </Button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Toggle
+              checked={autoRefresh}
+              onChange={setAutoRefresh}
+              label="Auto-refresh"
+            />
+            {autoRefresh && (
+              <Badge variant="success" size="sm" className="animate-pulse">
+                <Radio className="mr-1 h-3 w-3" />
+                Live
+              </Badge>
+            )}
+          </div>
+          <Button variant="outline" onClick={handleExport} icon={<Download className="h-4 w-4" />}>
+            Export CSV
+          </Button>
+        </div>
       </div>
+
+      {liveSubscribers !== null && (
+        <Card variant="glass">
+          <CardContent>
+            <div className="flex items-center gap-3">
+              <Users className="h-5 w-5 text-primary" />
+              <span className="text-sm text-text-secondary">Active Subscribers</span>
+              <span className="text-2xl font-bold text-text-primary">{formatNumber(liveSubscribers)}</span>
+              {autoRefresh && (
+                <Badge variant="success" size="sm">
+                  <Radio className="mr-1 h-3 w-3" />
+                  Live
+                </Badge>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="flex flex-wrap items-center gap-2">
         {dateRanges.map((dr) => (

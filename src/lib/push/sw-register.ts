@@ -71,7 +71,7 @@ export async function setupPushNotifications(): Promise<string | null> {
 export function onForegroundMessage(callback: (payload: unknown) => void) {
   try {
     const messaging = getMessaging();
-    const unsubscribe = onMessage(messaging, (payload) => {
+    const unsubscribe = onMessage(messaging, (payload: unknown) => {
       callback(payload);
     });
     return unsubscribe;

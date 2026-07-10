@@ -9,7 +9,6 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   updateProfile,
-  sendEmailVerification,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { AuthCard } from "@/components/forms/AuthCard";
@@ -104,18 +103,32 @@ function SignupForm() {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: name });
-      await sendEmailVerification(cred.user);
 
-      await fetch("/api/v1/users", {
+      const idToken = await cred.user.getIdToken();
+      await fetch("/api/v1/auth/send-verification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken, email, name: name.trim() }),
+      });
+      await fetch("/api/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
         body: JSON.stringify({
           uid: cred.user.uid,
           email: cred.user.email,
           name: name.trim(),
           plan: isGrowthPlan ? "growth" : "free",
         }),
-      }).catch(() => {});
+      });
+
+      await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
 
       addToast("Account created! Check your email to verify.", "success");
       router.push("/verify-email");
@@ -137,16 +150,26 @@ function SignupForm() {
           : new GithubAuthProvider();
       const cred = await signInWithPopup(auth, authProvider);
 
+      const idToken = await cred.user.getIdToken();
       await fetch("/api/v1/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
         body: JSON.stringify({
           uid: cred.user.uid,
           email: cred.user.email,
           name: cred.user.displayName || provider,
           plan: isGrowthPlan ? "growth" : "free",
         }),
-      }).catch(() => {});
+      });
+
+      await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
 
       if (cred.user.emailVerified) {
         router.push("/onboarding");

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, type FormEvent } from "react";
+import { Suspense, useState, useEffect, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -59,6 +59,12 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace("/dashboard");
+    }
+  }, [user, authLoading, router]);
+
   if (authLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -68,7 +74,6 @@ function LoginForm() {
   }
 
   if (user) {
-    router.replace("/dashboard");
     return null;
   }
 
@@ -94,7 +99,13 @@ function LoginForm() {
     if (!validate()) return;
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const idToken = await cred.user.getIdToken();
+      await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
       addToast("Welcome back!", "success");
       router.replace(searchParams.get("redirect") || "/dashboard");
     } catch (err: unknown) {
@@ -113,7 +124,13 @@ function LoginForm() {
         provider === "google"
           ? new GoogleAuthProvider()
           : new GithubAuthProvider();
-      await signInWithPopup(auth, authProvider);
+      const cred = await signInWithPopup(auth, authProvider);
+      const idToken = await cred.user.getIdToken();
+      await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
       router.replace(searchParams.get("redirect") || "/dashboard");
     } catch (err: unknown) {
       const firebaseErr = err as { code?: string };

@@ -56,6 +56,7 @@ export default function TeamPage() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<Role>("member");
   const [inviting, setInviting] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState<TeamMember | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -120,7 +121,10 @@ export default function TeamPage() {
     }
   };
 
-  const handleRemoveMember = async (memberId: string) => {
+  const handleRemoveMember = async () => {
+    if (!confirmRemove) return;
+    const memberId = confirmRemove.id;
+    setConfirmRemove(null);
     try {
       const res = await fetch(`/api/v1/team/members/${memberId}`, { method: "DELETE" });
       const json = await res.json();
@@ -171,7 +175,7 @@ export default function TeamPage() {
       label: "",
       render: (m) =>
         m.role !== "owner" ? (
-          <Button variant="ghost" size="sm" onClick={() => handleRemoveMember(m.id)}>
+          <Button variant="ghost" size="sm" onClick={() => setConfirmRemove(m)}>
             Remove
           </Button>
         ) : null,
@@ -270,6 +274,22 @@ export default function TeamPage() {
           <div className="flex justify-end gap-3 pt-2">
             <Button variant="outline" onClick={() => setShowInvite(false)}>Cancel</Button>
             <Button onClick={handleInvite} loading={inviting}>Send Invitation</Button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={confirmRemove !== null}
+        onClose={() => setConfirmRemove(null)}
+        title="Remove Member"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-text-secondary">
+            Are you sure you want to remove <span className="font-medium text-text-primary">{confirmRemove?.name}</span> from the team? This action cannot be undone.
+          </p>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button variant="outline" onClick={() => setConfirmRemove(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleRemoveMember}>Remove</Button>
           </div>
         </div>
       </Modal>

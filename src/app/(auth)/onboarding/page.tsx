@@ -147,22 +147,32 @@ export default function OnboardingPage() {
     setError("");
     setSaving(true);
     try {
+      const parsedUrl = site.url.startsWith("http") ? site.url : `https://${site.url}`;
+      const domain = new URL(parsedUrl).hostname;
+      const categoryMap: Record<string, string> = {
+        "Blog / Content": "blog",
+        "E-commerce": "ecommerce",
+        "SaaS": "saas",
+        "News / Media": "news",
+        "Community": "other",
+        "Other": "other",
+      };
       const res = await fetch("/api/v1/sites", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          url: site.url.startsWith("http") ? site.url : `https://${site.url}`,
+          domain,
           name: site.name.trim(),
-          category: site.category,
+          category: categoryMap[site.category] || "other",
           platform: site.platform,
         }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || "Failed to create site.");
+        throw new Error(data.message || data.error || "Failed to create site.");
       }
       const data = await res.json();
-      setSiteId(data.id || data.siteId);
+      setSiteId(data.data?.id || data.id || data.siteId);
       setStep(3);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to create site.");

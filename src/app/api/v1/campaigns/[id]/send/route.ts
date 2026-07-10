@@ -19,7 +19,7 @@ export async function POST(
     const auth = await requireAuth();
 
     const campaigns = await executeQuery<any>(
-      `SELECT c.*, s.sending_enabled, s.id as site_id
+      `SELECT c.*, s.sending_enabled, s.workspace_id
        FROM campaigns c JOIN sites s ON c.site_id = s.id
        WHERE c.id = ?`,
       [id]
@@ -28,12 +28,20 @@ export async function POST(
 
     const campaign = campaigns[0];
 
-    if (!["draft", "failed"].includes(campaign.status)) {
-      return err(`Campaign is already ${campaign.status}`, 400);
+    if (campaign.status !== "draft") {
+      return err(`Campaign must be in draft status, currently ${campaign.status}`, 400);
     }
 
     if (!campaign.sending_enabled) {
       return err("Sending is disabled for this site", 403);
+    }
+
+    const subscriptions = await executeQuery<any>(
+      `SELECT status FROM subscriptions WHERE workspace_id = ? AND status = 'active' LIMIT 1`,
+      [campaign.workspace_id]
+    );
+    if (subscriptions.length === 0) {
+      return err("Workspace does not have an active subscription", 402);
     }
 
     await executeQuery(

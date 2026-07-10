@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { sendEmailVerification } from "firebase/auth";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { AuthCard } from "@/components/forms/AuthCard";
@@ -93,11 +92,17 @@ export default function VerifyEmailPage() {
     setError("");
     setResending(true);
     try {
-      await sendEmailVerification(user);
+      const idToken = await user.getIdToken();
+      const res = await fetch("/api/v1/auth/send-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken, email: user.email }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || "Failed to send");
       setCooldown(60);
     } catch (err: unknown) {
-      const fbErr = err as { code?: string };
-      setError(fbErr.code === "auth/too-many-requests" ? "Too many requests. Try again later." : "Failed to resend verification email.");
+      setError(err instanceof Error ? err.message : "Failed to resend verification email.");
     } finally {
       setResending(false);
     }
