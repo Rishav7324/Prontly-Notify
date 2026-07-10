@@ -1,0 +1,1247 @@
+{
+  "generatedAt": "2026-07-10T19:55:43.465Z",
+  "baseUrl": "http://localhost:3000",
+  "routes": [
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/admin/accounts/impersonate/route.ts",
+      "urlPath": "/api/admin/accounts/impersonate",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 6
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/analytics/export/route.ts",
+      "urlPath": "/api/analytics/export",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 6
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/auth/session/route.ts",
+      "urlPath": "/api/auth/session",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 4
+        }
+      ],
+      "auth": "verifyIdToken",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/billing/cancel/route.ts",
+      "urlPath": "/api/billing/cancel",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 6
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/campaign-recommendations/route.ts",
+      "urlPath": "/api/campaign-recommendations",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 6
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/sdk-snippet/route.ts",
+      "urlPath": "/api/sdk-snippet",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 6
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/sessions/route.ts",
+      "urlPath": "/api/sessions",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 12
+        },
+        {
+          "method": "GET",
+          "line": 36
+        },
+        {
+          "method": "DELETE",
+          "line": 49
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": [
+        "SessionSchema"
+      ]
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/subscribers/export/route.ts",
+      "urlPath": "/api/subscribers/export",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 6
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/suggest-segments/route.ts",
+      "urlPath": "/api/suggest-segments",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 6
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/accounts/route.ts",
+      "urlPath": "/api/v1/admin/accounts",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": true,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/accounts/[id]/suspend/route.ts",
+      "urlPath": "/api/v1/admin/accounts/:id/suspend",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": true,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/audit-logs/route.ts",
+      "urlPath": "/api/v1/admin/audit-logs",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": true,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/billing/failed-payments/route.ts",
+      "urlPath": "/api/v1/admin/billing/failed-payments",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 10
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/billing/overview/route.ts",
+      "urlPath": "/api/v1/admin/billing/overview",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 8
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/blog/posts/route.ts",
+      "urlPath": "/api/v1/admin/blog/posts",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 8
+        },
+        {
+          "method": "POST",
+          "line": 39
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/coupons/route.ts",
+      "urlPath": "/api/v1/admin/coupons",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 8
+        },
+        {
+          "method": "POST",
+          "line": 23
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/feature-flags/route.ts",
+      "urlPath": "/api/v1/admin/feature-flags",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 12
+        },
+        {
+          "method": "PATCH",
+          "line": 26
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": true,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/overview/route.ts",
+      "urlPath": "/api/v1/admin/overview",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 11
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": true,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/sites/route.ts",
+      "urlPath": "/api/v1/admin/sites",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": true,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/sites/[id]/disable-sending/route.ts",
+      "urlPath": "/api/v1/admin/sites/:id/disable-sending",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 8
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/system/errors/route.ts",
+      "urlPath": "/api/v1/admin/system/errors",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 7
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/admin/system/health/route.ts",
+      "urlPath": "/api/v1/admin/system/health",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 7
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/ai/analytics-summary/route.ts",
+      "urlPath": "/api/v1/ai/analytics-summary",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 13
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/ai/campaign-recommendations/route.ts",
+      "urlPath": "/api/v1/ai/campaign-recommendations",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 8
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/ai/generate-title/route.ts",
+      "urlPath": "/api/v1/ai/generate-title",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 13
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/ai/optimize-ctr/route.ts",
+      "urlPath": "/api/v1/ai/optimize-ctr",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/ai/suggest-segments/route.ts",
+      "urlPath": "/api/v1/ai/suggest-segments",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 8
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/ai/suggest-send-time/route.ts",
+      "urlPath": "/api/v1/ai/suggest-send-time",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 13
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/ai/usage/route.ts",
+      "urlPath": "/api/v1/ai/usage",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/api-keys/route.ts",
+      "urlPath": "/api/v1/api-keys",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 14
+        },
+        {
+          "method": "POST",
+          "line": 32
+        },
+        {
+          "method": "DELETE",
+          "line": 77
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": true,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [
+        "apiKeySchema"
+      ],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/auth/request-password-reset/route.ts",
+      "urlPath": "/api/v1/auth/request-password-reset",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 8
+        }
+      ],
+      "auth": "none",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/auth/resend-verification/route.ts",
+      "urlPath": "/api/v1/auth/resend-verification",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 9
+        }
+      ],
+      "auth": "verifyIdToken",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/auth/send-verification/route.ts",
+      "urlPath": "/api/v1/auth/send-verification",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 9
+        }
+      ],
+      "auth": "verifyIdToken",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/auth/verify-email/route.ts",
+      "urlPath": "/api/v1/auth/verify-email",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 4
+        }
+      ],
+      "auth": "none",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/automations/route.ts",
+      "urlPath": "/api/v1/automations",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 29
+        },
+        {
+          "method": "POST",
+          "line": 51
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [],
+      "inlineSchemas": [
+        "automationSchema"
+      ]
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/automations/[id]/route.ts",
+      "urlPath": "/api/v1/automations/:id",
+      "methods": [
+        {
+          "method": "PATCH",
+          "line": 12
+        },
+        {
+          "method": "DELETE",
+          "line": 66
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/billing/cancel/route.ts",
+      "urlPath": "/api/v1/billing/cancel",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 7
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/billing/change-plan/route.ts",
+      "urlPath": "/api/v1/billing/change-plan",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 14
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": true,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/billing/create-order/route.ts",
+      "urlPath": "/api/v1/billing/create-order",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 13
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/billing/invoices/route.ts",
+      "urlPath": "/api/v1/billing/invoices",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 7
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/billing/plans/route.ts",
+      "urlPath": "/api/v1/billing/plans",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 3
+        }
+      ],
+      "auth": "none",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/billing/subscription/route.ts",
+      "urlPath": "/api/v1/billing/subscription",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 11
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": true,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/billing/verify-payment/route.ts",
+      "urlPath": "/api/v1/billing/verify-payment",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/billing/webhook/route.ts",
+      "urlPath": "/api/v1/billing/webhook",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 13
+        }
+      ],
+      "auth": "none",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/campaigns/route.ts",
+      "urlPath": "/api/v1/campaigns",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 13
+        },
+        {
+          "method": "POST",
+          "line": 61
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [
+        "campaignSchema"
+      ],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/campaigns/[id]/route.ts",
+      "urlPath": "/api/v1/campaigns/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 13
+        },
+        {
+          "method": "PATCH",
+          "line": 44
+        },
+        {
+          "method": "DELETE",
+          "line": 95
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [
+        "campaignSchema"
+      ],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/campaigns/[id]/duplicate/route.ts",
+      "urlPath": "/api/v1/campaigns/:id/duplicate",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/campaigns/[id]/send/route.ts",
+      "urlPath": "/api/v1/campaigns/:id/send",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 13
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/gdpr-export/route.ts",
+      "urlPath": "/api/v1/gdpr-export",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 11
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/gdpr/data/route.ts",
+      "urlPath": "/api/v1/gdpr/data",
+      "methods": [
+        {
+          "method": "DELETE",
+          "line": 13
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/segments/route.ts",
+      "urlPath": "/api/v1/segments",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 13
+        },
+        {
+          "method": "POST",
+          "line": 32
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [
+        "segmentSchema"
+      ],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/segments/[id]/route.ts",
+      "urlPath": "/api/v1/segments/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 13
+        },
+        {
+          "method": "PATCH",
+          "line": 45
+        },
+        {
+          "method": "DELETE",
+          "line": 91
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [
+        "segmentSchema"
+      ],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/segments/[id]/preview-count/route.ts",
+      "urlPath": "/api/v1/segments/:id/preview-count",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/segments/preview-count/route.ts",
+      "urlPath": "/api/v1/segments/preview-count",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 17
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": [
+        "bodySchema"
+      ]
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/sites/route.ts",
+      "urlPath": "/api/v1/sites",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 13
+        },
+        {
+          "method": "POST",
+          "line": 31
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": true,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [
+        "siteSchema"
+      ],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/sites/[id]/route.ts",
+      "urlPath": "/api/v1/sites/:id",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 13
+        },
+        {
+          "method": "PATCH",
+          "line": 36
+        },
+        {
+          "method": "DELETE",
+          "line": 79
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [
+        "siteSchema"
+      ],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/sites/[id]/analytics/route.ts",
+      "urlPath": "/api/v1/sites/:id/analytics",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/sites/[id]/analytics/export/route.ts",
+      "urlPath": "/api/v1/sites/:id/analytics/export",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 9
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/sites/[id]/dashboard-summary/route.ts",
+      "urlPath": "/api/v1/sites/:id/dashboard-summary",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/sites/[id]/send-test-notification/route.ts",
+      "urlPath": "/api/v1/sites/:id/send-test-notification",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 13
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/sites/[id]/subscribers/route.ts",
+      "urlPath": "/api/v1/sites/:id/subscribers",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 13
+        },
+        {
+          "method": "GET",
+          "line": 72
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [
+        "subscriberSchema"
+      ],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/sites/[id]/subscribers/export/route.ts",
+      "urlPath": "/api/v1/sites/:id/subscribers/export",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 8
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/sites/[id]/verify-install/route.ts",
+      "urlPath": "/api/v1/sites/:id/verify-install",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 12
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": true,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/team/invite/route.ts",
+      "urlPath": "/api/v1/team/invite",
+      "methods": [
+        {
+          "method": "POST",
+          "line": 8
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/team/members/route.ts",
+      "urlPath": "/api/v1/team/members",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 13
+        },
+        {
+          "method": "POST",
+          "line": 34
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": true,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [
+        "teamInviteSchema"
+      ],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/team/members/[id]/route.ts",
+      "urlPath": "/api/v1/team/members/:id",
+      "methods": [
+        {
+          "method": "PATCH",
+          "line": 13
+        },
+        {
+          "method": "DELETE",
+          "line": 59
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": true,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [
+        "teamInviteSchema"
+      ],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/users/route.ts",
+      "urlPath": "/api/v1/users",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 13
+        },
+        {
+          "method": "POST",
+          "line": 37
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/users/me/route.ts",
+      "urlPath": "/api/v1/users/me",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 8
+        },
+        {
+          "method": "PATCH",
+          "line": 35
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    },
+    {
+      "filePath": "/public/Prontly-Notify/src/app/api/v1/users/me/sessions/route.ts",
+      "urlPath": "/api/v1/users/me/sessions",
+      "methods": [
+        {
+          "method": "GET",
+          "line": 7
+        },
+        {
+          "method": "POST",
+          "line": 20
+        },
+        {
+          "method": "DELETE",
+          "line": 35
+        }
+      ],
+      "auth": "requireAuth",
+      "hasRoleGuard": false,
+      "hasStaffGuard": false,
+      "hasSiteAccessGuard": false,
+      "validationImports": [],
+      "inlineSchemas": []
+    }
+  ],
+  "summary": {
+    "total": 69,
+    "withAuth": 65,
+    "withoutAuth": 4,
+    "methods": {
+      "POST": 38,
+      "GET": 40,
+      "DELETE": 9,
+      "PATCH": 7
+    }
+  }
+}
