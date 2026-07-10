@@ -2,7 +2,7 @@ import "server-only";
 import { getAdminAuth } from "@/lib/auth/firebase-admin";
 
 function getAppUrl(override?: string): string {
-  return process.env.NEXT_PUBLIC_APP_URL || override || "https://notify.prontly.in;
+  return process.env.NEXT_PUBLIC_APP_URL || override || "http://localhost:3000";
 }
 
 const SCOPE = "https://www.googleapis.com/auth/identitytoolkit";
