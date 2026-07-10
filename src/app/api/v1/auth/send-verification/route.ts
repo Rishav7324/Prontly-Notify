@@ -5,7 +5,6 @@ import { sendTransactionalEmail } from "@/lib/email/brevo-client";
 import { checkRateLimit, logEmailSend, checkDailyWarning } from "@/lib/email/rate-limit";
 import { renderEmail } from "@/lib/email/render-template";
 import { VerifyEmail } from "@/emails/verify-email";
-import { WelcomeEmail } from "@/emails/welcome-after-verification";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +15,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Missing idToken" }, { status: 400 });
     }
 
-    const decoded = await verifyIdToken(idToken);
+    let decoded: any;
+    try {
+      decoded = await verifyIdToken(idToken);
+    } catch (err: any) {
+      console.error("verifyIdToken failed:", err?.message, err?.code, err?.stack);
+      return NextResponse.json({ success: false, error: "Token verification failed" }, { status: 401 });
+    }
+
     if (!decoded || !decoded.uid) {
       return NextResponse.json({ success: false, error: "Invalid token" }, { status: 401 });
     }
@@ -33,31 +39,69 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: rateCheck.reason }, { status: 429 });
     }
 
-    const { link } = await generateEmailVerificationLink(idToken);
-    const displayName = name || email.split("@")[0] || "there";
-
-    const html = await renderEmail(VerifyEmail, { name: displayName, verifyLink: link });
-
-    const result = await sendTransactionalEmail({
-      to: [{ email, name: displayName }],
-      subject: "Verify your email — Prontly Notify",
-      htmlContent: html,
-    });
-
-    await logEmailSend({
-      email,
-      type: "verify_email",
-      ip,
-      messageId: result.messageId,
-    });
-
-    const dailyCount = await checkDailyWarning();
-    if (dailyCount !== null) {
-      console.warn(`[DAILY WARNING] ${dailyCount} emails sent today — approaching Brevo daily limit`);
+    let link: string;
+    try {
+      const result = await generateEmailVerificationLink(idToken);
+      link = result.link;
+    } catch (err: any) {
+      console.error("generateEmailVerificationLink failed:", err?.message, err?.code, err?.stack);
+      return NextResponse.json(
+        { success: false, error: err?.message || "Failed to generate verification link" },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ success: true, messageId: result.messageId });
+    const displayName = name || email.split("@")[0] || "there";
+
+    let html: string;
+    try {
+      html = await renderEmail(VerifyEmail, { name: displayName, verifyLink: link });
+    } catch (err: any) {
+      console.error("renderEmail failed:", err?.message, err?.stack);
+      return NextResponse.json(
+        { success: false, error: "Failed to render email template" },
+        { status: 500 }
+      );
+    }
+
+    let result: { messageId: string };
+    try {
+      result = await sendTransactionalEmail({
+        to: [{ email, name: displayName }],
+        subject: "Verify your email — Prontly Notify",
+        htmlContent: html,
+      });
+    } catch (err: any) {
+      console.error("sendTransactionalEmail (Brevo) failed:", err?.message, err?.code, err?.stack);
+      return NextResponse.json(
+        { success: false, error: err?.message || "Failed to send email via Brevo" },
+        { status: 500 }
+      );
+    }
+
+    try {
+      await logEmailSend({
+        email,
+        type: "verify_email",
+        ip,
+        messageId: result.messageId,
+      });
+    } catch (err: any) {
+      console.error("logEmailSend failed:", err?.message, err?.stack);
+    }
+
+    try {
+      const dailyCount = await checkDailyWarning();
+      if (dailyCount !== null) {
+        console.warn(`[DAILY WARNING] ${dailyCount} emails sent today — approaching Brevo daily limit`);
+      }
+    } catch (err: any) {
+      console.error("checkDailyWarning failed:", err?.message, err?.stack);
+    }
+
+    return NextResponse.json({ success: true, messageId: result!.messageId });
   } catch (err: any) {
+    console.error("send-verification unexpected error:", err?.message, err?.stack);
     return NextResponse.json(
       { success: false, error: err?.message || "Failed to send verification email" },
       { status: 500 }

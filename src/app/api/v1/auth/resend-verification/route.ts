@@ -15,7 +15,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Missing idToken" }, { status: 400 });
     }
 
-    const decoded = await verifyIdToken(idToken);
+    let decoded: any;
+    try {
+      decoded = await verifyIdToken(idToken);
+    } catch (err: any) {
+      console.error("verifyIdToken failed:", err?.message, err?.code, err?.stack);
+      return NextResponse.json({ success: false, error: "Token verification failed" }, { status: 401 });
+    }
+
     if (!decoded || !decoded.uid) {
       return NextResponse.json({ success: false, error: "Invalid token" }, { status: 401 });
     }
@@ -32,26 +39,60 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: rateCheck.reason }, { status: 429 });
     }
 
-    const { link } = await generateEmailVerificationLink(idToken);
+    let link: string;
+    try {
+      const result = await generateEmailVerificationLink(idToken);
+      link = result.link;
+    } catch (err: any) {
+      console.error("generateEmailVerificationLink failed:", err?.message, err?.code, err?.stack);
+      return NextResponse.json(
+        { success: false, error: err?.message || "Failed to generate verification link" },
+        { status: 500 }
+      );
+    }
+
     const displayName = decoded.email?.split("@")[0] || "there";
 
-    const html = await renderEmail(VerifyEmail, { name: displayName, verifyLink: link });
+    let html: string;
+    try {
+      html = await renderEmail(VerifyEmail, { name: displayName, verifyLink: link });
+    } catch (err: any) {
+      console.error("renderEmail failed:", err?.message, err?.stack);
+      return NextResponse.json(
+        { success: false, error: "Failed to render email template" },
+        { status: 500 }
+      );
+    }
 
-    const result = await sendTransactionalEmail({
-      to: [{ email, name: displayName }],
-      subject: "Verify your email — Prontly Notify",
-      htmlContent: html,
-    });
+    let result: { messageId: string };
+    try {
+      result = await sendTransactionalEmail({
+        to: [{ email, name: displayName }],
+        subject: "Verify your email — Prontly Notify",
+        htmlContent: html,
+      });
+    } catch (err: any) {
+      console.error("sendTransactionalEmail (Brevo) failed:", err?.message, err?.code, err?.stack);
+      return NextResponse.json(
+        { success: false, error: err?.message || "Failed to send email via Brevo" },
+        { status: 500 }
+      );
+    }
 
-    await logEmailSend({
-      email,
-      type: "verify_email",
-      ip,
-      messageId: result.messageId,
-    });
+    try {
+      await logEmailSend({
+        email,
+        type: "verify_email",
+        ip,
+        messageId: result.messageId,
+      });
+    } catch (err: any) {
+      console.error("logEmailSend failed:", err?.message, err?.stack);
+    }
 
-    return NextResponse.json({ success: true, messageId: result.messageId });
+    return NextResponse.json({ success: true, messageId: result!.messageId });
   } catch (err: any) {
+    console.error("resend-verification unexpected error:", err?.message, err?.stack);
     return NextResponse.json(
       { success: false, error: err?.message || "Failed to resend verification email" },
       { status: 500 }

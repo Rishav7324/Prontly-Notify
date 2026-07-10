@@ -8,64 +8,59 @@ function getApiKey(): string {
   return key;
 }
 
-export async function generateEmailVerificationLink(
-  idToken: string
-): Promise<{ oobCode: string; link: string }> {
+async function generateOobLink(params: {
+  requestType: string;
+  email?: string;
+  idToken?: string;
+}): Promise<{ oobCode: string; link: string }> {
   const apiKey = getApiKey();
-  const continueUrl = `${APP_URL}/auth/verify-email/confirm`;
+  const continueUrl = `${APP_URL}/auth/${params.requestType === "PASSWORD_RESET" ? "reset-password/confirm" : "verify-email/confirm"}`;
+
+  const body: Record<string, any> = {
+    requestType: params.requestType,
+    returnOobLink: true,
+    continueUrl,
+  };
+  if (params.email) body.email = params.email;
+  if (params.idToken) body.idToken = params.idToken;
 
   const res = await fetch(
     `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        requestType: "VERIFY_EMAIL",
-        idToken,
-        continueUrl,
-      }),
+      body: JSON.stringify(body),
     }
   );
 
   const data = await res.json();
   if (!data.oobLink) {
-    throw new Error(data.error?.message || "Failed to generate verification link");
+    throw new Error(data.error?.message || "Failed to generate link");
   }
 
   const url = new URL(data.oobLink);
   const oobCode = url.searchParams.get("oobCode") || "";
-  const link = `${APP_URL}/auth/verify-email/confirm?oobCode=${encodeURIComponent(oobCode)}&mode=verifyEmail&apiKey=${apiKey}&lang=en`;
+  const mode = params.requestType === "PASSWORD_RESET" ? "resetPassword" : "verifyEmail";
+  const linkParams = new URLSearchParams({
+    oobCode,
+    mode,
+    apiKey,
+    lang: "en",
+    continueUrl,
+  });
+  const link = `${APP_URL}/auth/${params.requestType === "PASSWORD_RESET" ? "reset-password/confirm" : "verify-email/confirm"}?${linkParams}`;
 
   return { oobCode, link };
+}
+
+export async function generateEmailVerificationLink(
+  idToken: string
+): Promise<{ oobCode: string; link: string }> {
+  return generateOobLink({ requestType: "VERIFY_EMAIL", idToken });
 }
 
 export async function generatePasswordResetLink(
   email: string
 ): Promise<{ oobCode: string; link: string }> {
-  const apiKey = getApiKey();
-  const continueUrl = `${APP_URL}/auth/reset-password/confirm`;
-
-  const res = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        requestType: "PASSWORD_RESET",
-        email,
-        continueUrl,
-      }),
-    }
-  );
-
-  const data = await res.json();
-  if (!data.oobLink) {
-    throw new Error(data.error?.message || "Failed to generate reset link");
-  }
-
-  const url = new URL(data.oobLink);
-  const oobCode = url.searchParams.get("oobCode") || "";
-  const link = `${APP_URL}/auth/reset-password/confirm?oobCode=${encodeURIComponent(oobCode)}&mode=resetPassword&apiKey=${apiKey}&lang=en`;
-
-  return { oobCode, link };
+  return generateOobLink({ requestType: "PASSWORD_RESET", email });
 }
