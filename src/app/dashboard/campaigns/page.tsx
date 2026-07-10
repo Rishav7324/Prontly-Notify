@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { DataTable, type Column } from "@/components/ui/DataTable";
+import { ConfirmationDialog } from "@/components/domain/ConfirmationDialog";
 import { EmptyState } from "@/components/domain/EmptyState";
 import { DropdownMenu } from "@/components/ui/DropdownMenu";
 import { useToast } from "@/components/ui/Toast";
@@ -37,6 +38,8 @@ export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "sent" | "scheduled" | "draft" | "failed">("all");
+  const [deleteConfirm, setDeleteConfirm] = useState<Campaign | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -77,16 +80,21 @@ export default function CampaignsPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirm) return;
+    setDeleting(true);
     try {
-      const res = await fetch(`/api/v1/campaigns/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/v1/campaigns/${deleteConfirm.id}`, { method: "DELETE" });
       const json = await res.json();
       if (json.success) {
         addToast("Campaign deleted", "success");
-        setCampaigns((prev) => prev.filter((c) => c.id !== id));
+        setCampaigns((prev) => prev.filter((c) => c.id !== deleteConfirm.id));
       } else addToast(json.error, "error");
     } catch {
       addToast("Failed to delete campaign", "error");
+    } finally {
+      setDeleting(false);
+      setDeleteConfirm(null);
     }
   };
 
@@ -107,7 +115,7 @@ export default function CampaignsPage() {
             { label: "Duplicate", icon: <Copy className="h-4 w-4" />, onClick: () => handleDuplicate(c.id) },
             { label: c.status === "draft" ? "Edit" : "View", icon: <Edit className="h-4 w-4" />, onClick: () => addToast("Opening campaign...", "info") },
             { label: "Analytics", icon: <BarChart3 className="h-4 w-4" />, onClick: () => addToast("Loading analytics...", "info") },
-            { label: "Delete", icon: <Trash2 className="h-4 w-4" />, destructive: true, onClick: () => handleDelete(c.id) },
+            { label: "Delete", icon: <Trash2 className="h-4 w-4" />, destructive: true, onClick: () => setDeleteConfirm(c) },
           ]}
         />
       ),
@@ -167,6 +175,17 @@ export default function CampaignsPage() {
           emptyMessage="No campaigns match your filters."
         />
       )}
+
+      <ConfirmationDialog
+        open={!!deleteConfirm}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteConfirm(null)}
+        title="Delete Campaign"
+        message={`Are you sure you want to delete "${deleteConfirm?.title}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        loading={deleting}
+      />
     </div>
   );
 }
