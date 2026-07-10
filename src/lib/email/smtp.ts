@@ -1,4 +1,5 @@
 import type { SendEmailParams } from "./index";
+import type { TransportOptions } from "nodemailer";
 
 let transporter: any = null;
 
@@ -33,11 +34,7 @@ async function getTransporter() {
     tls: process.env.SMTP_REJECT_UNAUTHORIZED === "false"
       ? { rejectUnauthorized: false }
       : undefined,
-    logger: process.env.SMTP_LOGGER === "true" ? true : undefined,
-    debug: process.env.SMTP_DEBUG === "true" ? true : undefined,
-    disableFileAccess: true,
-    disableUrlAccess: true,
-  });
+  } as TransportOptions);
 
   return transporter;
 }
