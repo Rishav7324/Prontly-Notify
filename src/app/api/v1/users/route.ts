@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { requireAuth } from "@/lib/auth/guards";
+import { verifyIdToken } from "@/lib/auth/firebase-admin";
 import { executeQuery, generateUUID } from "@/lib/db";
 
 function ok(data: any, meta?: any) {
@@ -35,7 +36,13 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const auth = await requireAuth();
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return err("Unauthorized", 401);
+    }
+    const decoded = await verifyIdToken(authHeader.slice(7));
+    const firebaseUid = decoded.uid;
+
     const body = await request.json();
 
     if (!body.name || !body.email) {
@@ -44,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     const existing = await executeQuery<any>(
       "SELECT id FROM users WHERE firebase_uid = ?",
-      [auth.firebaseUid]
+      [firebaseUid]
     );
 
     if (existing.length > 0) {
@@ -58,7 +65,7 @@ export async function POST(request: NextRequest) {
     const id = generateUUID();
     await executeQuery(
       "INSERT INTO users (id, firebase_uid, email, name) VALUES (?, ?, ?, ?)",
-      [id, auth.firebaseUid, body.email, body.name]
+      [id, firebaseUid, body.email, body.name]
     );
 
     const freePlan = await executeQuery<any>(
