@@ -88,7 +88,7 @@ export default function DocsPage() {
               <li key={link.label}>
                 <Link
                   href={link.href}
-                  className={`block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/5 hover:text-[#F8FAFC] ${
+                  className={`block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-black/5 hover:text-[#F8FAFC] ${
                     link.children ? "font-medium text-[#94A3B8]" : "text-[#64748B]"
                   }`}
                 >
@@ -100,7 +100,7 @@ export default function DocsPage() {
                       <li key={child.label}>
                         <Link
                           href={child.href}
-                          className="block rounded-lg px-3 py-1.5 pl-4 text-sm text-[#64748B] transition-colors hover:bg-white/5 hover:text-[#F8FAFC]"
+                          className="block rounded-lg px-3 py-1.5 pl-4 text-sm text-[#64748B] transition-colors hover:bg-black/5 hover:text-[#F8FAFC]"
                         >
                           {child.label}
                         </Link>
@@ -161,7 +161,7 @@ export default function DocsPage() {
           <Tabs tabs={tabData} activeTab={activeTab} onChange={setActiveTab} />
           <div className="rounded-b-xl border border-t-0 border-[rgba(255,255,255,0.08)] bg-[#111827] p-6">
             <p className="mb-4 text-sm text-[#94A3B8]">
-              Paste this snippet just before the closing <code className="rounded bg-white/10 px-1.5 py-0.5 text-xs text-[#3B82F6]">&lt;/body&gt;</code> tag.
+              Paste this snippet just before the closing <code className="rounded bg-black/10 px-1.5 py-0.5 text-xs text-[#3B82F6]">&lt;/body&gt;</code> tag.
             </p>
             <CodeBlock code={codeSnippets[activeTab]} language={activeTab === "html" ? "HTML" : activeTab === "wordpress" ? "PHP" : "JSX"} />
           </div>
@@ -176,7 +176,7 @@ export default function DocsPage() {
             { icon: Code, title: "API Reference", desc: "Full documentation for the Prontly Notify REST API." },
             { icon: BookOpen, title: "Best practices", desc: "Tips for maximizing opt-in rates and CTR." },
           ].map((item) => (
-            <Link key={item.title} href="#" className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] p-5 transition-colors hover:bg-white/5">
+            <Link key={item.title} href="#" className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] p-5 transition-colors hover:bg-black/5">
               <item.icon className="mb-3 size-5 text-[#3B82F6]" />
               <h3 className="mb-1 text-sm font-semibold text-[#F8FAFC]">{item.title}</h3>
               <p className="text-xs text-[#94A3B8]">{item.desc}</p>

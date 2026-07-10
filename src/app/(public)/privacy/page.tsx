@@ -104,7 +104,7 @@ export default function PrivacyPage() {
                 className={`block rounded-lg px-3 py-2 text-sm transition-colors ${
                   activeSection === s.id
                     ? "bg-[#3B82F6]/10 text-[#3B82F6] font-medium"
-                    : "text-[#94A3B8] hover:bg-white/5 hover:text-[#F8FAFC]"
+                    : "text-[#94A3B8] hover:bg-black/5 hover:text-[#F8FAFC]"
                 }`}
               >
                 {s.label}

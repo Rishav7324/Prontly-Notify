@@ -47,7 +47,7 @@ export function TopBar() {
       <div className="relative" ref={websiteRef}>
         <button
           onClick={() => setWebsiteOpen(!websiteOpen)}
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-white/5"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-black/5"
         >
           <span className="hidden sm:inline">{selectedSite.name}</span>
           <span className="text-text-muted sm:hidden">
@@ -74,7 +74,7 @@ export function TopBar() {
                   "flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors",
                   selectedSite.id === site.id
                     ? "bg-primary/10 text-primary"
-                    : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
+                    : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                 )}
               >
                 <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary">
@@ -89,7 +89,7 @@ export function TopBar() {
             <div className="mt-1 border-t border-border pt-1">
               <Link
                 href="/dashboard/sites"
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
                 onClick={() => setWebsiteOpen(false)}
               >
                 Manage Websites
@@ -102,7 +102,7 @@ export function TopBar() {
       {/* Right actions */}
       <div className="flex items-center gap-2">
         {/* Notification bell */}
-        <button className="relative flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary">
+        <button className="relative flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary">
           <Bell className="h-5 w-5" />
           <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-error" />
         </button>
@@ -111,7 +111,7 @@ export function TopBar() {
         <div className="relative" ref={avatarRef}>
           <button
             onClick={() => setAvatarOpen(!avatarOpen)}
-            className="flex items-center gap-2 rounded-lg p-1 transition-colors hover:bg-white/5"
+            className="flex items-center gap-2 rounded-lg p-1 transition-colors hover:bg-black/5"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-xs font-semibold text-primary">
               JD
@@ -135,7 +135,7 @@ export function TopBar() {
               <Link
                 href="/dashboard/settings"
                 onClick={() => setAvatarOpen(false)}
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
               >
                 <Settings className="h-4 w-4" />
                 Settings
@@ -143,7 +143,7 @@ export function TopBar() {
               <Link
                 href="/dashboard/billing"
                 onClick={() => setAvatarOpen(false)}
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
               >
                 <CreditCard className="h-4 w-4" />
                 Billing
@@ -151,7 +151,7 @@ export function TopBar() {
               <div className="mt-1 border-t border-border pt-1">
                 <button
                   onClick={() => setAvatarOpen(false)}
-                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-white/5 hover:text-error"
+                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-black/5 hover:text-error"
                 >
                   <LogOut className="h-4 w-4" />
                   Logout

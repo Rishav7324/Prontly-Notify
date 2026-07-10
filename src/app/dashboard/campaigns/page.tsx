@@ -140,7 +140,7 @@ export default function CampaignsPage() {
             key={chip.key}
             onClick={() => setFilter(chip.key)}
             className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-              filter === chip.key ? "bg-primary text-white" : "bg-white/5 text-text-secondary hover:bg-white/10"
+              filter === chip.key ? "bg-primary text-white" : "bg-black/5 text-text-secondary hover:bg-black/10"
             }`}
           >
             {chip.label} ({chip.count})

@@ -13,7 +13,6 @@ import {
   Code2,
   Globe,
   Layers,
-  MessageCircle,
   MousePointerClick,
   Play,
   RefreshCw,
@@ -21,15 +20,10 @@ import {
   Send,
   ShoppingBag,
   Sparkles,
-  Star,
   Users,
   Zap,
-  FileText,
-  Wallet,
-  Tv,
 } from "lucide-react";
 import { FeatureCard } from "@/components/domain/FeatureCard";
-import { PricingCard } from "@/components/domain/PricingCard";
 import { InlineCTACard } from "@/components/domain/InlineCTACard";
 import { Button } from "@/components/ui/Button";
 
@@ -87,103 +81,12 @@ const steps = [
   },
 ];
 
-const plans = [
-  {
-    name: "Free",
-    price: "₹0",
-    period: "/mo",
-    description: "Perfect for trying out push notifications.",
-    features: [
-      "Up to 2,000 subscribers",
-      "1 website",
-      "10 AI credits / mo",
-      "Basic analytics",
-      "Standard support",
-    ],
-    cta: "Get Started",
-    href: "/signup",
-    featured: false,
-  },
-  {
-    name: "Starter",
-    price: "₹999",
-    period: "/mo",
-    description: "For growing blogs and small stores.",
-    features: [
-      "Up to 10,000 subscribers",
-      "3 websites",
-      "100 AI credits / mo",
-      "Advanced analytics",
-      "Email support",
-    ],
-    cta: "Start Free Trial",
-    href: "/signup?plan=starter",
-    featured: false,
-  },
-  {
-    name: "Growth",
-    price: "₹2,999",
-    period: "/mo",
-    description: "For serious publishers and SaaS teams.",
-    features: [
-      "Up to 50,000 subscribers",
-      "10 websites",
-      "500 AI credits / mo",
-      "Full analytics suite",
-      "Priority support",
-      "Team members",
-    ],
-    cta: "Start Free Trial",
-    href: "/signup?plan=growth",
-    featured: true,
-  },
-];
-
-const testimonials = [
-  {
-    name: "Rohan Mehta",
-    role: "Founder, TechBlog.in",
-    content:
-      "Prontly Notify doubled our return visitor rate in the first month. The AI title suggestions alone are worth the price.",
-  },
-  {
-    name: "Ananya Sharma",
-    role: "Growth Lead, SaaSBox",
-    content:
-      "We moved from OneSignal and cut our costs by 60%. The automation workflows are genuinely intuitive.",
-  },
-  {
-    name: "Vikram Patel",
-    role: "Owner, ShopWave Store",
-    content:
-      "Cart abandonment recovery via push notifications has recovered 15% of lost sales. Game changer for e-commerce.",
-  },
-];
-
 const aiFeatureList = [
   "AI-powered headline and body copy generation",
   "Smart send-time optimization per subscriber",
   "Automated A/B testing with statistical significance",
   "Predictive churn alerts and re-engagement suggestions",
   "Natural language campaign brief-to-ready-campaign",
-];
-
-const notificationMockups = [
-  {
-    title: "New engagement milestone",
-    body: "Your weekly active subscribers crossed 10K. Great growth this month!",
-    time: "just now",
-  },
-  {
-    title: "Campaign performance",
-    body: "Flash Sale campaign hit 24% CTR — 3x above industry average.",
-    time: "2m ago",
-  },
-  {
-    title: "AI suggestion ready",
-    body: "AI generated 5 high-CTR subject lines based on your last campaign.",
-    time: "5m ago",
-  },
 ];
 
 export default function HomePage() {
@@ -310,46 +213,13 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Animated notification mockup */}
+        {/* Product illustration placeholder */}
         <div
           {...revealProps("hero-mockup")}
           className="mt-12 w-full max-w-sm md:mt-0 md:ml-12"
         >
-          <div className="relative mx-auto h-[340px] w-full max-w-[320px]">
-            {notificationMockups.map((n, i) => (
-              <div
-                key={n.title}
-                className="notification-card absolute inset-x-0 w-full rounded-xl border p-4 shadow-xl transition-all"
-                style={{
-                  top: `${i * 48}px`,
-                  zIndex: notificationMockups.length - i,
-                  backgroundColor: "rgba(17, 24, 39, 0.85)",
-                  borderColor: "rgba(255,255,255,0.08)",
-                  backdropFilter: "blur(16px)",
-                  transform: `scale(${1 - i * 0.04})`,
-                  animationDelay: `${i * 0.6}s`,
-                  animationDuration: "3.6s",
-                }}
-              >
-                <div className="mb-2 flex items-center gap-2.5">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-xs font-bold text-white">
-                    P
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-[#F8FAFC]">
-                      Prontly Notify
-                    </p>
-                    <p className="text-xs text-[#64748B]">{n.time}</p>
-                  </div>
-                </div>
-                <p className="mb-0.5 text-sm font-medium text-[#F8FAFC]">
-                  {n.title}
-                </p>
-                <p className="text-xs leading-relaxed text-[#94A3B8]">
-                  {n.body}
-                </p>
-              </div>
-            ))}
+          <div className="flex h-[300px] items-center justify-center rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[#111827]">
+            <Bell className="size-16 text-primary/40" />
           </div>
         </div>
 
@@ -370,7 +240,7 @@ export default function HomePage() {
       >
         <div className="mx-auto max-w-[1200px] px-4">
           <p className="mb-4 text-center text-sm font-medium text-[#64748B]">
-            Trusted by <span className="text-[#F8FAFC]">2,400+ websites</span>
+            Start sending push notifications in minutes
           </p>
           <div className="relative overflow-hidden">
             <div className="marquee-track flex items-center gap-16">
@@ -526,8 +396,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ────────────── PRICING TEASER ────────────── */}
-      <section className="mx-auto max-w-[1200px] px-4 py-24 md:py-24">
+      {/* ────────────── PRICING ────────────── */}
+      <section className="mx-auto max-w-[1200px] px-4 py-24 md:py-24 text-center">
         <div {...revealProps("pricing-header")}>
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-primary">
             Pricing
@@ -538,83 +408,14 @@ export default function HomePage() {
           <p className="mx-auto mt-4 max-w-2xl text-lg text-[#94A3B8]">
             Start free. Upgrade when you grow. No hidden fees.
           </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3 md:items-start">
-          {plans.map((plan, i) => (
-            <div key={plan.name} {...revealProps(`plan-${i}`)}>
-              <PricingCard
-                name={plan.name}
-                price={plan.price}
-                period={plan.period}
-                description={plan.description}
-                features={plan.features}
-                cta={plan.cta}
-                onCta={() => router.push(plan.href)}
-                featured={plan.featured}
-              />
-            </div>
-          ))}
-        </div>
-
-        <p className="mt-8 text-center text-sm text-[#64748B]">
-          Need higher limits?{" "}
-          <Link href="/pricing" className="font-medium text-primary hover:underline">
-            View all plans &rarr;
-          </Link>
-        </p>
-      </section>
-
-      {/* ────────────── TESTIMONIALS ────────────── */}
-      <section className="mx-auto max-w-[1200px] px-4 py-24 md:py-24">
-        <div {...revealProps("testimonials-header")}>
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-primary">
-            Testimonials
-          </p>
-          <h2 className="font-display text-[36px] font-bold leading-tight text-[#F8FAFC] md:text-[44px]">
-            Loved by publishers and founders
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-[#94A3B8]">
-            See why thousands choose Prontly Notify.
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          {testimonials.map((t, i) => (
-            <div
-              key={t.name}
-              {...revealProps(`testimonial-${i}`)}
-              className="rounded-2xl border p-6"
-              style={{
-                backgroundColor: "rgba(17, 24, 39, 0.6)",
-                borderColor: "rgba(255,255,255,0.08)",
-              }}
-            >
-              <div className="mb-1 flex gap-1 text-[#F59E0B]">
-                {Array.from({ length: 5 }).map((_, si) => (
-                  <Star key={si} className="size-4 fill-current" />
-                ))}
-              </div>
-              <p className="mb-6 mt-4 text-sm leading-relaxed text-[#94A3B8]">
-                &ldquo;{t.content}&rdquo;
-              </p>
-              <div className="flex items-center gap-3">
-                <div
-                  className="flex size-10 items-center justify-center rounded-full text-sm font-semibold"
-                  style={{
-                    backgroundColor: "rgba(59,130,246,0.15)",
-                    color: "#60A5FA",
-                  }}
-                >
-                  {t.name.split(" ").map((n) => n[0]).join("")}
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-[#F8FAFC]">{t.name}</p>
-                  <p className="text-xs text-[#64748B]">{t.role}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+          <div className="mt-8">
+            <Link href="/pricing">
+              <Button variant="primary" size="lg">
+                View Plans & Pricing
+                <ArrowRight className="size-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -636,7 +437,7 @@ export default function HomePage() {
             Ready to bring visitors back?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-[#94A3B8]">
-            Join 2,400+ websites already using Prontly Notify. Free plan
+            Start sending push notifications in minutes. Free plan
             available — no credit card required.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">

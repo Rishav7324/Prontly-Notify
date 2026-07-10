@@ -106,7 +106,7 @@ export function Select({
                   "cursor-pointer px-3 py-2 text-sm transition-colors",
                   value === option.value
                     ? "bg-primary/10 text-primary"
-                    : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
+                    : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                 )}
               >
                 {option.label}

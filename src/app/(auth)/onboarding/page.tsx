@@ -328,7 +328,7 @@ export default function OnboardingPage() {
                 className={`flex size-8 items-center justify-center rounded-full text-xs font-bold transition-colors ${
                   s <= step
                     ? "bg-primary text-white"
-                    : "bg-white/10 text-text-muted"
+                    : "bg-black/10 text-text-muted"
                 }`}
               >
                 {s < step ? <Check className="size-4" /> : s}
@@ -336,7 +336,7 @@ export default function OnboardingPage() {
               {s < 3 && (
                 <div
                   className={`flex-1 h-0.5 mx-2 transition-colors ${
-                    s < step ? "bg-primary" : "bg-white/10"
+                    s < step ? "bg-primary" : "bg-black/10"
                   }`}
                 />
               )}
@@ -431,7 +431,7 @@ export default function OnboardingPage() {
                 >
                   <div
                     className={`flex size-12 shrink-0 items-center justify-center rounded-xl ${
-                      selected ? "bg-primary/10 text-primary" : "bg-white/5 text-text-secondary"
+                      selected ? "bg-primary/10 text-primary" : "bg-black/5 text-text-secondary"
                     }`}
                   >
                     <Icon className="size-6" />

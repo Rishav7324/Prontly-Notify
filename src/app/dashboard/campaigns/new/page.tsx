@@ -104,21 +104,12 @@ export default function NewCampaignPage() {
       const json = await res.json();
       if (json.success && Array.isArray(json.data.suggestions)) {
         setAiSuggestions(json.data.suggestions.slice(0, 3));
+        setAiPopoverOpen(true);
       } else {
-        setAiSuggestions([
-          "Limited Time Offer: 20% Off!",
-          "Your Exclusive Deal Awaits",
-          "Don't Miss Out on This Update",
-        ]);
+        addToast("AI title generation failed", "error");
       }
-      setAiPopoverOpen(true);
     } catch {
-      setAiSuggestions([
-        "Limited Time Offer: 20% Off!",
-        "Your Exclusive Deal Awaits",
-        "Don't Miss Out on This Update",
-      ]);
-      setAiPopoverOpen(true);
+      addToast("AI title generation failed", "error");
     } finally {
       setAiTitleLoading(false);
     }
@@ -216,15 +207,13 @@ export default function NewCampaignPage() {
       const json = await res.json();
       if (json.success && json.data.suggested_time) {
         setField("scheduledAt", json.data.suggested_time);
+        setScheduleMethod("ai-optimal");
+        addToast("AI optimal time selected for best engagement!", "info");
       } else {
-        setField("scheduledAt", "2026-06-25T09:00");
+        addToast("AI time suggestion failed", "error");
       }
-      setScheduleMethod("ai-optimal");
-      addToast("AI optimal time selected for best engagement!", "info");
     } catch {
-      setField("scheduledAt", "2026-06-25T09:00");
-      setScheduleMethod("ai-optimal");
-      addToast("AI optimal time selected for best engagement!", "info");
+      addToast("AI time suggestion failed", "error");
     } finally {
       setAiSuggestTimeLoading(false);
     }
@@ -435,7 +424,7 @@ export default function NewCampaignPage() {
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-3">
-                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-black/[0.02]">
                   <input
                     type="radio"
                     name="target"
@@ -448,7 +437,7 @@ export default function NewCampaignPage() {
                     <p className="text-xs text-text-muted">Send to your entire subscriber base</p>
                   </div>
                 </label>
-                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-black/[0.02]">
                   <input
                     type="radio"
                     name="target"
@@ -478,7 +467,7 @@ export default function NewCampaignPage() {
                     <SegmentRuleBuilder rules={rules} onChange={setRules} />
                   </div>
                 )}
-                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-black/[0.02]">
                   <input
                     type="radio"
                     name="target"
@@ -515,7 +504,7 @@ export default function NewCampaignPage() {
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-3">
-                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-black/[0.02]">
                   <input
                     type="radio"
                     name="schedule"
@@ -526,7 +515,7 @@ export default function NewCampaignPage() {
                   <Send className="size-5 text-primary" />
                   <span className="text-sm font-medium text-text-primary">Send Now</span>
                 </label>
-                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-black/[0.02]">
                   <input
                     type="radio"
                     name="schedule"
@@ -547,7 +536,7 @@ export default function NewCampaignPage() {
                     />
                   </div>
                 )}
-                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-white/[0.02]">
+                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-black/[0.02]">
                   <input
                     type="radio"
                     name="schedule"
@@ -680,7 +669,7 @@ export default function NewCampaignPage() {
               <CardContent>
                 {/* Dark frame with realistic notification */}
                 <div className="rounded-xl bg-black p-4 shadow-2xl">
-                  <div className="rounded-lg bg-white/[0.06] p-3">
+                  <div className="rounded-lg bg-black/[0.06] p-3">
                     {/* Browser chrome dots + URL bar */}
                     <div className="mb-3 flex items-center gap-2">
                       <div className="flex gap-1.5">
@@ -688,7 +677,7 @@ export default function NewCampaignPage() {
                         <span className="size-2.5 rounded-full bg-warning" />
                         <span className="size-2.5 rounded-full bg-success" />
                       </div>
-                      <div className="flex items-center gap-1.5 rounded-md bg-white/[0.08] px-3 py-1">
+                      <div className="flex items-center gap-1.5 rounded-md bg-black/[0.08] px-3 py-1">
                         <Globe className="size-3 text-white/40" />
                         <span className="text-[11px] text-white/60 truncate max-w-[180px]">
                           {draft.clickUrl || "https://prontly.com"}

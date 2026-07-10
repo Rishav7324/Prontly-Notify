@@ -8,16 +8,16 @@ const variantStyles = {
   primary:
     "bg-primary text-white hover:bg-primary-600 active:bg-primary-700 disabled:bg-primary/50",
   secondary:
-    "bg-surface text-text-primary hover:bg-white/10 active:bg-white/[0.15] disabled:bg-surface/50 disabled:text-text-muted",
+    "bg-surface text-text-primary hover:bg-black/10 active:bg-black/[0.15] disabled:bg-surface/50 disabled:text-text-muted",
   outline:
-    "border border-border text-text-primary hover:bg-white/5 active:bg-white/10 disabled:opacity-50",
+    "border border-border text-text-primary hover:bg-black/5 active:bg-black/10 disabled:opacity-50",
   ghost:
-    "text-text-secondary hover:text-text-primary hover:bg-white/5 active:bg-white/10 disabled:opacity-50",
+    "text-text-secondary hover:text-text-primary hover:bg-black/5 active:bg-black/10 disabled:opacity-50",
   destructive:
     "bg-error text-white hover:bg-red-600 active:bg-red-700 disabled:bg-error/50",
   link: "text-primary hover:text-primary-400 underline-offset-4 hover:underline disabled:opacity-50",
   "icon-only":
-    "text-text-secondary hover:text-text-primary hover:bg-white/5 active:bg-white/10 disabled:opacity-50",
+    "text-text-secondary hover:text-text-primary hover:bg-black/5 active:bg-black/10 disabled:opacity-50",
 };
 
 const sizeStyles = {

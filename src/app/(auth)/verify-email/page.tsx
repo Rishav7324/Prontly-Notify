@@ -182,7 +182,7 @@ export default function VerifyEmailPage() {
             href="https://mail.google.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] px-4 py-2.5 text-sm font-medium text-[#F8FAFC] transition-colors hover:bg-white/5"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] px-4 py-2.5 text-sm font-medium text-[#F8FAFC] transition-colors hover:bg-black/5"
           >
             <ExternalLink className="size-3.5" />
             Gmail
@@ -191,7 +191,7 @@ export default function VerifyEmailPage() {
             href="https://outlook.live.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] px-4 py-2.5 text-sm font-medium text-[#F8FAFC] transition-colors hover:bg-white/5"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] px-4 py-2.5 text-sm font-medium text-[#F8FAFC] transition-colors hover:bg-black/5"
           >
             <ExternalLink className="size-3.5" />
             Outlook

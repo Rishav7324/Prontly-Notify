@@ -71,7 +71,7 @@ export function Sidebar() {
                     "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                     isActive
                       ? "bg-primary/10 text-primary"
-                      : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
+                      : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                   )}
                 >
                   {isActive && (

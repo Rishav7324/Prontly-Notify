@@ -24,7 +24,7 @@ export function Skeleton({
   return (
     <div
       className={cn(
-        "animate-pulse bg-white/5",
+        "animate-pulse bg-black/5",
         variantStyles[variant],
         className
       )}

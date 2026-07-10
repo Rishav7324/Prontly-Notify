@@ -45,7 +45,7 @@ export function Accordion({
           <div key={index}>
             <button
               onClick={() => toggle(index)}
-              className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-text-primary hover:bg-white/5 transition-colors"
+              className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium text-text-primary hover:bg-black/5 transition-colors"
               aria-expanded={isOpen}
             >
               {item.title}

@@ -279,7 +279,7 @@ export default function AdminBlog() {
             <div>
               <label className="mb-1.5 block text-sm font-medium text-text-secondary">Featured Image</label>
               <div className="flex items-center gap-4 rounded-lg border border-border bg-background p-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-white/5">
+                <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-black/5">
                   {editingPost.featuredImage ? (
                     <img src={editingPost.featuredImage} alt="Featured" className="h-full w-full rounded-lg object-cover" />
                   ) : (

@@ -117,7 +117,7 @@ export default function ApiKeysPage() {
       key: "prefix",
       label: "Key",
       render: (k) => (
-        <code className="rounded bg-white/5 px-2 py-0.5 text-xs font-mono text-text-secondary">
+        <code className="rounded bg-black/5 px-2 py-0.5 text-xs font-mono text-text-secondary">
           {k.prefix}...{k.revoked && " (revoked)"}
         </code>
       ),

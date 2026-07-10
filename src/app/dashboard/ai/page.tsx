@@ -136,7 +136,7 @@ export default function AiToolsPage() {
           <Card key={f.id} variant="interactive">
             <CardContent>
               <div className="flex items-start justify-between">
-                <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 ${f.color}`}>
+                <div className={`flex h-10 w-10 items-center justify-center rounded-lg bg-black/5 ${f.color}`}>
                   {f.icon}
                 </div>
                 <Button
@@ -152,7 +152,7 @@ export default function AiToolsPage() {
               <p className="mt-1 text-xs text-text-muted">{f.description}</p>
 
               {activeFeature === f.id && (
-                <div className="mt-4 rounded-lg border border-border bg-white/[0.02] p-3">
+                <div className="mt-4 rounded-lg border border-border bg-black/[0.02] p-3">
                   {f.id === "title" && (
                     <div className="space-y-3">
                       <Input

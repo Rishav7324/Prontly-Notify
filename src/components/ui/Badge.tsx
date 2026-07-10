@@ -14,7 +14,7 @@ type BadgeVariant =
 type BadgeSize = "sm" | "md";
 
 const variantStyles: Record<BadgeVariant, string> = {
-  default: "bg-white/10 text-text-secondary border border-border",
+  default: "bg-black/10 text-text-secondary border border-border",
   success: "bg-success/15 text-success border border-success/25",
   warning: "bg-warning/15 text-warning border border-warning/25",
   error: "bg-error/15 text-error border border-error/25",

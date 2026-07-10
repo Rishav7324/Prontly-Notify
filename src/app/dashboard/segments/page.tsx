@@ -218,7 +218,7 @@ export default function SegmentsPage() {
             </Button>
           </div>
 
-          <div className="mt-4 flex items-center justify-between rounded-lg border border-border bg-white/[0.02] px-4 py-3">
+          <div className="mt-4 flex items-center justify-between rounded-lg border border-border bg-black/[0.02] px-4 py-3">
             <div className="flex items-center gap-2 text-sm">
               <Users className="h-4 w-4 text-text-muted" />
               <span className="text-text-muted">Estimated reach:</span>

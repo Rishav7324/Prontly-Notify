@@ -33,66 +33,7 @@ interface KpiCard {
   icon: typeof DollarSign;
 }
 
-function SparklineChart() {
-  const points = [40, 65, 45, 80, 55, 90, 70, 95, 75, 85, 88, 92];
-  const width = 240;
-  const height = 60;
-  const max = Math.max(...points);
-  const min = Math.min(...points);
-  const range = max - min || 1;
-  const coords = points.map((p, i) => ({
-    x: (i / (points.length - 1)) * width,
-    y: height - ((p - min) / range) * (height - 10) - 5,
-  }));
-  const pathD = coords.map((c, i) => `${i === 0 ? "M" : "L"}${c.x.toFixed(1)},${c.y.toFixed(1)}`).join("");
-  return (
-    <svg width={width} height={height} className="overflow-visible" aria-label="Revenue trend chart">
-      <path d={pathD} fill="none" stroke="rgba(59,130,246,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="rgba(59,130,246,0.25)" />
-        <stop offset="100%" stopColor="rgba(59,130,246,0)" />
-      </linearGradient>
-      <path d={`${pathD} L${width},${height} L0,${height} Z`} fill="url(#revenueGrad)" />
-    </svg>
-  );
-}
-
-function BarChart() {
-  const data = [65, 40, 80, 55, 90, 70, 85, 60, 75, 95, 50, 78];
-  const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  const maxVal = Math.max(...data);
-  const barWidth = 20;
-  const gap = 8;
-  const chartH = 140;
-  return (
-    <svg width={(barWidth + gap) * data.length} height={chartH + 20} className="overflow-visible" aria-label="Notification delivery chart">
-      {data.slice(0, 7).map((v, i) => {
-        const barH = (v / maxVal) * chartH;
-        return (
-          <g key={i}>
-            <rect
-              x={i * (barWidth + gap)}
-              y={chartH - barH}
-              width={barWidth}
-              height={barH}
-              rx="3"
-              fill="rgba(59,130,246,0.6)"
-            />
-            <text
-              x={i * (barWidth + gap) + barWidth / 2}
-              y={chartH + 14}
-              textAnchor="middle"
-              className="fill-text-muted"
-              fontSize="10"
-            >
-              {labels[i]}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
+// ponytail: chart data removed — real data pending from admin API
 
 async function fetchData() {
   const res = await fetch("/api/v1/admin/overview");
@@ -175,7 +116,7 @@ export default function AdminDashboard() {
                       <p className="mt-3 text-xs text-text-muted">{kpi.label}</p>
                       <p className="mt-1 text-2xl font-bold text-text-primary tabular-nums">{kpi.value}</p>
                     </CardContent>
-                    {kpi.label === "MRR" && <div className="absolute -bottom-2 -right-2 opacity-20"><SparklineChart /></div>}
+                    {/* ponytail: MRR sparkline removed */}
                   </>
                 )}
               </Card>
@@ -210,7 +151,7 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 {loading ? <Skeleton variant="chart" /> : (
-                  <div className="flex items-end justify-center py-4"><BarChart /></div>
+                  <div className="flex items-center justify-center py-12 text-sm text-text-muted">Chart data pending from API</div>
                 )}
               </CardContent>
             </Card>
@@ -237,7 +178,7 @@ export default function AdminDashboard() {
                         <tr><td colSpan={2} className="px-4 py-8 text-center text-sm text-text-muted">No recent signups</td></tr>
                       ) : (
                         overview.recent_signups.map((row: any, i: number) => (
-                          <tr key={i} className="border-b border-border last:border-b-0 hover:bg-white/[0.02]">
+                          <tr key={i} className="border-b border-border last:border-b-0 hover:bg-black/[0.02]">
                             <td className="px-4 py-3 text-sm text-text-primary">{row.date}</td>
                             <td className="px-4 py-3 text-sm tabular-nums text-text-secondary">{row.count}</td>
                           </tr>

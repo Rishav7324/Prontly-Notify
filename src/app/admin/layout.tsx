@@ -105,7 +105,7 @@ export default function AdminLayout({
                       "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                       isActive
                         ? "bg-primary/10 text-primary"
-                        : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
+                        : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                     )}
                   >
                     {isActive && (
@@ -158,12 +158,12 @@ export default function AdminLayout({
           <div className="flex items-center gap-2">
             <Link
               href="/dashboard"
-              className="rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
+              className="rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
             >
               Exit Admin
             </Link>
             <button
-              className="relative flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
+              className="relative flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
               aria-label="Notifications"
             >
               <Bell className="size-5" />

@@ -47,7 +47,7 @@ export function AISuggestionCard({
             {onReject && (
               <button
                 onClick={onReject}
-                className="inline-flex items-center gap-1.5 rounded-md bg-white/5 px-3 py-1.5 text-xs font-medium text-text-muted hover:bg-white/10 hover:text-text-secondary transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-md bg-black/5 px-3 py-1.5 text-xs font-medium text-text-muted hover:bg-black/10 hover:text-text-secondary transition-colors"
               >
                 <X className="size-3.5" />
                 Dismiss

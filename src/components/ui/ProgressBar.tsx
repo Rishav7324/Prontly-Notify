@@ -43,7 +43,7 @@ export function ProgressBar({
     <div className={cn("flex items-center gap-3", className)} {...props}>
       <div
         className={cn(
-          "relative w-full overflow-hidden rounded-full bg-white/10",
+          "relative w-full overflow-hidden rounded-full bg-black/10",
           sizeStyles[size]
         )}
         role="progressbar"

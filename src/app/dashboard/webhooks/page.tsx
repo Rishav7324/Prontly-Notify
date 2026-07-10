@@ -259,7 +259,7 @@ export default function WebhooksPage() {
                     className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                       selectedEvents.includes(event.value)
                         ? "bg-primary text-white"
-                        : "bg-white/5 text-text-secondary hover:bg-white/10"
+                        : "bg-black/5 text-text-secondary hover:bg-black/10"
                     }`}
                   >
                     {event.label}

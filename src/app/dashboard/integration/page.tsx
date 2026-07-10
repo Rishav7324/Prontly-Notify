@@ -37,13 +37,7 @@ export default function IntegrationPage() {
   const [installed, setInstalled] = useState(false);
   const [apiSnippet, setApiSnippet] = useState("");
   const [swSnippet, setSwSnippet] = useState("");
-  const [checklist, setChecklist] = useState<{ label: string; done: boolean }[]>([
-    { label: "SDK script loaded on all pages", done: false },
-    { label: "Service worker registered", done: false },
-    { label: "HTTPS enabled", done: true },
-    { label: "VAPID keys configured", done: false },
-    { label: "Permission prompt triggered", done: false },
-  ]);
+  const [checklist, setChecklist] = useState<{ label: string; done: boolean }[]>([]);
   const [testing, setTesting] = useState(false);
 
   useEffect(() => {
@@ -243,7 +237,7 @@ export default function IntegrationPage() {
                 <button
                   key={link}
                   onClick={() => addToast(`Opening ${link}...`, "info")}
-                  className="block w-full rounded-md px-3 py-2 text-left text-sm text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
+                  className="block w-full rounded-md px-3 py-2 text-left text-sm text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
                 >
                   {link}
                 </button>

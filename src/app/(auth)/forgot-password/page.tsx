@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
               href="https://mail.google.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] px-4 py-3 text-sm font-medium text-[#F8FAFC] transition-colors hover:bg-white/5"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] px-4 py-3 text-sm font-medium text-[#F8FAFC] transition-colors hover:bg-black/5"
             >
               <ExternalLink className="size-4" />
               Open Gmail &rarr;

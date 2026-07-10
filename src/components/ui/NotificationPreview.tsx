@@ -26,7 +26,7 @@ export function NotificationPreview({
       )}
     >
       {/* Browser chrome bar */}
-      <div className="flex items-center gap-2 border-b border-border bg-white/[0.03] px-4 py-2">
+      <div className="flex items-center gap-2 border-b border-border bg-black/[0.03] px-4 py-2">
         <div className="flex gap-1.5">
           <span className="size-2.5 rounded-full bg-error" />
           <span className="size-2.5 rounded-full bg-warning" />

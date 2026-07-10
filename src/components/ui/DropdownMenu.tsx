@@ -75,7 +75,7 @@ export function DropdownMenu({
                 "flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm transition-colors",
                 item.destructive
                   ? "text-error hover:bg-error/10"
-                  : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
+                  : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
               )}
             >
               {item.icon && <span className="size-4">{item.icon}</span>}

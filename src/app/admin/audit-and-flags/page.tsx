@@ -211,11 +211,11 @@ export default function AdminAuditAndFlags() {
                 <Card>
                   <CardContent className="p-0">
                     {loading ? (
-                      <div className="space-y-3 p-6">{Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-12 animate-pulse rounded-lg bg-white/5" />)}</div>
+                      <div className="space-y-3 p-6">{Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-12 animate-pulse rounded-lg bg-black/5" />)}</div>
                     ) : (
                       <div className="divide-y divide-border">
                         {filteredAuditLogs.map((entry) => (
-                          <div key={entry.id} className="flex items-start gap-4 px-6 py-4 hover:bg-white/[0.02]">
+                          <div key={entry.id} className="flex items-start gap-4 px-6 py-4 hover:bg-black/[0.02]">
                             <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
                               {entry.action.includes("Impersonate") ? <Eye className="size-4" /> :
                                entry.action.includes("Suspend") || entry.action.includes("Reinstate") ? <UserX className="size-4" /> :
@@ -258,7 +258,7 @@ export default function AdminAuditAndFlags() {
           {!loading && flags.length === 0 ? (
             <EmptyState icon={<Flag className="size-12" />} title="No feature flags" description="No feature flags configured" />
           ) : loading ? (
-            <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-24 animate-pulse rounded-xl bg-white/5" />)}</div>
+            <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-24 animate-pulse rounded-xl bg-black/5" />)}</div>
           ) : (
             flags.map((flag) => (
               <Card key={flag.id}>
@@ -286,7 +286,7 @@ export default function AdminAuditAndFlags() {
                           max={100}
                           value={flag.rolloutPercentage}
                           onChange={(e) => handleRolloutChange(flag.id, parseInt(e.target.value))}
-                          className="h-1.5 w-24 cursor-pointer appearance-none rounded-full bg-white/10 accent-primary"
+                          className="h-1.5 w-24 cursor-pointer appearance-none rounded-full bg-black/10 accent-primary"
                           aria-label={`${flag.name} rollout percentage`}
                           disabled={updatingFlag === flag.id}
                         />

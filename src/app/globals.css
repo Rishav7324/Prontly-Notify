@@ -2,55 +2,73 @@
 @plugin "@tailwindcss/typography";
 
 @theme inline {
-  --color-background: #0F172A;
-  --color-surface: #111827;
-  --color-surface-glass: rgba(17, 24, 39, 0.6);
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-strong: rgba(255, 255, 255, 0.16);
-  --color-text-primary: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-text-muted: #64748B;
-  --color-text-inverse: #0F172A;
-  --color-primary-50: #EFF6FF;
-  --color-primary-100: #DBEAFE;
-  --color-primary-200: #BFDBFE;
-  --color-primary-300: #93C5FD;
-  --color-primary-400: #60A5FA;
-  --color-primary-500: #3B82F6;
-  --color-primary-600: #2563EB;
-  --color-primary-700: #1D4ED8;
-  --color-primary-800: #1E40AF;
-  --color-primary-900: #1E3A8A;
-  --color-primary: #3B82F6;
+  --color-eggshell: #fdfcfc;
+  --color-warm-taupe: #f5f3f1;
+  --color-stone: #ebe8e4;
+  --color-ink: #000000;
+  --color-graphite: #44403b;
+  --color-smoke: #777169;
+  --color-ash: #a59f97;
+  --color-violet-spark: #0447ff;
+  --color-ember-orange: #ff4704;
+
+  --color-background: #fdfcfc;
+  --color-surface: #f5f3f1;
+  --color-surface-glass: rgba(253, 252, 252, 0.6);
+  --color-border: #ebe8e4;
+  --color-border-strong: #e5e5e5;
+  --color-text-primary: #000000;
+  --color-text-secondary: #777169;
+  --color-text-muted: #a59f97;
+  --color-text-inverse: #fdfcfc;
+  --color-primary-50: #f5f5f5;
+  --color-primary-100: #e7e7e7;
+  --color-primary-200: #cccccc;
+  --color-primary-300: #aaaaaa;
+  --color-primary-400: #666666;
+  --color-primary-500: #000000;
+  --color-primary-600: #1a1a1a;
+  --color-primary-700: #333333;
+  --color-primary-800: #4d4d4d;
+  --color-primary-900: #666666;
+  --color-primary: #000000;
   --color-success: #22C55E;
   --color-warning: #F59E0B;
   --color-error: #EF4444;
-  --color-info: #3B82F6;
-  --font-sans: var(--font-sora), "Inter", system-ui, sans-serif;
-  --font-display: var(--font-sora), "Inter", system-ui, sans-serif;
+  --color-info: #000000;
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-display: var(--font-inter), "Inter", system-ui, sans-serif;
+
+  --radius-tags: 9999px;
+  --radius-cards: 20px;
+  --radius-inputs: 4px;
+  --radius-buttons: 9999px;
+  --radius-large-cards: 24px;
+
+  --shadow-subtle: rgba(0, 0, 0, 0.4) 0px 0px 1px 0px, rgba(0, 0, 0, 0.04) 0px 1px 1px 0px, rgba(0, 0, 0, 0.04) 0px 2px 4px 0px;
 }
 
 @layer base {
   * {
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: #ebe8e4;
   }
 
   body {
-    background-color: #0F172A;
-    color: #F8FAFC;
+    background-color: #fdfcfc;
+    color: #000000;
     font-family: "Inter", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   :focus-visible {
-    outline: 2px solid #3B82F6;
+    outline: 2px solid #000000;
     outline-offset: 2px;
   }
 
   ::selection {
-    background-color: rgba(59, 130, 246, 0.3);
-    color: #F8FAFC;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #000000;
   }
 
   ::-webkit-scrollbar {
@@ -63,21 +81,21 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
   }
 }
 
 @layer utilities {
   .glass {
-    background-color: rgba(17, 24, 39, 0.6);
+    background-color: rgba(253, 252, 252, 0.6);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid #ebe8e4;
   }
 
   .text-balance {

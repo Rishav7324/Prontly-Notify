@@ -149,7 +149,7 @@ export function MobileTabBar() {
           </span>
           <button
             onClick={() => setDrawerOpen(false)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-white/5 hover:text-text-primary"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-black/5 hover:text-text-primary"
           >
             <X className="h-5 w-5" />
           </button>
@@ -167,7 +167,7 @@ export function MobileTabBar() {
                   "flex flex-col items-center gap-1 rounded-lg py-3 text-center text-xs font-medium transition-colors",
                   active
                     ? "bg-primary/10 text-primary"
-                    : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
+                    : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                 )}
               >
                 <Icon className="h-5 w-5" />

@@ -181,7 +181,7 @@ export default function AutomationPage() {
                         )}
                       </div>
                       <div className="ml-3 flex-1 pb-6">
-                        <div className="flex items-center justify-between rounded-lg border border-border bg-white/[0.02] px-4 py-3">
+                        <div className="flex items-center justify-between rounded-lg border border-border bg-black/[0.02] px-4 py-3">
                           <div>
                             <Badge variant="default" size="sm" className="mb-1">
                               {step.kind}
@@ -212,7 +212,7 @@ export default function AutomationPage() {
             <button
               key={t.id}
               onClick={() => handleSelectTemplate(t.id)}
-              className="rounded-xl border border-border bg-surface p-4 text-left transition-colors hover:border-primary/50 hover:bg-white/[0.02]"
+              className="rounded-xl border border-border bg-surface p-4 text-left transition-colors hover:border-primary/50 hover:bg-black/[0.02]"
             >
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                 <t.icon className="h-5 w-5 text-primary" />

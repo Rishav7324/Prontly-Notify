@@ -427,7 +427,7 @@ export default function DashboardHome() {
                 <div className="space-y-4">
                   {activity.slice(0, 4).map((item) => (
                     <div key={item.id} className="flex items-start gap-3">
-                      <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-white/[0.04]">
+                      <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-black/[0.04]">
                         {activityIcon(item.type)}
                       </div>
                       <div className="min-w-0 flex-1">

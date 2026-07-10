@@ -191,7 +191,7 @@ export default function AnalyticsPage() {
             key={dr.key}
             onClick={() => setRange(dr.key)}
             className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-              range === dr.key ? "bg-primary text-white" : "bg-white/5 text-text-secondary hover:bg-white/10"
+              range === dr.key ? "bg-primary text-white" : "bg-black/5 text-text-secondary hover:bg-black/10"
             }`}
           >
             {dr.label}

@@ -27,80 +27,7 @@ interface ComparisonFeature {
   getValue: (plan: Plan) => string | boolean;
 }
 
-const fallbackPlans: Plan[] = [
-  {
-    id: "free",
-    name: "Free",
-    description: "Perfect for testing the waters.",
-    monthly_price: 0,
-    annual_price: 0,
-    subscriber_limit: 1000,
-    site_limit: 1,
-    ai_credits: 10,
-    team_seats: 1,
-    features: [
-      "Up to 1,000 subscribers",
-      "1 site",
-      "10 AI credits / month",
-      "1 team seat",
-    ],
-    is_featured: false,
-  },
-  {
-    id: "starter",
-    name: "Starter",
-    description: "For growing blogs and small stores.",
-    monthly_price: 999,
-    annual_price: 9999,
-    subscriber_limit: 10000,
-    site_limit: 3,
-    ai_credits: 50,
-    team_seats: 5,
-    features: [
-      "Up to 10,000 subscribers",
-      "3 sites",
-      "50 AI credits / month",
-      "5 team seats",
-    ],
-    is_featured: false,
-  },
-  {
-    id: "growth",
-    name: "Growth",
-    description: "For serious publishers and SaaS teams.",
-    monthly_price: 2999,
-    annual_price: 29999,
-    subscriber_limit: 100000,
-    site_limit: 10,
-    ai_credits: 200,
-    team_seats: 20,
-    features: [
-      "Up to 100,000 subscribers",
-      "10 sites",
-      "200 AI credits / month",
-      "20 team seats",
-    ],
-    is_featured: true,
-  },
-  {
-    id: "scale",
-    name: "Scale",
-    description: "For high-volume businesses and agencies.",
-    monthly_price: 7999,
-    annual_price: 79999,
-    subscriber_limit: "1,000,000",
-    site_limit: 50,
-    ai_credits: "Unlimited",
-    team_seats: "Unlimited",
-    features: [
-      "Up to 1,000,000 subscribers",
-      "50 sites",
-      "Unlimited AI credits",
-      "Unlimited team seats",
-    ],
-    is_featured: false,
-  },
-];
+// ponytail: plans loaded from API; no fallback — show empty state if API fails
 
 const comparisonFeatures: ComparisonFeature[] = [
   {
@@ -206,8 +133,9 @@ function CellValue({ value }: { value: string | boolean }) {
 
 export default function PricingPage() {
   const [annual, setAnnual] = useState(false);
-  const [plans, setPlans] = useState<Plan[]>(fallbackPlans);
+  const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const { addToast } = useToast();
 
   useEffect(() => {
@@ -216,10 +144,12 @@ export default function PricingPage() {
       .then((data) => {
         if (data.success && Array.isArray(data.data) && data.data.length > 0) {
           setPlans(data.data);
+        } else {
+          setError("Could not load pricing plans.");
         }
       })
       .catch(() => {
-        addToast("Failed to load plans. Showing default pricing.", "warning");
+        setError("Could not load pricing plans.");
       })
       .finally(() => setLoading(false));
   }, []);
@@ -228,6 +158,14 @@ export default function PricingPage() {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <Loader2 className="size-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error || plans.length === 0) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <p className="text-text-muted">{error || "No plans available."}</p>
       </div>
     );
   }
@@ -360,7 +298,7 @@ export default function PricingPage() {
                   <tr
                     key={feat.label}
                     className={`border-b border-border last:border-0 ${
-                      idx % 2 === 1 ? "bg-white/[0.03]" : ""
+                      idx % 2 === 1 ? "bg-black/[0.03]" : ""
                     }`}
                   >
                     <td className="sticky left-0 z-10 bg-surface px-6 py-4 text-sm font-medium text-text-primary">

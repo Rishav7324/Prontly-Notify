@@ -44,7 +44,7 @@ export function Toggle({
         <div
           className={cn(
             "h-6 w-11 rounded-full transition-colors duration-200",
-            checked ? "bg-primary" : "bg-white/15"
+            checked ? "bg-primary" : "bg-black/15"
           )}
         />
         <div

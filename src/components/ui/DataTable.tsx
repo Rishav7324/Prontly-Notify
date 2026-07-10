@@ -85,7 +85,7 @@ export function DataTable<T extends object>({
       {/* Desktop table */}
       <table className="hidden w-full md:table">
         <thead>
-          <tr className="border-b border-border bg-white/[0.02]">
+          <tr className="border-b border-border bg-black/[0.02]">
             {columns.map((col) => (
               <th
                 key={col.key}
@@ -118,7 +118,7 @@ export function DataTable<T extends object>({
             sortedData.map((item) => (
               <tr
                 key={keyExtractor(item)}
-                className="border-b border-border last:border-b-0 hover:bg-white/[0.02] transition-colors"
+                className="border-b border-border last:border-b-0 hover:bg-black/[0.02] transition-colors"
               >
                 {columns.map((col) => (
                   <td

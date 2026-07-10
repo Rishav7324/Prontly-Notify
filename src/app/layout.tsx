@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Sora } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 
-const sora = Sora({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sora",
+  variable: "--font-inter",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -35,9 +36,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
-        className={`${sora.variable} font-sans bg-background text-white antialiased`}
+        className={`${inter.variable} font-sans bg-background text-text-primary antialiased`}
       >
         <script
           type="application/ld+json"
