@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -9,6 +9,7 @@ import { Modal } from "@/components/ui/Modal";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { EmptyState } from "@/components/domain/EmptyState";
 import { useToast } from "@/components/ui/Toast";
+import { useFetch } from "@/lib/useFetch";
 import { formatDate } from "@/lib/utils";
 import {
   Plus,
@@ -38,8 +39,7 @@ const scopeColors: Record<string, string> = {
 
 export default function ApiKeysPage() {
   const { addToast } = useToast();
-  const [keys, setKeys] = useState<ApiKey[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: keys, loading, refetch } = useFetch<ApiKey[]>("/api/v1/api-keys");
   const [showGenerate, setShowGenerate] = useState(false);
   const [showRevoke, setShowRevoke] = useState<string | null>(null);
   const [showKeyValue, setShowKeyValue] = useState(false);
@@ -47,22 +47,7 @@ export default function ApiKeysPage() {
   const [newKeyScopes, setNewKeyScopes] = useState<string[]>(["push:send"]);
   const [generatedKeyValue, setGeneratedKeyValue] = useState("");
   const [generating, setGenerating] = useState(false);
-
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/v1/api-keys");
-        const json = await res.json();
-        if (json.success) setKeys(json.data);
-      } catch {
-        addToast("Failed to load API keys", "error");
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [addToast]);
+  const list = keys ?? [];
 
   const toggleScope = (scope: string) => {
     setNewKeyScopes((prev) =>
@@ -84,7 +69,7 @@ export default function ApiKeysPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setKeys((prev) => [json.data.key, ...prev]);
+        refetch();
         setGeneratedKeyValue(json.data.key_value ?? json.data.key ?? "key_value_here");
         setShowGenerate(false);
         setShowKeyValue(true);
@@ -103,7 +88,7 @@ export default function ApiKeysPage() {
       const json = await res.json();
       if (json.success) {
         addToast("API key revoked", "success");
-        setKeys((prev) => prev.map((k) => (k.id === id ? { ...k, revoked: true } : k)));
+        refetch();
         setShowRevoke(null);
       } else addToast(json.error, "error");
     } catch {
@@ -151,7 +136,7 @@ export default function ApiKeysPage() {
     },
   ];
 
-  if (loading) {
+  if (loading && !keys) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -171,7 +156,7 @@ export default function ApiKeysPage() {
         </Button>
       </div>
 
-      {keys.length === 0 ? (
+      {list.length === 0 ? (
         <EmptyState
           icon={<Key className="h-8 w-8" />}
           title="No API keys yet"
@@ -185,29 +170,19 @@ export default function ApiKeysPage() {
       ) : (
         <DataTable
           columns={columns}
-          data={keys}
+          data={list}
           keyExtractor={(k) => k.id}
         />
       )}
 
       <Modal open={showGenerate} onClose={() => setShowGenerate(false)} title="Generate New API Key">
         <div className="space-y-4">
-          <Input
-            label="Key Name"
-            placeholder="e.g. Production SDK"
-            value={newKeyName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewKeyName(e.target.value)}
-          />
+          <Input label="Key Name" placeholder="e.g. Production SDK" value={newKeyName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewKeyName(e.target.value)} />
           <div className="space-y-2">
             <p className="text-sm font-medium text-text-secondary">Scopes</p>
             {["push:send", "subscribers:read", "analytics:read"].map((scope) => (
               <label key={scope} className="flex items-center gap-2 text-sm text-text-secondary">
-                <input
-                  type="checkbox"
-                  checked={newKeyScopes.includes(scope)}
-                  onChange={() => toggleScope(scope)}
-                  className="rounded border-border bg-background"
-                />
+                <input type="checkbox" checked={newKeyScopes.includes(scope)} onChange={() => toggleScope(scope)} className="rounded border-border bg-background" />
                 {scope}
               </label>
             ))}
@@ -229,16 +204,7 @@ export default function ApiKeysPage() {
             <pre className="overflow-x-auto rounded-lg border border-border bg-background p-3 text-sm font-mono text-text-primary">
               {generatedKeyValue}
             </pre>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute right-2 top-2"
-              onClick={() => {
-                navigator.clipboard.writeText(generatedKeyValue);
-                addToast("Key copied!", "success");
-              }}
-              icon={<Copy className="h-3.5 w-3.5" />}
-            />
+            <Button variant="ghost" size="sm" className="absolute right-2 top-2" onClick={() => { navigator.clipboard.writeText(generatedKeyValue); addToast("Key copied!", "success"); }} icon={<Copy className="h-3.5 w-3.5" />} />
           </div>
           <Button className="w-full" onClick={() => setShowKeyValue(false)}>
             I&apos;ve Saved the Key
@@ -250,13 +216,10 @@ export default function ApiKeysPage() {
         <div className="space-y-4">
           <p className="text-sm text-text-secondary">
             Are you sure you want to revoke this API key? This action cannot be undone.
-            Any services using this key will immediately lose access.
           </p>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => setShowRevoke(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={() => handleRevoke(showRevoke!)}>
-              Revoke Key
-            </Button>
+            <Button variant="destructive" onClick={() => handleRevoke(showRevoke!)}>Revoke Key</Button>
           </div>
         </div>
       </Modal>

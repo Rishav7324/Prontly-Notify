@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/Input";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { EmptyState } from "@/components/domain/EmptyState";
 import { useToast } from "@/components/ui/Toast";
+import { useFetch } from "@/lib/useFetch";
 import { formatDate, formatNumber } from "@/lib/utils";
 import { Plus, Users, X, Shuffle, Hash, Loader2 } from "lucide-react";
 
@@ -40,36 +41,20 @@ const operators = [
   { value: "lt", label: "Less than" },
   { value: "eq", label: "Equals" },
   { value: "contains", label: "Contains" },
-  { value: "gte", label: "≥" },
-  { value: "lte", label: "≤" },
+  { value: "gte", label: "\u2265" },
+  { value: "lte", label: "\u2264" },
 ];
 
 export default function SegmentsPage() {
   const { addToast } = useToast();
-  const [segments, setSegments] = useState<Segment[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: segments, loading, refetch } = useFetch<Segment[]>("/api/v1/segments");
+  const list = segments ?? [];
   const [conditions, setConditions] = useState<Condition[]>([
     { id: "1", attribute: "country", operator: "eq", value: "India" },
   ]);
   const [logic, setLogic] = useState<"and" | "or">("and");
   const [previewCount, setPreviewCount] = useState<number | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
-
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/v1/segments");
-        const json = await res.json();
-        if (json.success) setSegments(json.data);
-      } catch {
-        addToast("Failed to load segments", "error");
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [addToast]);
 
   const addCondition = () => {
     setConditions((prev) => [
@@ -109,7 +94,7 @@ export default function SegmentsPage() {
       const json = await res.json();
       if (json.success) {
         addToast("Segment created!", "success");
-        setSegments((prev) => [json.data, ...prev]);
+        refetch();
       } else addToast(json.error, "error");
     } catch {
       addToast("Failed to create segment", "error");
@@ -123,7 +108,7 @@ export default function SegmentsPage() {
     { key: "lastUpdated", label: "Last Updated", render: (s) => formatDate(s.lastUpdated) },
   ];
 
-  if (loading) {
+  if (loading && !segments) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -173,42 +158,22 @@ export default function SegmentsPage() {
                 <Select
                   options={attributes}
                   value={c.attribute}
-                  onChange={(v) => {
-                    const newConditions = conditions.map((cond) =>
-                      cond.id === c.id ? { ...cond, attribute: v } : cond
-                    );
-                    setConditions(newConditions);
-                  }}
+                  onChange={(v) => setConditions((prev) => prev.map((cond) => cond.id === c.id ? { ...cond, attribute: v } : cond))}
                   className="w-44"
                 />
                 <Select
                   options={operators}
                   value={c.operator}
-                  onChange={(v) => {
-                    const newConditions = conditions.map((cond) =>
-                      cond.id === c.id ? { ...cond, operator: v } : cond
-                    );
-                    setConditions(newConditions);
-                  }}
+                  onChange={(v) => setConditions((prev) => prev.map((cond) => cond.id === c.id ? { ...cond, operator: v } : cond))}
                   className="w-36"
                 />
                 <Input
                   placeholder="Value"
                   value={c.value}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const newConditions = conditions.map((cond) =>
-                      cond.id === c.id ? { ...cond, value: e.target.value } : cond
-                    );
-                    setConditions(newConditions);
-                  }}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConditions((prev) => prev.map((cond) => cond.id === c.id ? { ...cond, value: e.target.value } : cond))}
                   containerClassName="w-36"
                 />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeCondition(c.id)}
-                  className="mb-0.5"
-                >
+                <Button variant="ghost" size="sm" onClick={() => removeCondition(c.id)} className="mb-0.5">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -238,7 +203,7 @@ export default function SegmentsPage() {
         </CardContent>
       </Card>
 
-      {segments.length === 0 ? (
+      {list.length === 0 ? (
         <EmptyState
           icon={<Users className="h-8 w-8" />}
           title="No segments yet"
@@ -247,7 +212,7 @@ export default function SegmentsPage() {
       ) : (
         <DataTable
           columns={columns}
-          data={segments}
+          data={list}
           keyExtractor={(s) => s.id}
           sortable
         />
