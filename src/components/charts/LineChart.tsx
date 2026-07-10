@@ -17,16 +17,16 @@ interface LineChartProps {
   showGrid?: boolean;
 }
 
-export function LineChart({ data, height = 200, color = "#3B82F6", showGrid = false }: LineChartProps) {
+export function LineChart({ data, height = 200, color = "#000000", showGrid = false }: LineChartProps) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <RechartsLine data={data}>
-        {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />}
-        <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#64748B" }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 11, fill: "#64748B" }} axisLine={false} tickLine={false} />
+        {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="#ebe8e4" />}
+        <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#a59f97" }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 11, fill: "#a59f97" }} axisLine={false} tickLine={false} />
         <Tooltip
-          contentStyle={{ background: "#111827", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8 }}
-          labelStyle={{ color: "#94A3B8" }}
+          contentStyle={{ background: "#fdfcfc", border: "1px solid #ebe8e4", borderRadius: 8 }}
+          labelStyle={{ color: "#777169" }}
         />
         <Line type="monotone" dataKey="value" stroke={color} strokeWidth={2} dot={false} />
       </RechartsLine>

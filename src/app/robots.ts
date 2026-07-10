@@ -3,7 +3,7 @@ import { getEnv } from "@/lib/env";
 
 export default function robots(): MetadataRoute.Robots {
   const env = getEnv();
-  const baseUrl = env.NEXT_PUBLIC_APP_URL ?? "https://prontly.in";
+  const baseUrl = env.NEXT_PUBLIC_APP_URL ?? "https://notify.prontly.in";
 
   return {
     rules: [

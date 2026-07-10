@@ -86,20 +86,20 @@ export default function FAQPage() {
 
       <section className="mx-auto max-w-[1200px] px-4 py-24 text-center">
         <Badge variant="info" className="mb-4">FAQ</Badge>
-        <h1 className="font-display text-[36px] font-bold text-[#F8FAFC] md:text-[48px]">
+        <h1 className="font-display text-[36px] font-bold text-text-primary md:text-[48px]">
           Frequently asked questions
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-[#94A3B8]">
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-text-secondary">
           Everything you need to know about Prontly Notify.
         </p>
         <div className="relative mx-auto mt-8 max-w-md">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#64748B]" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
           <input
             type="text"
             placeholder="Search questions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] py-3 pl-10 pr-4 text-sm text-[#F8FAFC] placeholder:text-[#64748B] outline-none focus:border-[#3B82F6]/50 focus:ring-1 focus:ring-[#3B82F6]/30"
+            className="w-full rounded-xl border border-border bg-surface py-3 pl-10 pr-4 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
           />
         </div>
       </section>
@@ -115,8 +115,8 @@ export default function FAQPage() {
                   onClick={() => setActiveCategory(cat.id)}
                   className={`block w-full rounded-lg px-3 py-2 text-left text-sm transition-colors ${
                     activeCategory === cat.id
-                      ? "bg-[#3B82F6]/10 text-[#3B82F6] font-medium"
-                      : "text-[#94A3B8] hover:bg-black/5 hover:text-[#F8FAFC]"
+                      ? "bg-[#3B82F6]/10 text-primary font-medium"
+                      : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                   }`}
                 >
                   {cat.title}
@@ -128,21 +128,21 @@ export default function FAQPage() {
           <div className="min-w-0 flex-1">
             {filteredCategories.map((cat) => (
               <div key={cat.id} className={cat.id === activeCategory || searchQuery ? "block" : "hidden lg:block"}>
-                <h2 className="font-display mb-6 text-2xl font-bold text-[#F8FAFC]">{cat.title}</h2>
+                <h2 className="font-display mb-6 text-2xl font-bold text-text-primary">{cat.title}</h2>
                 <Accordion items={cat.items} type="multiple" />
               </div>
             ))}
             {filteredCategories.length === 0 && (
-              <p className="py-12 text-center text-[#94A3B8]">No questions found for your search.</p>
+              <p className="py-12 text-center text-text-secondary">No questions found for your search.</p>
             )}
           </div>
         </div>
       </div>
 
-      <section className="border-t border-[rgba(255,255,255,0.08)] py-24">
+      <section className="border-t border-border py-24">
         <div className="mx-auto max-w-xl px-4 text-center">
-          <h2 className="font-display text-2xl font-bold text-[#F8FAFC]">Still have questions?</h2>
-          <p className="mt-4 text-[#94A3B8]">Our team typically responds within 4 hours.</p>
+          <h2 className="font-display text-2xl font-bold text-text-primary">Still have questions?</h2>
+          <p className="mt-4 text-text-secondary">Our team typically responds within 4 hours.</p>
           <Link href="/contact">
             <Button variant="primary" size="lg" className="mt-8 rounded-full px-8">
               Contact Support

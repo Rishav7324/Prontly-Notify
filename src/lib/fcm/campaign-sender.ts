@@ -43,7 +43,7 @@ export async function sendCampaign(
     body: c.body,
     icon: c.icon_url ?? undefined,
     image: c.image_url ?? undefined,
-    click_url: c.click_url || `${process.env.NEXT_PUBLIC_SITE_URL || "https://prontly.com"}/`,
+    click_url: c.click_url || `${process.env.NEXT_PUBLIC_SITE_URL || "https://notify.prontly.in"}/`,
     action_buttons: c.action_buttons ? JSON.parse(c.action_buttons) : undefined,
   };
 

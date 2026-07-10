@@ -26,7 +26,7 @@ export function ResetPassword({ resetLink }: ResetPasswordProps) {
         <Container style={container}>
           <Section style={logoSection}>
             <Img
-              src="https://prontly.com/logo.png"
+              src="https://notify.prontly.in/logo.svg"
               width="48"
               height="48"
               alt="Prontly Notify"

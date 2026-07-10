@@ -69,7 +69,7 @@ const content: Record<string, { heading: string; body: string; list?: string[] }
   },
   contact: {
     heading: "10. Contact",
-    body: 'For questions about these terms, contact us at <a href="mailto:legal@prontly.in" class="text-[#3B82F6] hover:underline">legal@prontly.in</a>.',
+    body: 'For questions about these terms, contact us at <a href="mailto:legal@prontly.in" class="text-primary hover:underline">legal@prontly.in</a>.',
   },
 };
 
@@ -101,8 +101,8 @@ export default function TermsPage() {
                 href={`#${s.id}`}
                 className={`block rounded-lg px-3 py-2 text-sm transition-colors ${
                   activeSection === s.id
-                    ? "bg-[#3B82F6]/10 text-[#3B82F6] font-medium"
-                    : "text-[#94A3B8] hover:bg-black/5 hover:text-[#F8FAFC]"
+                    ? "bg-[#3B82F6]/10 text-primary font-medium"
+                    : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                 }`}
               >
                 {s.label}
@@ -114,9 +114,9 @@ export default function TermsPage() {
         <div className="min-w-0 flex-1">
           <div className="mb-10">
             <Badge variant="info" className="mb-4">Legal</Badge>
-            <h1 className="font-display text-[32px] font-bold text-[#F8FAFC]">Terms of Service</h1>
-            <div className="mt-3 inline-flex items-center gap-2 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#111827] px-3 py-1.5 text-xs text-[#64748B]">
-              <Shield className="size-3.5 text-[#3B82F6]" />
+            <h1 className="font-display text-[32px] font-bold text-text-primary">Terms of Service</h1>
+            <div className="mt-3 inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-text-muted">
+              <Shield className="size-3.5 text-primary" />
               Last updated: June 15, 2026
             </div>
           </div>
@@ -125,8 +125,8 @@ export default function TermsPage() {
             <div className="flex items-start gap-3">
               <Shield className="mt-0.5 size-5 shrink-0 text-[#22C55E]" />
               <div>
-                <p className="text-sm font-semibold text-[#F8FAFC]">GDPR & DPDPA Compliant</p>
-                <p className="mt-1 text-xs text-[#94A3B8]">
+                <p className="text-sm font-semibold text-text-primary">GDPR & DPDPA Compliant</p>
+                <p className="mt-1 text-xs text-text-secondary">
                   These terms are designed to comply with applicable regulations including GDPR and India&apos;s DPDPA. Your rights as a user are protected under relevant data protection laws.
                 </p>
               </div>
@@ -135,13 +135,13 @@ export default function TermsPage() {
 
           {Object.entries(content).map(([id, section]) => (
             <section key={id} data-section-id={id} id={id} className="mb-10 scroll-mt-28">
-              <h2 className="font-display mb-4 text-xl font-semibold text-[#F8FAFC]">{section.heading}</h2>
-              <p className="text-sm leading-relaxed text-[#94A3B8]" dangerouslySetInnerHTML={{ __html: section.body }} />
+              <h2 className="font-display mb-4 text-xl font-semibold text-text-primary">{section.heading}</h2>
+              <p className="text-sm leading-relaxed text-text-secondary" dangerouslySetInnerHTML={{ __html: section.body }} />
               {section.list && (
                 <ul className="mt-3 space-y-2 pl-5">
                   {section.list.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-[#94A3B8]">
-                      <ChevronRight className="mt-0.5 size-3.5 shrink-0 text-[#3B82F6]" />
+                    <li key={i} className="flex items-start gap-2 text-sm text-text-secondary">
+                      <ChevronRight className="mt-0.5 size-3.5 shrink-0 text-primary" />
                       <span>{item}</span>
                     </li>
                   ))}

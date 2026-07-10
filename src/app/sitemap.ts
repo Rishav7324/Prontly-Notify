@@ -36,7 +36,7 @@ const blogSlugs = [
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const env = getEnv();
-  const baseUrl = env.NEXT_PUBLIC_APP_URL ?? "https://prontly.in";
+  const baseUrl = env.NEXT_PUBLIC_APP_URL ?? "https://notify.prontly.in";
 
   const staticEntries: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
     url: `${baseUrl}${route.url}`,

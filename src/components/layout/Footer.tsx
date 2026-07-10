@@ -63,19 +63,19 @@ const companyLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-[#060B14] border-t border-[rgba(255,255,255,0.06)]">
+    <footer className="bg-warm-taupe border-t border-stone">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12">
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#3B82F6] text-sm font-bold text-white">
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-ink text-sm font-bold text-eggshell">
                 P
               </div>
-              <span className="text-lg font-bold text-[#F8FAFC] font-display">
+              <span className="text-lg font-bold text-ink font-display">
                 Prontly
               </span>
             </div>
-            <p className="text-sm text-[#64748B] mb-6 max-w-xs">
+            <p className="text-sm text-smoke mb-6 max-w-xs">
               AI-powered browser push notifications for publishers, SaaS, and e-commerce platforms.
             </p>
             <div className="flex items-center gap-3 mb-6">
@@ -85,7 +85,7 @@ export function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center w-9 h-9 rounded-full bg-[rgba(255,255,255,0.06)] text-[#64748B] transition-colors hover:bg-[#3B82F6] hover:text-white"
+                  className="flex items-center justify-center w-9 h-9 rounded-full bg-stone text-smoke transition-colors hover:bg-ink hover:text-eggshell"
                   aria-label={social.label}
                 >
                   {social.icon}
@@ -99,11 +99,11 @@ export function Footer() {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 h-10 px-3 text-sm rounded-lg bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.08)] text-[#F8FAFC] placeholder-[#64748B] focus:outline-none focus:border-[#3B82F6]"
+                className="flex-1 h-10 px-3 text-sm rounded-lg bg-eggshell border border-stone text-ink placeholder-ash focus:outline-none focus:border-ink"
               />
               <button
                 type="submit"
-                className="h-10 px-4 text-sm font-semibold text-white rounded-lg bg-[#3B82F6] transition-all hover:bg-[#3B82F6]/90 shrink-0"
+                className="h-10 px-4 text-sm font-semibold text-eggshell rounded-lg bg-ink transition-all hover:bg-graphite shrink-0"
               >
                 Subscribe
               </button>
@@ -111,7 +111,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-[#F8FAFC] mb-4">
+            <h3 className="text-sm font-semibold text-ink mb-4">
               Product
             </h3>
             <ul className="space-y-3">
@@ -119,7 +119,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-[#64748B] transition-colors hover:text-[#F8FAFC]"
+                    className="text-sm text-smoke transition-colors hover:text-ink"
                   >
                     {link.label}
                   </Link>
@@ -129,7 +129,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-[#F8FAFC] mb-4">
+            <h3 className="text-sm font-semibold text-ink mb-4">
               Resources
             </h3>
             <ul className="space-y-3">
@@ -137,7 +137,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-[#64748B] transition-colors hover:text-[#F8FAFC]"
+                    className="text-sm text-smoke transition-colors hover:text-ink"
                   >
                     {link.label}
                   </Link>
@@ -147,7 +147,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-[#F8FAFC] mb-4">
+            <h3 className="text-sm font-semibold text-ink mb-4">
               Company
             </h3>
             <ul className="space-y-3">
@@ -155,7 +155,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-[#64748B] transition-colors hover:text-[#F8FAFC]"
+                    className="text-sm text-smoke transition-colors hover:text-ink"
                   >
                     {link.label}
                   </Link>
@@ -165,38 +165,38 @@ export function Footer() {
           </div>
         </div>
 
-        <hr className="my-8 border-[rgba(255,255,255,0.06)]" />
+        <hr className="my-8 border-stone" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-[#64748B] text-center md:text-left">
-            &copy; 2026 Prontly Notify. All rights reserved. Made in India &#x1F1EE;&#x1F1F3;
+          <p className="text-sm text-smoke text-center md:text-left">
+            &copy; 2026 Prontly Notify. All rights reserved.
           </p>
-          <div className="flex items-center gap-3 text-sm text-[#64748B]">
-            <Link href="/privacy" className="transition-colors hover:text-[#F8FAFC]">
+          <div className="flex items-center gap-3 text-sm text-smoke">
+            <Link href="/privacy" className="transition-colors hover:text-ink">
               Privacy
             </Link>
-            <span className="text-[rgba(255,255,255,0.12)]">&middot;</span>
-            <Link href="/terms" className="transition-colors hover:text-[#F8FAFC]">
+            <span className="text-stone">&middot;</span>
+            <Link href="/terms" className="transition-colors hover:text-ink">
               Terms
             </Link>
-            <span className="text-[rgba(255,255,255,0.12)]">&middot;</span>
-            <Link href="/cookies" className="transition-colors hover:text-[#F8FAFC]">
+            <span className="text-stone">&middot;</span>
+            <Link href="/cookies" className="transition-colors hover:text-ink">
               Cookies
             </Link>
           </div>
-          <div className="flex items-center gap-3 text-xs text-[#64748B]">
+          <div className="flex items-center gap-3 text-xs text-smoke">
             <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-success" />
               GDPR
             </span>
-            <span className="text-[rgba(255,255,255,0.12)]">&middot;</span>
+            <span className="text-stone">&middot;</span>
             <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#3B82F6]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               DPDPA 2023
             </span>
-            <span className="text-[rgba(255,255,255,0.12)]">&middot;</span>
+            <span className="text-stone">&middot;</span>
             <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-success" />
               SSL Secured
             </span>
           </div>

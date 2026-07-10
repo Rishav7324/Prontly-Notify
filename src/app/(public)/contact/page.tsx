@@ -62,8 +62,8 @@ export default function ContactPage() {
           <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-[#22C55E]/10">
             <CheckCircle2 className="size-8 text-[#22C55E]" />
           </div>
-          <h1 className="font-display text-3xl font-bold text-[#F8FAFC]">Message sent!</h1>
-          <p className="mt-4 text-[#94A3B8]">
+          <h1 className="font-display text-3xl font-bold text-text-primary">Message sent!</h1>
+          <p className="mt-4 text-text-secondary">
             Thanks for reaching out. Our team typically responds within 4 hours.
           </p>
           <Button variant="outline" className="mt-8" onClick={() => { setSubmitted(false); setForm({ name: "", email: "", company: "", message: "", reason: "" }); }}>
@@ -78,14 +78,14 @@ export default function ContactPage() {
     <div className="mx-auto max-w-[1200px] px-4 py-24">
       <div className="mb-12 text-center">
         <Badge variant="info" className="mb-4">Contact</Badge>
-        <h1 className="font-display text-[36px] font-bold text-[#F8FAFC] md:text-[48px]">Get in touch</h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-[#94A3B8]">
+        <h1 className="font-display text-[36px] font-bold text-text-primary md:text-[48px]">Get in touch</h1>
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-text-secondary">
           Have a question, need support, or interested in enterprise pricing? We&apos;d love to hear from you.
         </p>
       </div>
 
       <div className="grid gap-10 md:grid-cols-[3fr_2fr]">
-        <div className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] p-6 md:p-8">
+        <div className="rounded-xl border border-border bg-surface p-6 md:p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             <input
               type="text"
@@ -127,13 +127,13 @@ export default function ContactPage() {
               error={errors.reason}
             />
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-[#94A3B8]">Message</label>
+              <label className="text-sm font-medium text-text-secondary">Message</label>
               <textarea
                 rows={5}
                 placeholder="Tell us more about your inquiry..."
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="w-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#0F172A] px-3 py-2.5 text-sm text-[#F8FAFC] placeholder:text-[#64748B] outline-none transition-colors focus:border-[#3B82F6]/50 focus:ring-2 focus:ring-[#3B82F6]/30 min-h-[100px] resize-y"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-text-primary placeholder:text-text-muted outline-none transition-colors focus:border-primary/50 focus:ring-2 focus:ring-primary/30 min-h-[100px] resize-y"
               />
               {errors.message && <p className="text-xs text-[#EF4444]">{errors.message}</p>}
             </div>
@@ -145,34 +145,34 @@ export default function ContactPage() {
         </div>
 
         <div className="space-y-5">
-          <div className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] p-6">
-            <Clock className="mb-3 size-5 text-[#3B82F6]" />
-            <p className="mb-1 text-sm font-medium text-[#F8FAFC]">Response time</p>
-            <p className="text-sm text-[#94A3B8]">Usually within 4 hours</p>
+          <div className="rounded-xl border border-border bg-surface p-6">
+            <Clock className="mb-3 size-5 text-primary" />
+            <p className="mb-1 text-sm font-medium text-text-primary">Response time</p>
+            <p className="text-sm text-text-secondary">Usually within 4 hours</p>
           </div>
 
-          <div className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] p-6">
-            <Mail className="mb-3 size-5 text-[#3B82F6]" />
-            <p className="mb-1 text-sm font-medium text-[#F8FAFC]">Email us</p>
-            <a href="mailto:hello@prontly.in" className="text-sm text-[#94A3B8] transition-colors hover:text-[#3B82F6]">
+          <div className="rounded-xl border border-border bg-surface p-6">
+            <Mail className="mb-3 size-5 text-primary" />
+            <p className="mb-1 text-sm font-medium text-text-primary">Email us</p>
+            <a href="mailto:hello@prontly.in" className="text-sm text-text-secondary transition-colors hover:text-primary">
               hello@prontly.in
             </a>
           </div>
 
-          <div className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] p-6">
-            <MessageSquare className="mb-3 size-5 text-[#3B82F6]" />
-            <p className="mb-1 text-sm font-medium text-[#F8FAFC]">Live chat</p>
+          <div className="rounded-xl border border-border bg-surface p-6">
+            <MessageSquare className="mb-3 size-5 text-primary" />
+            <p className="mb-1 text-sm font-medium text-text-primary">Live chat</p>
             <Button variant="outline" size="sm" className="mt-2">
               Start chat <ArrowRight className="size-3.5" />
             </Button>
           </div>
 
-          <div className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] p-6">
-            <a href="/faq" className="flex items-center justify-between text-sm font-medium text-[#F8FAFC] transition-colors hover:text-[#3B82F6]">
+          <div className="rounded-xl border border-border bg-surface p-6">
+            <a href="/faq" className="flex items-center justify-between text-sm font-medium text-text-primary transition-colors hover:text-primary">
               <span>Check our FAQ</span>
-              <ArrowRight className="size-4 text-[#64748B]" />
+              <ArrowRight className="size-4 text-text-muted" />
             </a>
-            <p className="mt-1 text-sm text-[#94A3B8]">Many questions are answered in our FAQ section.</p>
+            <p className="mt-1 text-sm text-text-secondary">Many questions are answered in our FAQ section.</p>
           </div>
         </div>
       </div>

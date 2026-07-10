@@ -24,7 +24,7 @@ export function WelcomeEmail({ name }: WelcomeEmailProps) {
         <Container style={container}>
           <Section style={logoSection}>
             <Img
-              src="https://prontly.com/logo.png"
+              src="https://notify.prontly.in/logo.svg"
               width="48"
               height="48"
               alt="Prontly Notify"
@@ -47,8 +47,8 @@ export function WelcomeEmail({ name }: WelcomeEmailProps) {
           <Text style={paragraph}>
             Visit your dashboard to get started:
             <br />
-            <a href="https://prontly.in/dashboard" style={link}>
-              https://prontly.in/dashboard
+            <a href="https://notify.prontly.in/dashboard" style={link}>
+              https://notify.prontly.in/dashboard
             </a>
           </Text>
 

@@ -36,7 +36,7 @@ export async function POST(
       {
         title: body.title,
         body: body.body,
-        click_url: body.click_url || "https://prontly.in",
+        click_url: body.click_url || "https://notify.prontly.in",
         icon: body.icon_url,
       },
       subscribers[0].fcm_token

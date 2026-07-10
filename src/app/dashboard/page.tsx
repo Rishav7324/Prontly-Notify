@@ -338,41 +338,41 @@ export default function DashboardHome() {
                     <AreaChart data={growthData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                       <defs>
                         <linearGradient id="growthFill" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.3} />
-                          <stop offset="100%" stopColor="#3B82F6" stopOpacity={0} />
+                          <stop offset="0%" stopColor="#000000" stopOpacity={0.1} />
+                          <stop offset="100%" stopColor="#000000" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#ebe8e4" />
                       <XAxis
                         dataKey="label"
-                        tick={{ fontSize: 11, fill: "#64748B" }}
+                        tick={{ fontSize: 11, fill: "#a59f97" }}
                         axisLine={false}
                         tickLine={false}
                       />
                       <YAxis
-                        tick={{ fontSize: 11, fill: "#64748B" }}
+                        tick={{ fontSize: 11, fill: "#a59f97" }}
                         axisLine={false}
                         tickLine={false}
                         tickFormatter={(v) => formatNumber(v)}
                       />
                       <Tooltip
                         contentStyle={{
-                          background: "#111827",
-                          border: "1px solid rgba(255,255,255,0.08)",
+                          background: "#fdfcfc",
+                          border: "1px solid #ebe8e4",
                           borderRadius: 8,
                           fontSize: 13,
                         }}
-                        labelStyle={{ color: "#94A3B8" }}
+                        labelStyle={{ color: "#777169" }}
                         formatter={(value: any) => { const n = typeof value === "number" ? value : 0; return [formatNumber(n), "Subscribers"]; }}
                       />
                       <Area
                         type="monotone"
                         dataKey="value"
-                        stroke="#3B82F6"
+                        stroke="#000000"
                         strokeWidth={2}
                         fill="url(#growthFill)"
-                        dot={{ r: 3, fill: "#3B82F6", stroke: "#111827", strokeWidth: 2 }}
-                        activeDot={{ r: 5, fill: "#3B82F6", stroke: "#111827", strokeWidth: 2 }}
+                        dot={{ r: 3, fill: "#000000", stroke: "#fdfcfc", strokeWidth: 2 }}
+                        activeDot={{ r: 5, fill: "#000000", stroke: "#fdfcfc", strokeWidth: 2 }}
                       />
                     </AreaChart>
                   </ResponsiveContainer>

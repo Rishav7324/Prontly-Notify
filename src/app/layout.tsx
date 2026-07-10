@@ -10,9 +10,25 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Prontly Notify | Browser Push Notification Platform",
+  title: "Prontly Notify — Browser Push Notifications for Websites",
   description:
-    "AI-assisted browser push notifications for publishers, SaaS, and e-commerce.",
+    "Send AI-powered browser push notifications to your website visitors. Free forever plan, no credit card required.",
+  icons: [{ rel: "icon", url: "/logo.svg" }],
+  openGraph: {
+    title: "Prontly Notify — Browser Push Notifications for Websites",
+    description: "Send AI-powered browser push notifications to your website visitors. Free forever plan, no credit card required.",
+    url: "https://notify.prontly.in",
+    siteName: "Prontly Notify",
+    images: [{ url: "https://notify.prontly.in/og/default.png", width: 1200, height: 630, alt: "Prontly Notify — Browser push notification platform" }],
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Prontly Notify — Browser Push Notifications for Websites",
+    description: "Send AI-powered browser push notifications to your website visitors. Free forever plan.",
+    images: ["https://notify.prontly.in/og/default.png"],
+  },
 };
 
 const jsonLd = {

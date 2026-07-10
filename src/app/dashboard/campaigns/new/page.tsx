@@ -680,7 +680,7 @@ export default function NewCampaignPage() {
                       <div className="flex items-center gap-1.5 rounded-md bg-black/[0.08] px-3 py-1">
                         <Globe className="size-3 text-white/40" />
                         <span className="text-[11px] text-white/60 truncate max-w-[180px]">
-                          {draft.clickUrl || "https://prontly.com"}
+                          {draft.clickUrl || "https://notify.prontly.in"}
                         </span>
                       </div>
                     </div>

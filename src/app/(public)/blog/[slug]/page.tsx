@@ -63,15 +63,15 @@ export default function BlogPostPage() {
   if (!post) {
     return (
       <div className="mx-auto max-w-[1200px] px-4 py-24 text-center">
-        <h1 className="font-display text-4xl font-bold text-[#F8FAFC]">Post not found</h1>
-        <Link href="/blog" className="mt-4 inline-flex items-center gap-2 text-[#3B82F6] hover:underline">
+        <h1 className="font-display text-4xl font-bold text-text-primary">Post not found</h1>
+        <Link href="/blog" className="mt-4 inline-flex items-center gap-2 text-primary hover:underline">
           <ArrowLeft className="size-4" /> Back to blog
         </Link>
       </div>
     );
   }
 
-  const shareUrl = `https://prontly.in/blog/${slug}`;
+  const shareUrl = `https://notify.prontly.in/blog/${slug}`;
 
   return (
     <div className="relative">
@@ -83,31 +83,31 @@ export default function BlogPostPage() {
       <div className="mx-auto max-w-[1200px] px-4 py-12 lg:flex lg:gap-12">
         <aside className="hidden shrink-0 lg:block lg:w-16">
           <div className="sticky top-24 flex flex-col items-center gap-4">
-            <span className="text-xs font-medium uppercase tracking-wider text-[#64748B]">Share</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-text-muted">Share</span>
             <button
               onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener')}
-              className="flex size-10 items-center justify-center rounded-full border border-[rgba(255,255,255,0.08)] text-[#94A3B8] transition-colors hover:bg-black/5 hover:text-[#F8FAFC]"
+              className="flex size-10 items-center justify-center rounded-full border border-border text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
               aria-label="Share on Twitter"
             >
               <Globe className="size-4" />
             </button>
             <button
               onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener')}
-              className="flex size-10 items-center justify-center rounded-full border border-[rgba(255,255,255,0.08)] text-[#94A3B8] transition-colors hover:bg-black/5 hover:text-[#F8FAFC]"
+              className="flex size-10 items-center justify-center rounded-full border border-border text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
               aria-label="Share on LinkedIn"
             >
               <MessageCircle className="size-4" />
             </button>
             <button
               onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener')}
-              className="flex size-10 items-center justify-center rounded-full border border-[rgba(255,255,255,0.08)] text-[#94A3B8] transition-colors hover:bg-black/5 hover:text-[#F8FAFC]"
+              className="flex size-10 items-center justify-center rounded-full border border-border text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
               aria-label="Share on Facebook"
             >
               <Share2 className="size-4" />
             </button>
             <button
               onClick={() => navigator.clipboard.writeText(shareUrl)}
-              className="flex size-10 items-center justify-center rounded-full border border-[rgba(255,255,255,0.08)] text-[#94A3B8] transition-colors hover:bg-black/5 hover:text-[#F8FAFC]"
+              className="flex size-10 items-center justify-center rounded-full border border-border text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
               aria-label="Copy link"
             >
               <Share2 className="size-4" />
@@ -118,31 +118,31 @@ export default function BlogPostPage() {
         <article ref={contentRef} className="min-w-0 flex-1 max-w-[720px] mx-auto">
           <Link
             href="/blog"
-            className="mb-6 inline-flex items-center gap-2 text-sm text-[#94A3B8] hover:text-[#F8FAFC]"
+            className="mb-6 inline-flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary"
           >
             <ArrowLeft className="size-4" />
             Back to blog
           </Link>
 
           <Badge variant="info" className="mb-4">{post.category}</Badge>
-          <h1 className="font-display text-[36px] font-bold leading-tight text-[#F8FAFC]">
+          <h1 className="font-display text-[36px] font-bold leading-tight text-text-primary">
             {post.title}
           </h1>
-          <p className="mt-4 text-lg text-[#94A3B8]">{post.excerpt}</p>
+          <p className="mt-4 text-lg text-text-secondary">{post.excerpt}</p>
 
-          <div className="mb-10 mt-8 flex flex-wrap items-center justify-between gap-4 border-b border-[rgba(255,255,255,0.08)] pb-6">
+          <div className="mb-10 mt-8 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
             {post.author && (
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-full bg-[#3B82F6]/20 text-sm font-semibold text-[#3B82F6]">
+                <div className="flex size-10 items-center justify-center rounded-full bg-[#3B82F6]/20 text-sm font-semibold text-primary">
                   {post.author.name?.charAt(0) || "A"}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-[#F8FAFC]">{post.author.name}</p>
-                  {post.author.role && <p className="text-xs text-[#64748B]">{post.author.role}</p>}
+                  <p className="text-sm font-medium text-text-primary">{post.author.name}</p>
+                  {post.author.role && <p className="text-xs text-text-muted">{post.author.role}</p>}
                 </div>
               </div>
             )}
-            <div className="flex items-center gap-4 text-sm text-[#64748B]">
+            <div className="flex items-center gap-4 text-sm text-text-muted">
               <span className="flex items-center gap-1.5">
                 <Calendar className="size-3.5" />
                 {post.date}
@@ -154,45 +154,45 @@ export default function BlogPostPage() {
             </div>
           </div>
 
-          <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-2xl bg-[#0F172A]">
+          <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-2xl bg-background">
             {post.imageUrl ? (
               <img src={post.imageUrl} alt="" className="size-full object-cover" />
             ) : (
               <div className="flex size-full items-center justify-center">
-                <Globe className="size-20 text-[#3B82F6]/20" />
+                <Globe className="size-20 text-primary/20" />
               </div>
             )}
           </div>
 
           <div className="prose prose-invert max-w-none">
             {(post.content || []).map((paragraph: string, i: number) => (
-              <p key={i} className="mb-6 leading-relaxed text-[#94A3B8]">{paragraph}</p>
+              <p key={i} className="mb-6 leading-relaxed text-text-secondary">{paragraph}</p>
             ))}
           </div>
 
-          <div className="mt-12 flex items-center gap-4 border-t border-[rgba(255,255,255,0.08)] pt-6">
-            <span className="flex items-center gap-2 text-sm text-[#64748B]">
+          <div className="mt-12 flex items-center gap-4 border-t border-border pt-6">
+            <span className="flex items-center gap-2 text-sm text-text-muted">
               <Share2 className="size-4" />
               Share this post
             </span>
             <div className="flex gap-2 lg:hidden">
               <button
                 onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener')}
-                className="flex size-9 items-center justify-center rounded-lg border border-[rgba(255,255,255,0.08)] text-[#94A3B8] transition-colors hover:bg-black/5 hover:text-[#F8FAFC]"
+                className="flex size-9 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
                 aria-label="Share on Twitter"
               >
                 <Globe className="size-4" />
               </button>
               <button
                 onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener')}
-                className="flex size-9 items-center justify-center rounded-lg border border-[rgba(255,255,255,0.08)] text-[#94A3B8] transition-colors hover:bg-black/5 hover:text-[#F8FAFC]"
+                className="flex size-9 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
                 aria-label="Share on LinkedIn"
               >
                 <MessageCircle className="size-4" />
               </button>
               <button
                 onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank', 'noopener')}
-                className="flex size-9 items-center justify-center rounded-lg border border-[rgba(255,255,255,0.08)] text-[#94A3B8] transition-colors hover:bg-black/5 hover:text-[#F8FAFC]"
+                className="flex size-9 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:bg-black/5 hover:text-text-primary"
                 aria-label="Share on Facebook"
               >
                 <Share2 className="size-4" />

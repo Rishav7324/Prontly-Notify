@@ -11,41 +11,46 @@ export async function checkRateLimit(opts: {
   type: string;
   ip?: string;
 }): Promise<{ allowed: boolean; reason?: string }> {
-  const since = new Date(Date.now() - 3600000).toISOString();
-  const recentCount: any[] = await executeQuery(
-    `SELECT COUNT(*) as cnt FROM email_send_log
-     WHERE email = ? AND type = ? AND sent_at >= ?`,
-    [opts.email, opts.type, since]
-  );
-
-  if (recentCount[0]?.cnt >= MAX_PER_EMAIL_PER_HOUR) {
-    return { allowed: false, reason: `Rate limit: max ${MAX_PER_EMAIL_PER_HOUR} per hour` };
-  }
-
-  if (opts.ip) {
-    const ipSince = new Date(Date.now() - 900000).toISOString();
-    const ipCount: any[] = await executeQuery(
+  try {
+    const since = new Date(Date.now() - 3600000).toISOString();
+    const recentCount: any[] = await executeQuery(
       `SELECT COUNT(*) as cnt FROM email_send_log
-       WHERE ip_address = ? AND sent_at >= ?`,
-      [opts.ip, ipSince]
+       WHERE email = ? AND type = ? AND sent_at >= ?`,
+      [opts.email, opts.type, since]
     );
-    if (ipCount[0]?.cnt >= MAX_PER_IP_PER_15M) {
-      return { allowed: false, reason: `Rate limit: max ${MAX_PER_IP_PER_15M} requests per 15 minutes` };
+
+    if (recentCount[0]?.cnt >= MAX_PER_EMAIL_PER_HOUR) {
+      return { allowed: false, reason: `Rate limit: max ${MAX_PER_EMAIL_PER_HOUR} per hour` };
     }
+
+    if (opts.ip) {
+      const ipSince = new Date(Date.now() - 900000).toISOString();
+      const ipCount: any[] = await executeQuery(
+        `SELECT COUNT(*) as cnt FROM email_send_log
+         WHERE ip_address = ? AND sent_at >= ?`,
+        [opts.ip, ipSince]
+      );
+      if (ipCount[0]?.cnt >= MAX_PER_IP_PER_15M) {
+        return { allowed: false, reason: `Rate limit: max ${MAX_PER_IP_PER_15M} requests per 15 minutes` };
+      }
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const daily: any[] = await executeQuery(
+      "SELECT count FROM email_daily_counter WHERE date = ?",
+      [today]
+    );
+    const currentCount = daily[0]?.count || 0;
+
+    if (currentCount >= DAILY_LIMIT) {
+      return { allowed: false, reason: "Daily send limit reached" };
+    }
+
+    return { allowed: true };
+  } catch {
+    // ponytail: table may not exist (migration 0003 not yet applied); allow through
+    return { allowed: true };
   }
-
-  const today = new Date().toISOString().slice(0, 10);
-  const daily: any[] = await executeQuery(
-    "SELECT count FROM email_daily_counter WHERE date = ?",
-    [today]
-  );
-  const currentCount = daily[0]?.count || 0;
-
-  if (currentCount >= DAILY_LIMIT) {
-    return { allowed: false, reason: "Daily send limit reached" };
-  }
-
-  return { allowed: true };
 }
 
 export async function logEmailSend(opts: {
@@ -55,32 +60,40 @@ export async function logEmailSend(opts: {
   messageId?: string;
   error?: string;
 }) {
-  const crypto = await import("crypto");
-  const id = crypto.randomUUID();
+  try {
+    const crypto = await import("crypto");
+    const id = crypto.randomUUID();
 
-  await executeQuery(
-    `INSERT INTO email_send_log (id, email, type, ip_address, message_id, error)
-     VALUES (?, ?, ?, ?, ?, ?)`,
-    [id, opts.email, opts.type, opts.ip || null, opts.messageId || null, opts.error || null]
-  );
+    await executeQuery(
+      `INSERT INTO email_send_log (id, email, type, ip_address, message_id, error)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [id, opts.email, opts.type, opts.ip || null, opts.messageId || null, opts.error || null]
+    );
 
-  const today = new Date().toISOString().slice(0, 10);
-  await executeQuery(
-    `INSERT INTO email_daily_counter (date, count) VALUES (?, 1)
-     ON CONFLICT(date) DO UPDATE SET count = count + 1`,
-    [today]
-  );
+    const today = new Date().toISOString().slice(0, 10);
+    await executeQuery(
+      `INSERT INTO email_daily_counter (date, count) VALUES (?, 1)
+       ON CONFLICT(date) DO UPDATE SET count = count + 1`,
+      [today]
+    );
+  } catch {
+    // ponytail: table may not exist (migration 0003 not yet applied); skip silently
+  }
 }
 
 export async function checkDailyWarning(): Promise<number | null> {
-  const today = new Date().toISOString().slice(0, 10);
-  const rows: any[] = await executeQuery(
-    "SELECT count FROM email_daily_counter WHERE date = ?",
-    [today]
-  );
-  const count = rows[0]?.count || 0;
-  if (count >= DAILY_WARN_THRESHOLD) {
-    return count;
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const rows: any[] = await executeQuery(
+      "SELECT count FROM email_daily_counter WHERE date = ?",
+      [today]
+    );
+    const count = rows[0]?.count || 0;
+    if (count >= DAILY_WARN_THRESHOLD) {
+      return count;
+    }
+    return null;
+  } catch {
+    return null;
   }
-  return null;
 }

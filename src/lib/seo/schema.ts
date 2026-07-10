@@ -3,8 +3,8 @@ export function organizationSchema() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Prontly Notify",
-    url: "https://prontly.in",
-    logo: "https://prontly.in/logo.png",
+    url: "https://notify.prontly.in",
+    logo: "https://notify.prontly.in/logo.svg",
     sameAs: [
       "https://twitter.com/prontly",
       "https://github.com/prontly",
@@ -20,12 +20,12 @@ export function websiteSchema() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Prontly Notify",
-    url: "https://prontly.in",
+    url: "https://notify.prontly.in",
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://prontly.in/search?q={search_term_string}",
+        urlTemplate: "https://notify.prontly.in/search?q={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },
@@ -50,7 +50,7 @@ export function productSchema(plans: Plan[]) {
       "@type": "Offer",
       price: plan.price,
       priceCurrency: plan.currency,
-      url: "https://prontly.in/pricing",
+      url: "https://notify.prontly.in/pricing",
       availability: "https://schema.org/InStock",
       priceValidUntil: new Date(
         Date.now() + 365 * 24 * 60 * 60 * 1000
@@ -77,32 +77,32 @@ export function blogPostingSchema(post: {
         "@type": "BlogPosting",
         headline: post.headline,
         description: post.description,
-        url: `https://prontly.in/blog/${post.slug}`,
+        url: `https://notify.prontly.in/blog/${post.slug}`,
         datePublished: post.datePublished,
         dateModified: post.dateModified ?? post.datePublished,
-        image: post.imageUrl ?? "https://prontly.in/og-default.png",
+        image: post.imageUrl ?? "https://notify.prontly.in/og-default.png",
         author: {
           "@type": "Person",
           name: post.authorName,
-          url: post.authorUrl ?? "https://prontly.in/about",
+          url: post.authorUrl ?? "https://notify.prontly.in/about",
         },
         publisher: {
           "@type": "Organization",
           name: "Prontly Notify",
           logo: {
             "@type": "ImageObject",
-            url: "https://prontly.in/logo.png",
+            url: "https://notify.prontly.in/logo.svg",
           },
         },
         mainEntityOfPage: {
           "@type": "WebPage",
-          "@id": `https://prontly.in/blog/${post.slug}`,
+          "@id": `https://notify.prontly.in/blog/${post.slug}`,
         },
       },
       breadcrumbSchema([
-        { name: "Home", url: "https://prontly.in" },
-        { name: "Blog", url: "https://prontly.in/blog" },
-        { name: post.headline, url: `https://prontly.in/blog/${post.slug}` },
+        { name: "Home", url: "https://notify.prontly.in" },
+        { name: "Blog", url: "https://notify.prontly.in/blog" },
+        { name: post.headline, url: `https://notify.prontly.in/blog/${post.slug}` },
       ]),
     ],
   };
@@ -138,7 +138,7 @@ export function techArticleSchema(article: {
         "@type": "TechArticle",
         headline: article.title,
         description: article.description,
-        url: `https://prontly.in/docs/${article.slug}`,
+        url: `https://notify.prontly.in/docs/${article.slug}`,
         datePublished: article.datePublished,
         dateModified: article.dateModified ?? article.datePublished,
         author: {
@@ -151,7 +151,7 @@ export function techArticleSchema(article: {
         },
         mainEntityOfPage: {
           "@type": "WebPage",
-          "@id": `https://prontly.in/docs/${article.slug}`,
+          "@id": `https://notify.prontly.in/docs/${article.slug}`,
         },
       },
       {
@@ -165,9 +165,9 @@ export function techArticleSchema(article: {
         })),
       },
       breadcrumbSchema([
-        { name: "Home", url: "https://prontly.in" },
-        { name: "Docs", url: "https://prontly.in/docs" },
-        { name: article.title, url: `https://prontly.in/docs/${article.slug}` },
+        { name: "Home", url: "https://notify.prontly.in" },
+        { name: "Docs", url: "https://notify.prontly.in/docs" },
+        { name: article.title, url: `https://notify.prontly.in/docs/${article.slug}` },
       ]),
     ],
   };

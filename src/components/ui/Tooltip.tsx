@@ -27,12 +27,12 @@ const positionStyles: Record<TooltipPosition, string> = {
 };
 
 const arrowStyles: Record<TooltipPosition, string> = {
-  top: "top-full left-1/2 -translate-x-1/2 border-l-[5px] border-r-[5px] border-t-[5px] border-l-transparent border-r-transparent border-t-[#1E293B]",
+  top: "top-full left-1/2 -translate-x-1/2 border-l-[5px] border-r-[5px] border-t-[5px] border-l-transparent border-r-transparent border-t-ink",
   bottom:
-    "bottom-full left-1/2 -translate-x-1/2 border-l-[5px] border-r-[5px] border-b-[5px] border-l-transparent border-r-transparent border-b-[#1E293B]",
-  left: "left-full top-1/2 -translate-y-1/2 border-t-[5px] border-b-[5px] border-l-[5px] border-t-transparent border-b-transparent border-l-[#1E293B]",
+    "bottom-full left-1/2 -translate-x-1/2 border-l-[5px] border-r-[5px] border-b-[5px] border-l-transparent border-r-transparent border-b-ink",
+  left: "left-full top-1/2 -translate-y-1/2 border-t-[5px] border-b-[5px] border-l-[5px] border-t-transparent border-b-transparent border-l-ink",
   right:
-    "right-full top-1/2 -translate-y-1/2 border-t-[5px] border-b-[5px] border-r-[5px] border-t-transparent border-b-transparent border-r-[#1E293B]",
+    "right-full top-1/2 -translate-y-1/2 border-t-[5px] border-b-[5px] border-r-[5px] border-t-transparent border-b-transparent border-r-ink",
 };
 
 export function Tooltip({
@@ -74,7 +74,7 @@ export function Tooltip({
         <div
           role="tooltip"
           className={cn(
-            "pointer-events-none absolute z-50 whitespace-nowrap rounded-md bg-[#1E293B] px-2.5 py-1.5 text-xs text-white shadow-lg animate-fade-in",
+            "pointer-events-none absolute z-50 whitespace-nowrap rounded-md bg-ink px-2.5 py-1.5 text-xs text-eggshell shadow-lg animate-fade-in",
             positionStyles[position],
             className
           )}

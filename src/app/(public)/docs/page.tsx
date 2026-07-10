@@ -88,19 +88,19 @@ export default function DocsPage() {
               <li key={link.label}>
                 <Link
                   href={link.href}
-                  className={`block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-black/5 hover:text-[#F8FAFC] ${
-                    link.children ? "font-medium text-[#94A3B8]" : "text-[#64748B]"
+                  className={`block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-black/5 hover:text-text-primary ${
+                    link.children ? "font-medium text-text-secondary" : "text-text-muted"
                   }`}
                 >
                   {link.label}
                 </Link>
                 {link.children && (
-                  <ul className="ml-3 mt-1 space-y-1 border-l border-[rgba(255,255,255,0.08)]">
+                  <ul className="ml-3 mt-1 space-y-1 border-l border-border">
                     {link.children.map((child) => (
                       <li key={child.label}>
                         <Link
                           href={child.href}
-                          className="block rounded-lg px-3 py-1.5 pl-4 text-sm text-[#64748B] transition-colors hover:bg-black/5 hover:text-[#F8FAFC]"
+                          className="block rounded-lg px-3 py-1.5 pl-4 text-sm text-text-muted transition-colors hover:bg-black/5 hover:text-text-primary"
                         >
                           {child.label}
                         </Link>
@@ -117,23 +117,23 @@ export default function DocsPage() {
       <div className="min-w-0 flex-1">
         <div className="mb-10">
           <Badge variant="info" className="mb-4">Documentation</Badge>
-          <h1 className="font-display mb-3 text-[32px] font-bold text-[#F8FAFC]">
+          <h1 className="font-display mb-3 text-[32px] font-bold text-text-primary">
             How can we help you?
           </h1>
-          <p className="mb-6 text-[#94A3B8]">
+          <p className="mb-6 text-text-secondary">
             Search our documentation, browse platform guides, or dive into the REST API reference.
           </p>
           <div className="relative max-w-xl">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#64748B]" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
             <input
               type="text"
               placeholder="Search documentation..."
-              className="w-full rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] py-3 pl-10 pr-4 text-sm text-[#F8FAFC] placeholder:text-[#64748B] outline-none focus:border-[#3B82F6]/50 focus:ring-1 focus:ring-[#3B82F6]/30"
+              className="w-full rounded-xl border border-border bg-surface py-3 pl-10 pr-4 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
             />
           </div>
         </div>
 
-        <h2 id="choose-platform" className="font-display mb-6 text-2xl font-bold text-[#F8FAFC]">
+        <h2 id="choose-platform" className="font-display mb-6 text-2xl font-bold text-text-primary">
           Choose your platform
         </h2>
         <div className="mb-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -141,33 +141,33 @@ export default function DocsPage() {
             <Link
               key={p.name}
               href="#"
-              className="group rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+              className="group rounded-xl border border-border bg-surface p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <div className="mb-3 flex size-10 items-center justify-center rounded-lg bg-[#3B82F6]/10 text-sm font-bold text-[#3B82F6]">
+              <div className="mb-3 flex size-10 items-center justify-center rounded-lg bg-[#3B82F6]/10 text-sm font-bold text-primary">
                 {p.icon}
               </div>
-              <h3 className="mb-1 font-semibold text-[#F8FAFC] transition-colors group-hover:text-[#3B82F6]">
+              <h3 className="mb-1 font-semibold text-text-primary transition-colors group-hover:text-primary">
                 {p.name}
               </h3>
-              <p className="text-sm text-[#94A3B8]">{p.docs}</p>
+              <p className="text-sm text-text-secondary">{p.docs}</p>
             </Link>
           ))}
         </div>
 
-        <h2 id="quick-start" className="font-display mb-6 text-2xl font-bold text-[#F8FAFC]">
+        <h2 id="quick-start" className="font-display mb-6 text-2xl font-bold text-text-primary">
           Quick start snippet
         </h2>
         <div className="mb-16">
           <Tabs tabs={tabData} activeTab={activeTab} onChange={setActiveTab} />
-          <div className="rounded-b-xl border border-t-0 border-[rgba(255,255,255,0.08)] bg-[#111827] p-6">
-            <p className="mb-4 text-sm text-[#94A3B8]">
-              Paste this snippet just before the closing <code className="rounded bg-black/10 px-1.5 py-0.5 text-xs text-[#3B82F6]">&lt;/body&gt;</code> tag.
+          <div className="rounded-b-xl border border-t-0 border-border bg-surface p-6">
+            <p className="mb-4 text-sm text-text-secondary">
+              Paste this snippet just before the closing <code className="rounded bg-black/10 px-1.5 py-0.5 text-xs text-primary">&lt;/body&gt;</code> tag.
             </p>
             <CodeBlock code={codeSnippets[activeTab]} language={activeTab === "html" ? "HTML" : activeTab === "wordpress" ? "PHP" : "JSX"} />
           </div>
         </div>
 
-        <h2 id="installation-guide" className="font-display mb-6 text-2xl font-bold text-[#F8FAFC]">
+        <h2 id="installation-guide" className="font-display mb-6 text-2xl font-bold text-text-primary">
           Installation guides
         </h2>
         <div className="mb-16 grid gap-4 sm:grid-cols-3">
@@ -176,10 +176,10 @@ export default function DocsPage() {
             { icon: Code, title: "API Reference", desc: "Full documentation for the Prontly Notify REST API." },
             { icon: BookOpen, title: "Best practices", desc: "Tips for maximizing opt-in rates and CTR." },
           ].map((item) => (
-            <Link key={item.title} href="#" className="rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#111827] p-5 transition-colors hover:bg-black/5">
-              <item.icon className="mb-3 size-5 text-[#3B82F6]" />
-              <h3 className="mb-1 text-sm font-semibold text-[#F8FAFC]">{item.title}</h3>
-              <p className="text-xs text-[#94A3B8]">{item.desc}</p>
+            <Link key={item.title} href="#" className="rounded-xl border border-border bg-surface p-5 transition-colors hover:bg-black/5">
+              <item.icon className="mb-3 size-5 text-primary" />
+              <h3 className="mb-1 text-sm font-semibold text-text-primary">{item.title}</h3>
+              <p className="text-xs text-text-secondary">{item.desc}</p>
             </Link>
           ))}
         </div>
@@ -187,15 +187,15 @@ export default function DocsPage() {
 
       <aside className="ml-10 hidden w-48 shrink-0 lg:block">
         <nav className="sticky top-24">
-          <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-[#64748B]">
+          <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-text-muted">
             On this page
           </h4>
-          <ul className="space-y-2 border-l border-[rgba(255,255,255,0.08)]">
+          <ul className="space-y-2 border-l border-border">
             {onThisPage.map((item) => (
               <li key={item.id}>
                 <a
                   href={`#${item.id}`}
-                  className="block border-l-2 border-transparent py-1 pl-4 text-sm text-[#64748B] transition-colors hover:text-[#94A3B8] hover:border-[#3B82F6]"
+                  className="block border-l-2 border-transparent py-1 pl-4 text-sm text-text-muted transition-colors hover:text-text-secondary hover:border-[#3B82F6]"
                 >
                   {item.label}
                 </a>
