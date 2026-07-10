@@ -11,9 +11,18 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "routes": "tsx scripts/discover-routes.ts",
-    "load-test": "tsx scripts/load-test.ts"
+    "load-test": "tsx scripts/load-test.ts",
+    "db:migrate:local": "wrangler d1 execute prontly-notify-prod --local --file=./db/migrations/0001_init.sql",
+    "db:migrate:staging": "wrangler d1 execute prontly-notify-staging --remote --file=./db/migrations/0001_init.sql",
+    "db:migrate:prod": "wrangler d1 execute prontly-notify-prod --remote --file=./db/migrations/0001_init.sql",
+    "db:studio": "drizzle-kit studio",
+    "db:backup": "wrangler d1 export prontly-notify-prod --remote --output=./backups/backup-$(date +%Y%m%d).sql",
+    "r2:list-public": "wrangler r2 object list prontly-notify-public",
+    "r2:list-private": "wrangler r2 object list prontly-notify-private"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1085.0",
+    "@aws-sdk/s3-request-presigner": "^3.1085.0",
     "@getbrevo/brevo": "^6.0.2",
     "@react-email/components": "^1.0.12",
     "@tailwindcss/forms": "^0.5.11",

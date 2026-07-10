@@ -1,0 +1,53 @@
+name = "prontly-notify"
+compatibility_date = "2026-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ── D1 Databases ──────────────────────────────────────────
+[[d1_databases]]
+binding = "DB"
+database_name = "prontly-notify-prod"
+database_id = ""  # Run: npx wrangler d1 create prontly-notify-prod → paste ID here
+
+[[d1_databases]]
+binding = "DB_STAGING"
+database_name = "prontly-notify-staging"
+database_id = ""  # Run: npx wrangler d1 create prontly-notify-staging → paste ID here
+
+# ── R2 Buckets ────────────────────────────────────────────
+[[r2_buckets]]
+binding = "PUBLIC_BUCKET"
+bucket_name = "prontly-notify-public"
+
+[[r2_buckets]]
+binding = "PRIVATE_BUCKET"
+bucket_name = "prontly-notify-private"
+
+# ── Env: Staging ──────────────────────────────────────────
+[env.staging]
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "prontly-notify-staging"
+database_id = ""  # Same as DB_STAGING above
+
+[[env.staging.r2_buckets]]
+binding = "PUBLIC_BUCKET"
+bucket_name = "prontly-notify-public-staging"
+
+[[env.staging.r2_buckets]]
+binding = "PRIVATE_BUCKET"
+bucket_name = "prontly-notify-private-staging"
+
+# ── Env: Preview (ephemeral per-branch) ───────────────────
+[env.preview]
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "prontly-notify-preview"
+database_id = ""  # Create per branch: wrangler d1 create prontly-notify-preview-<branch>
+
+[[env.preview.r2_buckets]]
+binding = "PUBLIC_BUCKET"
+bucket_name = "prontly-notify-preview-public"
+
+[[env.preview.r2_buckets]]
+binding = "PRIVATE_BUCKET"
+bucket_name = "prontly-notify-preview-private"

@@ -1,26 +1,17 @@
 import "server-only";
-import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./schema";
 
-// ponytail: inline type instead of @cloudflare/workers-types dependency
-interface D1Result<T = unknown> {
-  results: T[];
-  success: boolean;
-  error?: string;
-}
-interface D1Database {
-  prepare(sql: string): D1PreparedStatement;
-  dump(): Promise<ArrayBuffer>;
-  batch<T = unknown>(statements: D1PreparedStatement[]): Promise<D1Result<T>[]>;
-  exec(sql: string): Promise<D1Result>;
-}
-interface D1PreparedStatement {
-  bind(...values: unknown[]): D1PreparedStatement;
-  first<T = unknown>(col?: string): Promise<T | null>;
-  run<T = unknown>(): Promise<D1Result<T>>;
-  all<T = unknown>(): Promise<D1Result<T>>;
-}
+// Two paths depending on runtime environment:
 
-export function getDb(d1Binding: D1Database) {
-  return drizzle(d1Binding, { schema });
-}
+// 1. Cloudflare Workers / Pages runtime — uses the binding directly
+//    import { drizzle } from "drizzle-orm/d1";
+//    export function getDb(d1Binding: D1Database) { return drizzle(d1Binding, { schema }); }
+
+// 2. Vercel / any Node.js runtime — uses D1 REST API via HTTP
+//    Drizzle ORM doesn't expose a d1-http driver in v0.45.2.
+//    Use lib/db.ts's executeQuery() for HTTP-based D1 access.
+//    When a D1 HTTP driver becomes available in drizzle-orm, this becomes:
+//      import { drizzle } from "drizzle-orm/d1-http";
+//      export function getDb() { return drizzle({ accountId, databaseId, token }, { schema }); }
+
+export { schema };

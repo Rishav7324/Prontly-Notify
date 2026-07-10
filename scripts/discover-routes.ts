@@ -8,7 +8,7 @@ interface RouteMethod {
   line: number;
 }
 
-interface RouteInfo {
+export interface RouteInfo {
   filePath: string;
   urlPath: string;
   methods: RouteMethod[];

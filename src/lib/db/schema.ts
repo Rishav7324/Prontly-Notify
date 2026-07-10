@@ -443,6 +443,28 @@ export const analyticsDaily = sqliteTable(
   ],
 );
 
+export const exportJobs = sqliteTable(
+  "export_jobs",
+  {
+    id: text("id").primaryKey(),
+    workspaceId: text("workspace_id").notNull(),
+    siteId: text("site_id").notNull(),
+    r2Key: text("r2_key").notNull(),
+    status: text("status")
+      .notNull().$type<"processing" | "completed" | "failed">()
+      .default("processing"),
+    rowCount: integer("row_count").notNull().default(0),
+    error: text("error"),
+    createdByUserId: text("created_by_user_id"),
+    createdAt: text("created_at").notNull(),
+    completedAt: text("completed_at"),
+  },
+  (t) => [
+    index("idx_export_jobs_workspace").on(t.workspaceId, t.createdAt),
+    index("idx_export_jobs_site").on(t.siteId, t.createdAt),
+  ],
+);
+
 export const webhooks = sqliteTable(
   "webhooks",
   {
