@@ -33,12 +33,7 @@ import {
   FileEdit,
 } from "lucide-react";
 
-const segments = [
-  { value: "recently-active", label: "Recently Active (7 days)" },
-  { value: "high-engagement", label: "High Engagement" },
-  { value: "new-subscribers", label: "New Subscribers" },
-  { value: "dormant", label: "Dormant (30+ days)" },
-];
+// ponytail: segments fetched from API on mount
 
 type DeviceType = "chrome" | "firefox" | "edge";
 
@@ -57,8 +52,9 @@ export default function NewCampaignPage() {
   const [scheduleMethod, setScheduleMethod] = useState<"now" | "later" | "ai-optimal">("now");
   const [ctaButtons, setCtaButtons] = useState<{ label: string; url: string }[]>([]);
   const [aiSuggestTimeLoading, setAiSuggestTimeLoading] = useState(false);
-  const [estimatedReach, setEstimatedReach] = useState(12439);
+  const [estimatedReach, setEstimatedReach] = useState(0);
   const [rules, setRules] = useState<any[]>([]);
+  const [segments, setSegments] = useState<{ value: string; label: string }[]>([]);
 
   const aiRef = useRef<HTMLDivElement>(null);
 
@@ -67,6 +63,24 @@ export default function NewCampaignPage() {
 
   useEffect(() => {
     reset("default");
+    async function load() {
+      try {
+        const [segRes, sitesRes] = await Promise.all([
+          fetch("/api/v1/segments"),
+          fetch("/api/v1/sites"),
+        ]);
+        const segJson = await segRes.json();
+        if (segJson.success && Array.isArray(segJson.data)) {
+          setSegments(segJson.data.map((s: any) => ({ value: s.id, label: s.name })));
+        }
+        const sitesJson = await sitesRes.json();
+        if (sitesJson.success) {
+          const total = sitesJson.data.reduce((acc: number, s: any) => acc + (s.subscriber_count || 0), 0);
+          setEstimatedReach(total);
+        }
+      } catch {}
+    }
+    load();
   }, []);
 
   useEffect(() => {
@@ -552,11 +566,11 @@ export default function NewCampaignPage() {
                     <span className="text-sm font-medium text-text-primary">AI Optimal Time</span>
                   </div>
                 </label>
-                {scheduleMethod === "ai-optimal" && (
+                {scheduleMethod === "ai-optimal" && draft.scheduledAt && (
                   <div className="ml-9">
                     <Badge variant="success" size="md" className="inline-flex items-center gap-1.5">
                       <Sparkles className="size-3.5" />
-                      Tuesday 9:00 AM IST (predicted +127% CTR)
+                      Scheduled for {new Date(draft.scheduledAt).toLocaleString()}
                     </Badge>
                   </div>
                 )}

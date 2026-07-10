@@ -61,15 +61,15 @@ export default function SettingsPage() {
         const res = await fetch("/api/v1/users/me");
         const json = await res.json();
         if (json.success) {
-          const u = json.data;
+          const u = json.data.user;
           setName(u.name ?? "");
           setEmail(u.email ?? "");
           setAvatar(u.avatar_url ?? "");
-          setWorkspaceName(u.workspace_name ?? u.company ?? "");
-          setTimezone(u.timezone ?? "asia/kolkata");
+          setWorkspaceName(json.data.workspaces?.[0]?.name ?? "");
+          setTimezone(json.data.workspaces?.[0]?.default_timezone ?? "asia/kolkata");
           setTwoFA(u.two_factor_enabled ?? false);
-          if (u.notification_preferences) {
-            setNotifications((prev) => ({ ...prev, ...u.notification_preferences }));
+          if (u.notification_prefs) {
+            setNotifications((prev) => ({ ...prev, ...JSON.parse(u.notification_prefs) }));
           }
         }
       } catch {

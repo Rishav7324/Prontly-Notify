@@ -8,10 +8,9 @@ import { Select } from "@/components/ui/Select";
 import { Input } from "@/components/ui/Input";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { EmptyState } from "@/components/domain/EmptyState";
-import { AISuggestionCard } from "@/components/ui/AISuggestionCard";
 import { useToast } from "@/components/ui/Toast";
 import { formatDate, formatNumber } from "@/lib/utils";
-import { Plus, Users, X, Sparkles, Shuffle, Hash, Loader2 } from "lucide-react";
+import { Plus, Users, X, Shuffle, Hash, Loader2 } from "lucide-react";
 
 interface Segment {
   id: string;
@@ -144,35 +143,7 @@ export default function SegmentsPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <AISuggestionCard
-          className="lg:col-span-1"
-          onAccept={() => addToast("Applied highly engaged segment", "success")}
-          onReject={() => addToast("Dismissed", "info")}
-        >
-          <p className="font-medium text-text-primary">Highly Engaged Users</p>
-          <p className="mt-1 text-xs text-text-muted">~3,200 subscribers</p>
-          <p className="mt-1 text-xs text-text-secondary">Users who opened 5+ campaigns in last 30 days</p>
-        </AISuggestionCard>
-        <AISuggestionCard
-          className="lg:col-span-1"
-          onAccept={() => addToast("Applied at-risk segment", "success")}
-          onReject={() => addToast("Dismissed", "info")}
-        >
-          <p className="font-medium text-text-primary">At-Risk Subscribers</p>
-          <p className="mt-1 text-xs text-text-muted">~1,100 subscribers</p>
-          <p className="mt-1 text-xs text-text-secondary">Haven&apos;t opened any campaigns in 60+ days</p>
-        </AISuggestionCard>
-        <AISuggestionCard
-          className="lg:col-span-1"
-          onAccept={() => addToast("Applied new this week segment", "success")}
-          onReject={() => addToast("Dismissed", "info")}
-        >
-          <p className="font-medium text-text-primary">New This Week</p>
-          <p className="mt-1 text-xs text-text-muted">~890 subscribers</p>
-          <p className="mt-1 text-xs text-text-secondary">Subscribed in the last 7 days</p>
-        </AISuggestionCard>
-      </div>
+      {/* ponytail: AI segment suggestions removed — no API endpoint yet */}
 
       <Card>
         <CardHeader>
