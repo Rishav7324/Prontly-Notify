@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/Input";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { EmptyState } from "@/components/domain/EmptyState";
 import { useToast } from "@/components/ui/Toast";
+import { useFetch } from "@/lib/useFetch";
 import { useActiveSite } from "@/hooks/useActiveSite";
 import { formatDate, formatNumber } from "@/lib/utils";
 import { Search, Download, Users, Filter, Globe, Monitor, Smartphone, Loader2 } from "lucide-react";
@@ -32,28 +33,11 @@ const browserIcon = (b: string) => {
 export default function SubscribersPage() {
   const { addToast } = useToast();
   const { activeSite } = useActiveSite();
-  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
-  const [loading, setLoading] = useState(true);
+  const url = activeSite ? `/api/v1/sites/${activeSite.id}/subscribers` : null;
+  const { data: raw, loading, refetch } = useFetch<{ subscribers?: Subscriber[] } | Subscriber[]>(url);
+  const subscribers = Array.isArray(raw) ? raw : raw?.subscribers ?? [];
   const [filter, setFilter] = useState<"all" | "active" | "unsubscribed">("all");
   const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    if (!activeSite) return;
-    const siteId = activeSite.id;
-    async function load() {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/v1/sites/${siteId}/subscribers`);
-        const json = await res.json();
-        if (json.success) setSubscribers(json.data.subscribers ?? json.data ?? []);
-      } catch {
-        addToast("Failed to load subscribers", "error");
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [activeSite, addToast]);
 
   const filtered = subscribers.filter((s) => {
     if (filter === "active" && s.status !== "active") return false;
@@ -92,7 +76,7 @@ export default function SubscribersPage() {
     { key: "status", label: "Status", render: (s) => <Badge variant={s.status === "active" ? "success" : "default"} size="sm">{s.status}</Badge> },
   ];
 
-  if (loading) {
+  if (loading && !subscribers.length) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />

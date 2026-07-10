@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { DataTable, type Column } from "@/components/ui/DataTable";
@@ -8,6 +8,7 @@ import { ConfirmationDialog } from "@/components/domain/ConfirmationDialog";
 import { EmptyState } from "@/components/domain/EmptyState";
 import { DropdownMenu } from "@/components/ui/DropdownMenu";
 import { useToast } from "@/components/ui/Toast";
+import { useFetch } from "@/lib/useFetch";
 import { formatDate, formatNumber } from "@/lib/utils";
 import Link from "next/link";
 import {
@@ -35,36 +36,20 @@ const statusVariant = (s: Campaign["status"]) =>
 
 export default function CampaignsPage() {
   const { addToast } = useToast();
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: campaigns, loading, refetch } = useFetch<Campaign[]>("/api/v1/campaigns");
   const [filter, setFilter] = useState<"all" | "sent" | "scheduled" | "draft" | "failed">("all");
   const [deleteConfirm, setDeleteConfirm] = useState<Campaign | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/v1/campaigns");
-        const json = await res.json();
-        if (json.success) setCampaigns(json.data);
-      } catch {
-        addToast("Failed to load campaigns", "error");
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [addToast]);
-
-  const filtered = filter === "all" ? campaigns : campaigns.filter((c) => c.status === filter);
+  const list = campaigns ?? [];
+  const filtered = filter === "all" ? list : list.filter((c) => c.status === filter);
 
   const chips = [
-    { key: "all", label: "All", count: campaigns.length },
-    { key: "sent", label: "Sent", count: campaigns.filter((c) => c.status === "sent").length },
-    { key: "scheduled", label: "Scheduled", count: campaigns.filter((c) => c.status === "scheduled").length },
-    { key: "draft", label: "Draft", count: campaigns.filter((c) => c.status === "draft").length },
-    { key: "failed", label: "Failed", count: campaigns.filter((c) => c.status === "failed").length },
+    { key: "all", label: "All", count: list.length },
+    { key: "sent", label: "Sent", count: list.filter((c) => c.status === "sent").length },
+    { key: "scheduled", label: "Scheduled", count: list.filter((c) => c.status === "scheduled").length },
+    { key: "draft", label: "Draft", count: list.filter((c) => c.status === "draft").length },
+    { key: "failed", label: "Failed", count: list.filter((c) => c.status === "failed").length },
   ] as const;
 
   const handleDuplicate = async (id: string) => {
@@ -73,7 +58,7 @@ export default function CampaignsPage() {
       const json = await res.json();
       if (json.success) {
         addToast("Campaign duplicated", "success");
-        setCampaigns((prev) => [json.data, ...prev]);
+        refetch();
       } else addToast(json.error, "error");
     } catch {
       addToast("Failed to duplicate campaign", "error");
@@ -88,7 +73,7 @@ export default function CampaignsPage() {
       const json = await res.json();
       if (json.success) {
         addToast("Campaign deleted", "success");
-        setCampaigns((prev) => prev.filter((c) => c.id !== deleteConfirm.id));
+        refetch();
       } else addToast(json.error, "error");
     } catch {
       addToast("Failed to delete campaign", "error");
@@ -122,7 +107,7 @@ export default function CampaignsPage() {
     },
   ];
 
-  if (loading) {
+  if (loading && !campaigns) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -156,7 +141,7 @@ export default function CampaignsPage() {
         ))}
       </div>
 
-      {campaigns.length === 0 ? (
+      {list.length === 0 ? (
         <EmptyState
           icon={<Send className="h-8 w-8" />}
           title="No campaigns yet"

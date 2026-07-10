@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -8,6 +8,7 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { useToast } from "@/components/ui/Toast";
+import { useFetch } from "@/lib/useFetch";
 import { formatNumber } from "@/lib/utils";
 import { Globe, Plus, ExternalLink, Users, Loader2 } from "lucide-react";
 
@@ -21,31 +22,17 @@ interface Site {
 
 export default function SitesPage() {
   const { addToast } = useToast();
-  const [loading, setLoading] = useState(true);
-  const [sites, setSites] = useState<Site[]>([]);
+  const { data: sites, loading, refetch } = useFetch<Site[]>("/api/v1/sites");
   const [showAddModal, setShowAddModal] = useState(false);
   const [newSite, setNewSite] = useState({ name: "", domain: "" });
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch("/api/v1/sites");
-        const json = await res.json();
-        if (json.success) setSites(json.data);
-      } catch {
-        addToast("Failed to load sites", "error");
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [addToast]);
+  const [adding, setAdding] = useState(false);
 
   const handleAddSite = async () => {
     if (!newSite.name || !newSite.domain) {
       addToast("Please fill in all fields", "error");
       return;
     }
+    setAdding(true);
     try {
       const res = await fetch("/api/v1/sites", {
         method: "POST",
@@ -54,14 +41,15 @@ export default function SitesPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setSites((prev) => [...prev, json.data]);
         addToast(`Website "${newSite.name}" added successfully!`, "success");
+        refetch();
       } else {
         addToast(json.error, "error");
       }
     } catch {
       addToast("Failed to add site", "error");
     }
+    setAdding(false);
     setShowAddModal(false);
     setNewSite({ name: "", domain: "" });
   };
@@ -69,7 +57,7 @@ export default function SitesPage() {
   const statusVariant = (s: string) =>
     ({ active: "success", inactive: "default", unverified: "warning" } as const)[s] ?? "default";
 
-  if (loading) {
+  if (loading && !sites) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -93,14 +81,14 @@ export default function SitesPage() {
         <CardContent>
           <div className="flex items-center justify-between">
             <span className="text-sm text-text-secondary">Usage</span>
-            <span className="text-sm text-text-muted">{sites.length} site{sites.length !== 1 ? "s" : ""} connected</span>
+            <span className="text-sm text-text-muted">{sites?.length ?? 0} site{(sites?.length ?? 0) !== 1 ? "s" : ""} connected</span>
           </div>
-          <ProgressBar value={sites.length} max={10} className="mt-2" showLabel />
+          <ProgressBar value={sites?.length ?? 0} max={10} className="mt-2" showLabel />
         </CardContent>
       </Card>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {sites.map((site) => (
+        {(sites ?? []).map((site) => (
           <Card key={site.id} variant="interactive">
             <CardContent>
               <div className="flex items-start justify-between">
@@ -154,7 +142,7 @@ export default function SitesPage() {
           <Input label="Domain" placeholder="example.com" value={newSite.domain} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewSite({ ...newSite, domain: e.target.value })} />
           <div className="flex justify-end gap-3 pt-2">
             <Button variant="outline" onClick={() => setShowAddModal(false)}>Cancel</Button>
-            <Button onClick={handleAddSite}>Add Website</Button>
+            <Button onClick={handleAddSite} loading={adding}>Add Website</Button>
           </div>
         </div>
       </Modal>
