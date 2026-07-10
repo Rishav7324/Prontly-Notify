@@ -20,7 +20,13 @@ export async function sendTransactionalEmail(params: BrevoSendParams) {
     throw new Error("BREVO_API_KEY is not configured — emails will not be sent");
   }
 
-  const fromEmail = process.env.EMAIL_FROM_TRANSACTIONAL || "hello@prontly.in";
+  let fromEmail = process.env.EMAIL_FROM_TRANSACTIONAL || "noreply@notify.prontly.in";
+  let fromName = "Prontly Notify";
+
+  const match = fromEmail.match(/^(?:[^<]*)<\s*([^>]+)\s*>$/);
+  if (match) {
+    fromEmail = match[1];
+  }
 
   const res = await fetch(BREVO_API_URL, {
     method: "POST",
@@ -30,7 +36,7 @@ export async function sendTransactionalEmail(params: BrevoSendParams) {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      sender: { name: "Prontly Notify", email: fromEmail },
+      sender: { name: fromName, email: fromEmail },
       to: params.to,
       subject: params.subject,
       htmlContent: params.htmlContent,
