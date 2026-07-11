@@ -1,7 +1,7 @@
 import "server-only";
 import { headers, cookies } from "next/headers";
 import { verifyIdToken } from "@/lib/auth/firebase-admin";
-import { executeQuery } from "@/lib/db";
+import { executeQuery, generateUUID } from "@/lib/db";
 
 export interface AuthContext {
   userId: string;
@@ -13,6 +13,49 @@ export interface AuthContext {
   workspaceId: string | null;
   workspaceRole: string | null;
   siteAccess: string | string[];
+}
+
+// Ensure a DB user (and default workspace) exists for an authenticated Firebase
+// principal. Login/OAuth paths don't provision the DB row, so provision lazily
+// here — one place, all callers benefit.
+async function ensureUserRecord(decoded: {
+  uid: string;
+  email?: string | null;
+  name?: string | null;
+}): Promise<string> {
+  const existing = await executeQuery<any>(
+    "SELECT id FROM users WHERE firebase_uid = ?",
+    [decoded.uid]
+  );
+  if (existing.length > 0) return existing[0].id;
+
+  const id = generateUUID();
+  const email = decoded.email || "";
+  const name = decoded.name || email.split("@")[0] || "User";
+  try {
+    await executeQuery(
+      "INSERT INTO users (id, firebase_uid, email, name) VALUES (?, ?, ?, ?)",
+      [id, decoded.uid, email, name]
+    );
+    const workspaceId = generateUUID();
+    await executeQuery(
+      "INSERT INTO workspaces (id, owner_user_id, name, plan_id) VALUES (?, ?, ?, ?)",
+      [workspaceId, id, `${name}'s Workspace`, "free"]
+    );
+    await executeQuery(
+      "INSERT INTO workspace_members (id, workspace_id, user_id, invited_email, role, status) VALUES (?, ?, ?, ?, 'owner', 'active')",
+      [generateUUID(), workspaceId, id, email]
+    );
+  } catch {
+    // Race: another request provisioned the user first. Re-fetch.
+    const retry = await executeQuery<any>(
+      "SELECT id FROM users WHERE firebase_uid = ?",
+      [decoded.uid]
+    );
+    if (retry.length > 0) return retry[0].id;
+    throw new AuthError("Failed to provision user", 401);
+  }
+  return id;
 }
 
 export async function requireAuth(): Promise<AuthContext> {
@@ -32,14 +75,12 @@ export async function requireAuth(): Promise<AuthContext> {
   }
   const decoded = await verifyIdToken(token);
 
-  const users = await executeQuery<any>(
-    "SELECT id, firebase_uid, email, name, is_staff, staff_role FROM users WHERE firebase_uid = ?",
-    [decoded.uid]
-  );
+  const userId = await ensureUserRecord(decoded);
 
-  if (users.length === 0) {
-    throw new AuthError("User not found", 401);
-  }
+  const users = await executeQuery<any>(
+    "SELECT id, firebase_uid, email, name, is_staff, staff_role FROM users WHERE id = ?",
+    [userId]
+  );
 
   const user = users[0];
 
