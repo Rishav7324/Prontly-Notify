@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 127.0.0.1",
-    "build": "next build",
-    "start": "next start",
+    "dev": "next dev",
+    "build": "npm install --legacy-peer-deps && next build",
+    "start": "next start"
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
