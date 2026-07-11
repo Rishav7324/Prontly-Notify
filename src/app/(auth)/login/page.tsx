@@ -16,7 +16,7 @@ import { OAuthButton } from "@/components/forms/OAuthButton";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 
 function getFirebaseErrorMessage(code: string): string {
   const map: Record<string, string> = {
@@ -31,6 +31,12 @@ function getFirebaseErrorMessage(code: string): string {
     "auth/network-request-failed": "Network error. Check your connection.",
   };
   return map[code] || "Something went wrong. Please try again.";
+}
+
+function resolveRedirect(redirect: string | null, isStaff: boolean): string {
+  if (redirect && !redirect.startsWith("/login")) return redirect;
+  if (isStaff) return "/admin";
+  return "/dashboard";
 }
 
 export default function LoginPage() {
@@ -50,7 +56,7 @@ export default function LoginPage() {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isStaff, refreshUser } = useAuth();
   const { addToast } = useToast();
 
   const [email, setEmail] = useState("");
@@ -59,11 +65,15 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<string | null>(null);
 
+  const redirectParam = searchParams.get("redirect");
+
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace("/dashboard");
+      refreshUser().then(() => {
+        router.replace(resolveRedirect(redirectParam, isStaff));
+      });
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, redirectParam, isStaff, refreshUser]);
 
   if (authLoading) {
     return (
@@ -73,24 +83,18 @@ function LoginForm() {
     );
   }
 
-  if (user) {
-    return null;
-  }
+  if (user) return null;
 
   const validate = (): boolean => {
-    if (!email.trim()) {
-      setError("Email is required.");
-      return false;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError("Enter a valid email address.");
-      return false;
-    }
-    if (!password) {
-      setError("Password is required.");
-      return false;
-    }
+    if (!email.trim()) { setError("Email is required."); return false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("Enter a valid email address."); return false; }
+    if (!password) { setError("Password is required."); return false; }
     return true;
+  };
+
+  const doRedirect = () => {
+    const dest = resolveRedirect(redirectParam, isStaff);
+    router.replace(dest);
   };
 
   const handleEmailLogin = async (e: FormEvent) => {
@@ -106,8 +110,9 @@ function LoginForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken }),
       });
+      await refreshUser();
       addToast("Welcome back!", "success");
-      router.replace(searchParams.get("redirect") || "/dashboard");
+      doRedirect();
     } catch (err: unknown) {
       const firebaseErr = err as { code?: string };
       setError(getFirebaseErrorMessage(firebaseErr.code || ""));
@@ -131,7 +136,8 @@ function LoginForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken }),
       });
-      router.replace(searchParams.get("redirect") || "/dashboard");
+      await refreshUser();
+      doRedirect();
     } catch (err: unknown) {
       const firebaseErr = err as { code?: string };
       if (firebaseErr.code !== "auth/popup-closed-by-user") {
@@ -145,15 +151,13 @@ function LoginForm() {
   return (
     <AuthCard title="Welcome back" subtitle="Sign in to your Prontly account">
       {error && (
-        <div className="mb-6 flex items-start gap-3 rounded-lg border border-error/30 bg-error/10 p-3 text-sm text-error">
-          <div className="mt-0.5 size-4 shrink-0 rounded-full bg-error/20 flex items-center justify-center">
-            <span className="text-xs font-bold text-error">!</span>
-          </div>
+        <div className="mb-6 flex items-start gap-3 rounded-lg border border-error/30 bg-error-subtle p-3 text-sm text-error">
+          <AlertCircle className="mt-0.5 size-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleEmailLogin} className="space-y-4 animate-fade-up-sm" style={{ animationDelay: "0.05s" }}>
+      <form onSubmit={handleEmailLogin} className="space-y-4">
         <Input
           label="Email"
           type="email"
@@ -173,7 +177,11 @@ function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
           />
-          <div className="mt-1.5 flex justify-end">
+          <div className="mt-1.5 flex items-center justify-between">
+            <label className="flex items-center gap-2 text-xs text-text-muted">
+              <input type="checkbox" className="rounded border-border text-primary focus:ring-primary" />
+              Remember me
+            </label>
             <Link
               href="/forgot-password"
               className="text-xs text-primary hover:text-primary-400 transition-colors"
@@ -183,12 +191,12 @@ function LoginForm() {
           </div>
         </div>
 
-        <Button type="submit" loading={loading} className="w-full transition-all duration-150 hover:scale-[1.02] active:scale-[0.98]" size="lg">
+        <Button type="submit" loading={loading} className="w-full" size="lg">
           Log In
         </Button>
       </form>
 
-      <div className="relative my-6 animate-fade-in" style={{ animationDelay: "0.15s" }}>
+      <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-border" />
         </div>
@@ -199,7 +207,7 @@ function LoginForm() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 animate-fade-up-sm" style={{ animationDelay: "0.2s" }}>
+      <div className="flex flex-col gap-3">
         <OAuthButton
           provider="google"
           onClick={() => handleOAuth("google")}
@@ -212,7 +220,7 @@ function LoginForm() {
         />
       </div>
 
-      <p className="mt-8 text-center text-sm text-text-muted animate-fade-in" style={{ animationDelay: "0.3s" }}>
+      <p className="mt-8 text-center text-sm text-text-muted">
         New here?{" "}
         <Link
           href="/signup"

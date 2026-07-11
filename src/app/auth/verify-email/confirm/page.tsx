@@ -4,7 +4,9 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { applyActionCode, checkActionCode } from "firebase/auth";
-import { Loader2, CheckCircle2, XCircle, Mail } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { AuthCard } from "@/components/forms/AuthCard";
+import { Button } from "@/components/ui/Button";
 
 function ConfirmInner() {
   const router = useRouter();
@@ -20,7 +22,6 @@ function ConfirmInner() {
       setError("Invalid verification link — no code found.");
       return;
     }
-
     checkActionCode(auth, oobCode)
       .then(() => applyActionCode(auth, oobCode))
       .then(() => {
@@ -29,64 +30,48 @@ function ConfirmInner() {
       })
       .catch((err) => {
         const code = err.code || "";
-        if (code === "auth/expired-action-code") {
-          setError("This verification link has expired. Request a new one from your dashboard.");
-        } else if (code === "auth/invalid-action-code") {
-          setError("This verification link is invalid or has already been used.");
-        } else {
-          setError("Something went wrong. Please try requesting a new verification email.");
-        }
+        if (code === "auth/expired-action-code") setError("This verification link has expired.");
+        else if (code === "auth/invalid-action-code") setError("This verification link is invalid or has already been used.");
+        else setError("Something went wrong. Please try again.");
         setStatus("error");
       });
   }, [oobCode, router]);
 
+  if (status === "checking") {
+    return (
+      <AuthCard title="Verifying email" showBrandPanel={false}>
+        <div className="flex justify-center py-8">
+          <Loader2 className="size-10 animate-spin text-primary" />
+        </div>
+      </AuthCard>
+    );
+  }
+
+  if (status === "success") {
+    return (
+      <AuthCard title="Email verified!" showBrandPanel={false}>
+        <div className="text-center">
+          <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-success-subtle">
+            <CheckCircle2 className="size-8 text-success" />
+          </div>
+          <p className="text-sm text-text-muted">Redirecting to dashboard...</p>
+        </div>
+      </AuthCard>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center p-4" style={{ backgroundColor: "#fdfcfc" }}>
-      <div className="w-full max-w-md rounded-2xl border border-[#ebe8e4] p-8 shadow-subtle" style={{ backgroundColor: "#fdfcfc" }}>
-        {status === "checking" && (
-          <div className="text-center">
-            <Loader2 className="mx-auto mb-4 size-10 animate-spin" style={{ color: "#000000" }} />
-            <p style={{ color: "#777169" }} className="text-sm">Verifying your email...</p>
-          </div>
-        )}
-
-        {status === "success" && (
-          <div className="text-center">
-            <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full" style={{ backgroundColor: "rgba(34, 197, 94, 0.1)" }}>
-              <CheckCircle2 className="size-8" style={{ color: "#22C55E" }} />
-            </div>
-            <h1 className="text-lg font-light tracking-tight" style={{ color: "#000000", letterSpacing: "-0.02em" }}>
-              Email verified!
-            </h1>
-            <p className="mt-2 text-sm" style={{ color: "#777169" }}>
-              Redirecting to your dashboard...
-            </p>
-          </div>
-        )}
-
-        {status === "error" && (
-          <div className="text-center">
-            <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full" style={{ backgroundColor: "rgba(239, 68, 68, 0.1)" }}>
-              <XCircle className="size-8" style={{ color: "#EF4444" }} />
-            </div>
-            <p className="text-sm" style={{ color: "#777169" }}>{error}</p>
-          </div>
-        )}
-
-        {status === "error" && (
-          <div className="mt-6 text-center">
-            <a
-              href="/dashboard"
-              className="inline-flex items-center gap-2 text-sm font-medium transition-colors"
-              style={{ color: "#000000" }}
-            >
-              <Mail className="size-4" />
-              Request new verification
-            </a>
-          </div>
-        )}
+    <AuthCard title="Verification failed" showBrandPanel={false}>
+      <div className="text-center">
+        <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-error-subtle">
+          <XCircle className="size-8 text-error" />
+        </div>
+        <p className="text-sm text-text-secondary mb-6">{error}</p>
+        <Button onClick={() => router.push("/dashboard")} variant="primary">
+          Go to Dashboard
+        </Button>
       </div>
-    </div>
+    </AuthCard>
   );
 }
 
@@ -94,8 +79,8 @@ export default function VerifyEmailConfirmPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: "#fdfcfc" }}>
-          <Loader2 className="size-8 animate-spin" style={{ color: "#000000" }} />
+        <div className="flex min-h-screen items-center justify-center bg-background">
+          <Loader2 className="size-8 animate-spin text-primary" />
         </div>
       }
     >
