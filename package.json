@@ -42,8 +42,8 @@
     "react-email": "^6.7.0",
     "recharts": "^3.9.2",
     "tailwind-merge": "^3.6.0",
-    "wrangler": "^4.110.0",
     "zod": "^4.4.3",
+    "typescript": "^7",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
@@ -59,7 +59,7 @@
     "eslint-config-next": "16.2.10",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4",
-    "typescript": "^7",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.110.0"
   }
 }
