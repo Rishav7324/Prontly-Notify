@@ -343,8 +343,8 @@ export default function DashboardHome() {
                     <AreaChart data={growthData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
                       <defs>
                         <linearGradient id="growthFill" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#000000" stopOpacity={0.1} />
-                          <stop offset="100%" stopColor="#000000" stopOpacity={0} />
+                          <stop offset="0%" stopColor="#0447ff" stopOpacity={0.15} />
+                          <stop offset="100%" stopColor="#0447ff" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="#ebe8e4" />
@@ -373,11 +373,11 @@ export default function DashboardHome() {
                       <Area
                         type="monotone"
                         dataKey="value"
-                        stroke="#000000"
+                        stroke="#0447ff"
                         strokeWidth={2}
                         fill="url(#growthFill)"
-                        dot={{ r: 3, fill: "#000000", stroke: "#fdfcfc", strokeWidth: 2 }}
-                        activeDot={{ r: 5, fill: "#000000", stroke: "#fdfcfc", strokeWidth: 2 }}
+                        dot={{ r: 3, fill: "#0447ff", stroke: "#fdfcfc", strokeWidth: 2 }}
+                        activeDot={{ r: 5, fill: "#0447ff", stroke: "#fdfcfc", strokeWidth: 2 }}
                       />
                     </AreaChart>
                   </ResponsiveContainer>

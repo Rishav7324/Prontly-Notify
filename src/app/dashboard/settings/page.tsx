@@ -43,6 +43,7 @@ export default function SettingsPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [workspaceId, setWorkspaceId] = useState("");
   const [workspaceName, setWorkspaceName] = useState("");
   const [timezone, setTimezone] = useState("asia/kolkata");
   const [twoFA, setTwoFA] = useState(false);
@@ -65,6 +66,7 @@ export default function SettingsPage() {
           setName(u.name ?? "");
           setEmail(u.email ?? "");
           setAvatar(u.avatar_url ?? "");
+          setWorkspaceId(json.data.workspaces?.[0]?.id ?? "");
           setWorkspaceName(json.data.workspaces?.[0]?.name ?? "");
           setTimezone(json.data.workspaces?.[0]?.default_timezone ?? "asia/kolkata");
           setTwoFA(u.two_factor_enabled ?? false);
@@ -102,9 +104,18 @@ export default function SettingsPage() {
   const handleSaveWorkspace = async () => {
     setSaving(true);
     try {
-      // ponytail: workspace PATCH endpoint not implemented yet
-      await new Promise((r) => setTimeout(r, 500));
-      addToast("Workspace settings saved!", "success");
+      if (!workspaceId) {
+        addToast("No workspace selected", "error");
+        return;
+      }
+      const res = await fetch(`/api/v1/workspaces/${workspaceId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: workspaceName, default_timezone: timezone }),
+      });
+      const json = await res.json();
+      if (json.success) addToast("Workspace settings saved!", "success");
+      else addToast(json.error, "error");
     } catch {
       addToast("Failed to save workspace settings", "error");
     } finally {
