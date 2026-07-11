@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import {
   LayoutDashboard,
   Users,
@@ -42,6 +43,10 @@ const navItems: NavItem[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { workspace, profile } = useAuth();
+  const planName = workspace?.plan_name || "Free Plan";
+  const wsName = workspace?.name || "My Workspace";
+  const initial = (profile?.name || wsName).charAt(0).toUpperCase();
 
   return (
     <aside className="fixed left-0 top-0 z-30 hidden h-screen w-[260px] flex-col border-r border-border bg-surface lg:flex">
@@ -87,13 +92,13 @@ export function Sidebar() {
       <div className="border-t border-border p-4">
         <div className="flex items-center gap-3 rounded-lg bg-primary/5 px-3 py-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-xs font-semibold text-primary">
-            PF
+            {initial}
           </div>
-          <div className="flex-1 truncate">
-            <p className="text-sm font-medium text-text-primary">
-              prontly
+          <div className="min-w-0 flex-1 truncate">
+            <p className="truncate text-sm font-medium text-text-primary">
+              {wsName}
             </p>
-            <p className="text-xs text-text-muted">Free Plan</p>
+            <p className="text-xs text-text-muted">{planName}</p>
           </div>
         </div>
       </div>

@@ -9,6 +9,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/Toast";
+import { useAuth } from "@/context/AuthContext";
 import {
   User,
   Shield,
@@ -37,12 +38,18 @@ const timezones = [
 
 export default function SettingsPage() {
   const { addToast } = useToast();
+  const { userRole, workspace } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [tab, setTab] = useState("profile");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [planName, setPlanName] = useState("");
+  const [memberSince, setMemberSince] = useState("");
+  const [showAvatarInput, setShowAvatarInput] = useState(false);
+  const [avatarInput, setAvatarInput] = useState("");
   const [workspaceId, setWorkspaceId] = useState("");
   const [workspaceName, setWorkspaceName] = useState("");
   const [timezone, setTimezone] = useState("asia/kolkata");
@@ -66,8 +73,11 @@ export default function SettingsPage() {
           setName(u.name ?? "");
           setEmail(u.email ?? "");
           setAvatar(u.avatar_url ?? "");
+          setEmailVerified(!!u.email_verified);
+          setMemberSince(u.created_at ?? "");
           setWorkspaceId(json.data.workspaces?.[0]?.id ?? "");
           setWorkspaceName(json.data.workspaces?.[0]?.name ?? "");
+          setPlanName(json.data.workspaces?.[0]?.plan_name ?? "");
           setTimezone(json.data.workspaces?.[0]?.default_timezone ?? "asia/kolkata");
           setTwoFA(u.two_factor_enabled ?? false);
           if (u.notification_prefs) {
@@ -166,36 +176,120 @@ export default function SettingsPage() {
       <Tabs tabs={settingsTabs} activeTab={tab} onChange={setTab} />
 
       {tab === "profile" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Profile</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-xl font-bold text-primary">
-                  {avatar ? (
-                    <img src={avatar} alt="" className="h-16 w-16 rounded-full object-cover" />
-                  ) : (
-                    name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() || "U"
-                  )}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-primary/20 text-xl font-bold text-primary">
+                    {avatar ? (
+                      <img src={avatar} alt="" className="h-16 w-16 rounded-full object-cover" />
+                    ) : (
+                      (name || email || "U").split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() || "U"
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setAvatarInput(avatar); setShowAvatarInput(true); }}
+                    className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white shadow"
+                    aria-label="Change avatar"
+                  >
+                    <Camera className="h-3 w-3" />
+                  </button>
                 </div>
-                <button className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white shadow">
-                  <Camera className="h-3 w-3" />
-                </button>
+                <div className="min-w-0">
+                  <p className="truncate font-medium text-text-primary">{name || "User"}</p>
+                  <p className="flex items-center gap-2 truncate text-sm text-text-muted">
+                    {email}
+                    {emailVerified ? (
+                      <Badge variant="success" size="sm">Verified</Badge>
+                    ) : (
+                      <Badge variant="default" size="sm">Unverified</Badge>
+                    )}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-text-primary">{name || "User"}</p>
-                <p className="text-sm text-text-muted">{email}</p>
+
+              {showAvatarInput && (
+                <div className="flex flex-col gap-2 rounded-lg border border-border bg-background p-3 sm:flex-row sm:items-center">
+                  <Input
+                    value={avatarInput}
+                    placeholder="https://…"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAvatarInput(e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={async () => {
+                        setSaving(true);
+                        try {
+                          const res = await fetch("/api/v1/users/me", {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ avatar_url: avatarInput }),
+                          });
+                          const json = await res.json();
+                          if (json.success) {
+                            setAvatar(avatarInput);
+                            addToast("Avatar updated!", "success");
+                          } else addToast(json.error, "error");
+                        } catch {
+                          addToast("Failed to update avatar", "error");
+                        } finally {
+                          setSaving(false);
+                          setShowAvatarInput(false);
+                        }
+                      }}
+                      loading={saving}
+                    >
+                      Save
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setShowAvatarInput(false)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <Input label="Full Name" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+              <Input label="Email" type="email" value={email} disabled hint={emailVerified ? "Verified email" : "Unverified — check your inbox"} />
+              <div className="flex justify-end">
+                <Button onClick={handleSaveProfile} loading={saving}>Save Changes</Button>
               </div>
-            </div>
-            <Input label="Full Name" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
-            <Input label="Email" type="email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
-            <div className="flex justify-end">
-              <Button onClick={handleSaveProfile} loading={saving}>Save Changes</Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Account</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <dl className="divide-y divide-border">
+                <div className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
+                  <dt className="text-sm text-text-muted">Plan</dt>
+                  <dd className="text-sm font-medium text-text-primary">{planName || workspace?.plan_name || "Free Plan"}</dd>
+                </div>
+                <div className="flex items-center justify-between py-3">
+                  <dt className="text-sm text-text-muted">Role</dt>
+                  <dd className="text-sm font-medium capitalize text-text-primary">{userRole || workspace?.role || "Member"}</dd>
+                </div>
+                <div className="flex items-center justify-between py-3">
+                  <dt className="text-sm text-text-muted">Workspace</dt>
+                  <dd className="truncate pl-4 text-sm font-medium text-text-primary">{workspaceName || workspace?.name || "—"}</dd>
+                </div>
+                <div className="flex items-center justify-between py-3">
+                  <dt className="text-sm text-text-muted">Member since</dt>
+                  <dd className="text-sm font-medium text-text-primary">
+                    {memberSince ? new Date(memberSince).toLocaleDateString() : "—"}
+                  </dd>
+                </div>
+              </dl>
+            </CardContent>
+          </Card>
+        </div>
       )}
 
       {tab === "security" && (

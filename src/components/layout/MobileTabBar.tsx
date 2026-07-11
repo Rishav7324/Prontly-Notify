@@ -64,7 +64,7 @@ export function MobileTabBar() {
   return (
     <>
       {/* Bottom tab bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-border bg-surface px-2 pb-safe lg:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-border bg-surface px-2 pb-2 pt-1 [padding-bottom:env(safe-area-inset-bottom)] lg:hidden">
         {visibleTabs.map((tab) => {
           const Icon = tab.icon;
           const active =

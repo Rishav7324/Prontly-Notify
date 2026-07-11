@@ -91,7 +91,7 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center"
+      className="fixed inset-0 z-[80] flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-label={title}
@@ -104,9 +104,7 @@ export function Modal({
       <div
         ref={dialogRef}
         className={cn(
-          "relative w-full animate-fade-in overflow-y-auto",
-          "inset-0 rounded-none max-h-none sm:max-h-[85vh] sm:rounded-xl sm:max-w-[calc(100vw-2rem)]",
-          "bg-surface border-border shadow-xl sm:border",
+          "relative w-full max-w-[calc(100vw-2rem)] max-h-[85vh] animate-fade-in overflow-y-auto rounded-xl border border-border bg-surface shadow-xl",
           sizeStyles[size]
         )}
       >

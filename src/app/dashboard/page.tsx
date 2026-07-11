@@ -124,13 +124,13 @@ export default function DashboardHome() {
   const [regenerating, setRegenerating] = useState(false);
 
   const fetchData = useCallback(async () => {
-    if (!activeSite) return;
+    if (!activeSite) { setLoading(false); return; }
     const siteId = activeSite.id;
     setLoading(true);
     try {
       const summaryRes = await fetch(`/api/v1/sites/${siteId}/dashboard-summary?range=${dateRange}`).catch(() => null);
-      const campaignsRes = await fetch(`/api/v1/campaigns?range=${dateRange}`).catch(() => null);
-      const aiRes = await fetch(`/api/v1/ai/analytics-summary?siteId=${siteId}&range=${dateRange}`).catch(() => null);
+      const campaignsRes = await fetch(`/api/v1/campaigns?site_id=${siteId}&range=${dateRange}`).catch(() => null);
+      const aiRes = await fetch(`/api/v1/ai/analytics-summary?site_id=${siteId}&range=${dateRange}`).catch(() => null);
 
       if (summaryRes && summaryRes.ok) {
         const summaryJson = await summaryRes.json();
@@ -185,7 +185,7 @@ export default function DashboardHome() {
     if (!activeSite) return;
     setRegenerating(true);
     try {
-      const res = await fetch(`/api/v1/ai/analytics-summary?siteId=${activeSite.id}&range=${dateRange}`, {
+      const res = await fetch(`/api/v1/ai/analytics-summary?site_id=${activeSite.id}&range=${dateRange}`, {
         method: "POST",
       });
       const json = await res.json();

@@ -8,6 +8,8 @@ import { withTimeout } from "@/lib/utils";
 
 interface AuthContextType {
   user: User | null;
+  profile: any | null;
+  workspace: any | null;
   loading: boolean;
   userRole: string | null;
   workspaceId: string | null;
@@ -18,6 +20,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  profile: null,
+  workspace: null,
   loading: true,
   userRole: null,
   workspaceId: null,
@@ -28,6 +32,8 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<any | null>(null);
+  const [workspace, setWorkspace] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
@@ -47,6 +53,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUserRole(data.data.workspace_role || null);
         setWorkspaceId(data.data.workspace_id || null);
         setIsStaff(!!data.data.is_staff);
+        setProfile(data.data.user || null);
+        setWorkspace(data.data.workspaces?.[0] || null);
       }
     } catch {
       // meta fetch is non-critical and must never block navigation
@@ -80,10 +88,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUserRole(null);
     setWorkspaceId(null);
     setIsStaff(false);
+    setProfile(null);
+    setWorkspace(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, userRole, workspaceId, isStaff, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, profile, workspace, loading, userRole, workspaceId, isStaff, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
