@@ -6,12 +6,12 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "prontly-notify-prod"
-database_id = ""  # Run: npx wrangler d1 create prontly-notify-prod → paste ID here
+database_id = "634bbb20-ecbf-4ba1-8bbd-4505022ac1f6"
 
 [[d1_databases]]
 binding = "DB_STAGING"
 database_name = "prontly-notify-staging"
-database_id = ""  # Run: npx wrangler d1 create prontly-notify-staging → paste ID here
+database_id = "3b7294ad-64dc-46ba-bec7-95f52b7afd60"
 
 # ── R2 Buckets ────────────────────────────────────────────
 [[r2_buckets]]
@@ -27,7 +27,7 @@ bucket_name = "prontly-notify-private"
 [[env.staging.d1_databases]]
 binding = "DB"
 database_name = "prontly-notify-staging"
-database_id = ""  # Same as DB_STAGING above
+database_id = "3b7294ad-64dc-46ba-bec7-95f52b7afd60"
 
 [[env.staging.r2_buckets]]
 binding = "PUBLIC_BUCKET"

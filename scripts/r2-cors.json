@@ -1,0 +1,10 @@
+{
+  "rules": [
+    {
+      "allowedOrigins": ["https://prontly.in", "https://*.prontly.in", "https://notify.prontly.in"],
+      "allowedMethods": ["GET", "HEAD"],
+      "allowedHeaders": ["*"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+}
