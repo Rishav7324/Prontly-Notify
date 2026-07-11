@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "Prontly Notify — Browser Push Notifications for Websites",
   description:
     "Send AI-powered browser push notifications to your website visitors. Free forever plan, no credit card required.",
-  icons: [{ rel: "icon", url: "/logo.svg" }],
+  icons: [{ rel: "icon", url: "/favicon.svg" }],
   metadataBase: new URL("https://notify.prontly.in"),
   openGraph: {
     title: "Prontly Notify — Browser Push Notifications for Websites",
