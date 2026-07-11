@@ -25,6 +25,10 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  typescript: {
+    // TypeScript check runs separately via `npm run typecheck`
+    ignoreBuildErrors: true,
+  },
   turbopack: {
     root: __dirname,
   },
