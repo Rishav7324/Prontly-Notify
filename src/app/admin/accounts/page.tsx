@@ -91,7 +91,7 @@ export default function AdminAccounts() {
         name: a.name || a.owner_name,
         email: a.owner_email,
         plan: a.plan_name || "Free",
-        mrr: 0,
+        mrr: a.mrr || 0,
         sites: a.site_count || 0,
         status: a.subscription_status === "active" ? "active" : a.subscription_status === "past_due" ? "suspended" : "trial",
         signupDate: a.created_at,

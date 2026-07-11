@@ -41,10 +41,12 @@ export async function GET(request: NextRequest) {
     const total = countResult[0]?.total || 0;
 
     const sites = await executeQuery<any>(
-      `SELECT s.*, w.name as workspace_name, w.owner_user_id,
+      `SELECT s.*, w.name as workspace_name, w.owner_user_id, u.email as owner_email,
         (SELECT COUNT(*) FROM subscribers WHERE site_id = s.id AND status = 'active') as subscriber_count,
         (SELECT COUNT(*) FROM campaigns WHERE site_id = s.id AND status = 'sent') as campaign_count
-       FROM sites s JOIN workspaces w ON s.workspace_id = w.id
+       FROM sites s
+       JOIN workspaces w ON s.workspace_id = w.id
+       JOIN users u ON w.owner_user_id = u.id
        ${where}
        ORDER BY s.created_at DESC LIMIT ? OFFSET ?`,
       [...params, limit, offset]

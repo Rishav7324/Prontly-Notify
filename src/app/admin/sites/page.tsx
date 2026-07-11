@@ -45,7 +45,7 @@ async function fetchSites(search?: string, status?: string) {
 }
 
 async function toggleSending(siteId: string) {
-  const res = await fetch(`/api/v1/admin/sites/disable-sending`, {
+  const res = await fetch(`/api/v1/admin/sites/${siteId}/disable-sending`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ siteId }),
@@ -80,7 +80,7 @@ export default function AdminSites() {
         id: s.id,
         domain: s.domain || s.name,
         owner: s.workspace_name,
-        ownerEmail: "",
+        ownerEmail: s.owner_email || "",
         subscribers: s.subscriber_count || 0,
         installStatus: (s.install_status === "verified" ? "live" : s.install_status) || "pending",
         lastSend: s.updated_at ? formatDate(s.updated_at) : "Never",

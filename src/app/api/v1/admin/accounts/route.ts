@@ -45,6 +45,7 @@ export async function GET(request: NextRequest) {
       `SELECT w.id, w.name, w.plan_id, w.default_timezone, w.created_at,
         u.id as owner_id, u.email as owner_email, u.name as owner_name,
         p.name as plan_name, p.subscriber_limit, p.site_limit,
+        p.price_monthly as mrr,
         s.status as subscription_status,
         (SELECT COUNT(*) FROM sites WHERE workspace_id = w.id) as site_count,
         (SELECT COUNT(*) FROM workspace_members WHERE workspace_id = w.id AND status = 'active') as member_count

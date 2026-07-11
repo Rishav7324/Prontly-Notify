@@ -14,8 +14,15 @@ export async function GET() {
     if (user.length === 0 || !user[0].is_staff) return err("Staff access required", 403);
 
     const failed = await executeQuery<any>(
-      `SELECT s.id, s.workspace_id, s.status, s.current_period_end, w.name as workspace_name, w.owner_user_id
-       FROM subscriptions s JOIN workspaces w ON w.id = s.workspace_id
+      `SELECT s.id, s.workspace_id, s.status, s.current_period_end,
+        w.name as workspace_name, w.owner_user_id,
+        u.email as owner_email,
+        COALESCE(p.price_monthly, 0) as amount,
+        (SELECT COUNT(*) FROM invoices WHERE workspace_id = w.id AND status = 'uncollectible') as retry_count
+       FROM subscriptions s
+       JOIN workspaces w ON w.id = s.workspace_id
+       JOIN users u ON w.owner_user_id = u.id
+       JOIN plans p ON w.plan_id = p.id
        WHERE s.status = 'past_due' ORDER BY s.current_period_end DESC`
     );
     return ok({ failedPayments: failed });

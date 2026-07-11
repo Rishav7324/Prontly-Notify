@@ -20,7 +20,6 @@ import {
   RefreshCcw,
   AlertTriangle,
   BarChart3,
-  Loader2,
   CreditCard,
 } from "lucide-react";
 
@@ -34,16 +33,6 @@ interface FailedPayment {
   retryCount: number;
 }
 
-interface Cancellation {
-  id: string;
-  account: string;
-  email: string;
-  plan: string;
-  date: string;
-  reason: string;
-  churnType: "voluntary" | "involuntary";
-}
-
 interface CouponPerformance {
   id: string;
   code: string;
@@ -55,7 +44,6 @@ interface CouponPerformance {
 const tabs = [
   { id: "overview", label: "Overview" },
   { id: "failed-payments", label: "Failed Payments" },
-  { id: "cancellations", label: "Cancellations" },
   { id: "coupons", label: "Coupons" },
 ];
 
@@ -115,7 +103,6 @@ export default function AdminBilling() {
 
   const [overviewData, setOverviewData] = useState<any>(null);
   const [failedPayments, setFailedPayments] = useState<FailedPayment[]>([]);
-  const [cancellations, setCancellations] = useState<Cancellation[]>([]);
   const [coupons, setCoupons] = useState<CouponPerformance[]>([]);
 
   const loadData = useCallback(async () => {
@@ -130,11 +117,11 @@ export default function AdminBilling() {
       setFailedPayments(failed.map((f: any) => ({
         id: f.id,
         account: f.workspace_name || "Unknown",
-        email: "",
-        amount: 0,
+        email: f.owner_email || "",
+        amount: f.amount || 0,
         date: f.current_period_end,
         reason: "Payment past due",
-        retryCount: 0,
+        retryCount: f.retry_count || 0,
       })));
       setCoupons(couponData.map((c: any) => ({
         id: c.id,
@@ -177,21 +164,6 @@ export default function AdminBilling() {
     { key: "actions", label: "Actions", render: (item) => (
       <Button variant="outline" size="sm" icon={<RefreshCcw className="size-3.5" />} onClick={() => setRetryModal(item)}>Retry</Button>
     )},
-  ];
-
-  const cancellationColumns: Column<Cancellation>[] = [
-    { key: "account", label: "Account", sortable: true, render: (item) => (
-      <div>
-        <p className="font-medium text-text-primary">{item.account}</p>
-        <p className="text-xs text-text-muted">{item.email}</p>
-      </div>
-    )},
-    { key: "plan", label: "Plan", sortable: true, render: (item) => <Badge>{item.plan}</Badge>},
-    { key: "date", label: "Date", sortable: true, render: (item) => <span className="text-text-muted">{formatDate(item.date)}</span>},
-    { key: "churnType", label: "Type", sortable: true, render: (item) => (
-      <Badge variant={item.churnType === "voluntary" ? "warning" : "error"}>{item.churnType}</Badge>
-    )},
-    { key: "reason", label: "Reason", render: (item) => <span className="text-text-secondary">{item.reason}</span>},
   ];
 
   const couponColumns: Column<CouponPerformance>[] = [
@@ -302,14 +274,6 @@ export default function AdminBilling() {
             </div>
           </Modal>
         </div>
-      )}
-
-      {activeTab === "cancellations" && (
-        !loading && cancellations.length === 0 ? (
-          <EmptyState icon={<Users className="size-12" />} title="No cancellations" description="No recent cancellations to display" />
-        ) : (
-          <DataTable columns={cancellationColumns} data={cancellations} keyExtractor={(c) => c.id} loading={loading} sortable />
-        )
       )}
 
       {activeTab === "coupons" && (
