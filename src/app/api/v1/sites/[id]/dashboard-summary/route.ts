@@ -69,10 +69,36 @@ export async function GET(
       ? ((totals.total_delivered / totals.total_sent) * 100).toFixed(1)
       : "0.0";
 
+    // -- subscriber growth trend (daily cumulative over range) --
+    const subscriberTrend = await executeQuery<any>(
+      `SELECT date(subscribed_at) as label, COUNT(*) as value
+       FROM subscribers
+       WHERE site_id = ? AND subscribed_at >= datetime('now', '-30 days')
+       GROUP BY date(subscribed_at)
+       ORDER BY label ASC`,
+      [id]
+    );
+
+    // -- recent activity (union of subscribers + campaigns) --
+    const recentActivity = await executeQuery<any>(
+      `SELECT id, 'subscriber' as type, 'New subscriber' as text, subscribed_at as timestamp
+       FROM subscribers WHERE site_id = ? AND subscribed_at >= datetime('now', '-7 days')
+       UNION ALL
+       SELECT id, 'campaign' as type, 'Campaign sent: ' || title as text, sent_at as timestamp
+       FROM campaigns WHERE site_id = ? AND status = 'sent' AND sent_at >= datetime('now', '-7 days')
+       UNION ALL
+       SELECT id, 'scheduled' as type, 'Campaign scheduled: ' || title as text, scheduled_at as timestamp
+       FROM campaigns WHERE site_id = ? AND status = 'scheduled' AND scheduled_at >= datetime('now', '-7 days')
+       ORDER BY timestamp DESC LIMIT 10`,
+      [id, id, id]
+    );
+
     return ok({
       subscribers: subscriberStats[0] || { total: 0, active: 0, unsubscribed: 0, new_7d: 0 },
       campaigns: campaignStats[0] || { total: 0, drafts: 0, sent: 0, scheduled: 0, last_30d: 0 },
       recent_campaigns: recentCampaigns,
+      subscriber_trend: subscriberTrend,
+      recent_activity: recentActivity,
       delivery: {
         total_sent: totals.total_sent || 0,
         total_delivered: totals.total_delivered || 0,

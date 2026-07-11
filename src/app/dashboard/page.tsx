@@ -159,6 +159,7 @@ export default function DashboardHome() {
             },
           ]);
           setGrowthData(d.subscriber_trend ?? []);
+          setActivity(d.recent_activity ?? []);
         }
       }
       if (campaignsRes && campaignsRes.ok) {
