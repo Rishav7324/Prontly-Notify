@@ -9,14 +9,12 @@ import {
   Bell,
   Bot,
   Check,
-  ChevronRight,
   Code2,
   Globe,
   Layers,
   MousePointerClick,
   Play,
   RefreshCw,
-  Rocket,
   Send,
   ShoppingBag,
   Sparkles,
@@ -24,7 +22,6 @@ import {
   Zap,
 } from "lucide-react";
 import { FeatureCard } from "@/components/domain/FeatureCard";
-import { InlineCTACard } from "@/components/domain/InlineCTACard";
 import { Button } from "@/components/ui/Button";
 
 const features = [
@@ -157,12 +154,7 @@ export default function HomePage() {
         <div className="flex-1 text-center md:text-left">
           <div
             {...revealProps("hero-badge")}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium"
-            style={{
-              backgroundColor: "rgba(59,130,246,0.12)",
-              borderColor: "rgba(59,130,246,0.3)",
-              color: "#93C5FD",
-            }}
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-subtle px-4 py-1.5 text-sm font-medium text-primary-400"
           >
             <Sparkles className="size-4" />
             Browser Push Notifications
@@ -203,8 +195,7 @@ export default function HomePage() {
               <Button
                 variant="ghost"
                 size="lg"
-                className="h-12 rounded-full border px-8 text-base font-medium text-text-primary"
-                style={{ borderColor: "rgba(255,255,255,0.15)" }}
+                className="h-12 rounded-full border border-border px-8 text-base font-medium text-text-primary"
               >
                 <Play className="mr-2 size-4" />
                 Watch Demo
@@ -218,26 +209,17 @@ export default function HomePage() {
           {...revealProps("hero-mockup")}
           className="mt-12 w-full max-w-sm md:mt-0 md:ml-12"
         >
-          <div className="flex h-[300px] items-center justify-center rounded-2xl border border-border bg-surface">
-            <Bell className="size-16 text-primary/40" />
+          <div className="flex h-[300px] items-center justify-center rounded-2xl border border-border bg-surface shadow-card">
+            <Bell className="size-16 text-text-muted/40" />
           </div>
         </div>
 
         {/* Ambient glow */}
-        <div
-          className="pointer-events-none absolute -top-40 right-0 -z-10 h-[500px] w-[500px] rounded-full opacity-20 blur-[120px]"
-          style={{ backgroundColor: "rgba(59,130,246,0.15)" }}
-        />
+        <div className="pointer-events-none absolute -top-40 right-0 -z-10 h-[500px] w-[500px] rounded-full bg-accent-glow opacity-20 blur-[120px]" />
       </section>
 
       {/* ────────────── TRUST BAR ────────────── */}
-      <section
-        className="overflow-hidden border-y py-6"
-        style={{
-          backgroundColor: "rgba(255,255,255,0.02)",
-          borderColor: "rgba(255,255,255,0.05)",
-        }}
-      >
+      <section className="overflow-hidden border-y border-border py-6">
         <div className="mx-auto max-w-[1200px] px-4">
           <p className="mb-4 text-center text-sm font-medium text-text-muted">
             Start sending push notifications in minutes
@@ -245,25 +227,15 @@ export default function HomePage() {
           <div className="relative overflow-hidden">
             <div className="marquee-track flex items-center gap-16">
               {[
-                Globe,
-                ShoppingBag,
-                Code2,
-                Zap,
-                Layers,
-                Send,
-                Globe,
-                ShoppingBag,
-                Code2,
-                Zap,
-                Layers,
-                Send,
+                Globe, ShoppingBag, Code2, Zap, Layers, Send,
+                Globe, ShoppingBag, Code2, Zap, Layers, Send,
               ].map((Icon, i) => (
                 <div
                   key={i}
                   className="flex shrink-0 items-center gap-2 text-text-muted"
                 >
-                  <Icon className="size-6" />
-                  <span className="text-xs font-medium uppercase tracking-wider opacity-50">
+                  <Icon className="size-6 opacity-50" />
+                  <span className="text-xs font-medium uppercase tracking-wider opacity-40">
                     Company
                   </span>
                 </div>
@@ -288,13 +260,7 @@ export default function HomePage() {
         </div>
 
         <div className="relative grid gap-10 md:grid-cols-3 md:gap-6">
-          {/* Dashed connector lines (desktop only) */}
-          <div
-            className="absolute left-[calc(16.666%+24px)] right-[calc(16.666%+24px)] top-16 hidden h-px md:block"
-            style={{
-              borderTop: "1px dashed rgba(59,130,246,0.25)",
-            }}
-          />
+          <div className="absolute left-[calc(16.666%+24px)] right-[calc(16.666%+24px)] top-16 hidden h-px border-t border-dashed border-accent/25 md:block" />
 
           {steps.map((step, i) => (
             <div
@@ -302,16 +268,10 @@ export default function HomePage() {
               {...revealProps(`hiw-${i}`)}
               className="relative flex flex-col items-center text-center"
             >
-              <div
-                className="flex size-12 items-center justify-center rounded-full"
-                style={{ backgroundColor: "rgba(59,130,246,0.12)" }}
-              >
-                <step.icon className="size-5 text-[#60A5FA]" />
+              <div className="flex size-12 items-center justify-center rounded-full bg-accent-subtle">
+                <step.icon className="size-5 text-primary" />
               </div>
-              <span
-                className="mt-4 text-[80px] font-bold leading-none select-none"
-                style={{ color: "#1E3A8A" }}
-              >
+              <span className="mt-4 text-[80px] font-bold leading-none select-none text-primary-300/40">
                 {step.num}
               </span>
               <h3 className="mt-2 text-xl font-semibold text-text-primary">
@@ -362,19 +322,9 @@ export default function HomePage() {
       <section className="mx-auto max-w-[1200px] px-4 py-24 md:py-24">
         <div
           {...revealProps("ai-card")}
-          className="rounded-2xl border p-8 md:p-12"
-          style={{
-            backgroundColor: "rgba(17, 24, 39, 0.8)",
-            borderColor: "rgba(59, 130, 246, 0.3)",
-          }}
+          className="rounded-2xl border border-accent/30 bg-ink/80 p-8 md:p-12"
         >
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider"
-            style={{
-              backgroundColor: "rgba(59,130,246,0.12)",
-              borderColor: "rgba(59,130,246,0.3)",
-              color: "#93C5FD",
-            }}
-          >
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-subtle px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary-400">
             <Sparkles className="size-3.5" />
             Powered by AI
           </div>
@@ -388,7 +338,7 @@ export default function HomePage() {
           <ul className="mt-8 grid gap-4 sm:grid-cols-2">
             {aiFeatureList.map((item) => (
               <li key={item} className="flex items-start gap-3 text-sm text-text-secondary">
-                <Check className="mt-0.5 size-4 shrink-0 text-[#60A5FA]" />
+                <Check className="mt-0.5 size-4 shrink-0 text-primary" />
                 {item}
               </li>
             ))}
@@ -423,16 +373,9 @@ export default function HomePage() {
       <section className="mx-auto max-w-[1200px] px-4 py-24 md:py-24">
         <div
           {...revealProps("final-cta")}
-          className="relative overflow-hidden rounded-2xl border p-12 text-center md:p-20"
-          style={{
-            backgroundColor: "rgba(59,130,246,0.06)",
-            borderColor: "rgba(59,130,246,0.25)",
-          }}
+          className="relative overflow-hidden rounded-2xl border border-accent/25 bg-primary-50 p-12 text-center md:p-20"
         >
-          <div
-            className="pointer-events-none absolute -inset-x-40 -top-40 -z-10 h-[300px] rounded-full opacity-20 blur-[120px]"
-            style={{ backgroundColor: "rgba(59,130,246,0.15)" }}
-          />
+          <div className="pointer-events-none absolute -inset-x-40 -top-40 -z-10 h-[300px] w-full rounded-full bg-accent-glow opacity-20 blur-[120px]" />
           <h2 className="font-display text-[32px] font-bold leading-tight text-text-primary md:text-[44px]">
             Ready to bring visitors back?
           </h2>
@@ -455,8 +398,7 @@ export default function HomePage() {
               <Button
                 variant="ghost"
                 size="lg"
-                className="h-12 rounded-full border px-8 text-base font-medium"
-                style={{ borderColor: "rgba(255,255,255,0.15)" }}
+                className="h-12 rounded-full border border-border px-8 text-base font-medium"
               >
                 Talk to Sales
               </Button>

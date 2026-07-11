@@ -34,11 +34,11 @@ export function Navbar() {
           "flex items-center justify-between gap-4",
           "h-[52px] w-[calc(100%-32px)] md:w-[calc(100%-128px)] max-w-[760px]",
           "rounded-full px-4 md:px-5",
-          "border border-stone/60 shadow-subtle",
+          "border border-border/70 shadow-subtle",
           "transition-all duration-300",
           scrolled
-            ? "bg-eggshell/90 backdrop-blur-xl"
-            : "bg-eggshell/70 backdrop-blur-lg"
+            ? "bg-background/90 backdrop-blur-xl"
+            : "bg-background/70 backdrop-blur-lg"
         )}
       >
         <div className="flex items-center gap-2">
@@ -105,7 +105,7 @@ export function Navbar() {
       </header>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-eggshell/98 backdrop-blur-xl md:hidden">
+        <div className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-background/98 backdrop-blur-xl md:hidden">
           <nav className="flex flex-col items-center gap-6">
             {navLinks.map((link) => (
               <Link
