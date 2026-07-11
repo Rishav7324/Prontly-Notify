@@ -1,5 +1,8 @@
 import "server-only";
 
+type D1PreparedStatement = { bind: (...values: any[]) => Promise<{ results: any[] }> };
+type D1Database = { prepare: (sql: string) => D1PreparedStatement };
+
 function getD1Config() {
   // Support both old (CF_) and new (CLOUDFLARE_) env var naming
   return {
@@ -9,7 +12,24 @@ function getD1Config() {
   };
 }
 
+function getBinding(): D1Database | null {
+  try {
+    const DB = (process.env as Record<string, any>)?.DB;
+    if (DB && typeof DB.prepare === "function") return DB as D1Database;
+  } catch {
+    // not in a binding-enabled runtime
+  }
+  return null;
+}
+
 export async function executeQuery<T = any>(sql: string, params: any[] = []): Promise<T> {
+  const binding = getBinding();
+  if (binding) {
+    const result = await binding.prepare(sql).bind(...params);
+    return (result.results ?? []) as T;
+  }
+
+  // Fallback: D1 REST API (used in local Node dev / environments without a binding)
   const { accountId, databaseId, apiToken } = getD1Config();
   const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`;
 
@@ -30,5 +50,5 @@ export async function executeQuery<T = any>(sql: string, params: any[] = []): Pr
 
 // UUIDv7 generator placeholder (use a library like 'uuidv7' in production)
 export function generateUUID() {
-  return crypto.randomUUID(); 
+  return crypto.randomUUID();
 }
