@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "npm install --legacy-peer-deps && next build",
-    "start": "next start"
-    "lint": "eslint .",
+    "dev": "next dev -H 127.0.0.1",
+    "build": "next build",
+    "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
@@ -43,7 +42,7 @@
     "recharts": "^3.9.2",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3",
-    "typescript": "^7",
+    "typescript": "^5",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
