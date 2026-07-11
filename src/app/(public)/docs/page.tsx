@@ -144,7 +144,7 @@ export default function DocsPage() {
               href="#"
               className="group rounded-xl border border-border bg-surface p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <div className="mb-3 flex size-10 items-center justify-center rounded-lg bg-[#3B82F6]/10 text-sm font-bold text-primary">
+              <div className="mb-3 flex size-10 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
                 {p.icon}
               </div>
               <h3 className="mb-1 font-semibold text-text-primary transition-colors group-hover:text-primary">
@@ -196,7 +196,7 @@ export default function DocsPage() {
               <li key={item.id}>
                 <a
                   href={`#${item.id}`}
-                  className="block border-l-2 border-transparent py-1 pl-4 text-sm text-text-muted transition-colors hover:text-text-secondary hover:border-[#3B82F6]"
+                  className="block border-l-2 border-transparent py-1 pl-4 text-sm text-text-muted transition-colors hover:text-text-secondary hover:border-primary"
                 >
                   {item.label}
                 </a>

@@ -25,8 +25,8 @@ export function DonutChart({ data, height = 200 }: DonutChartProps) {
           ))}
         </Pie>
         <Tooltip
-          contentStyle={{ background: "#fdfcfc", border: "1px solid #ebe8e4", borderRadius: 8 }}
-          labelStyle={{ color: "#777169" }}
+          contentStyle={{ background: "var(--color-eggshell)", border: "1px solid var(--color-stone)", borderRadius: 8 }}
+          labelStyle={{ color: "var(--color-smoke)" }}
         />
       </RechartsPie>
     </ResponsiveContainer>

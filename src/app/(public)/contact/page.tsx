@@ -59,8 +59,8 @@ export default function ContactPage() {
     return (
       <div className="mx-auto max-w-[1200px] px-4 py-24">
         <div className="mx-auto max-w-md text-center">
-          <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-[#22C55E]/10">
-            <CheckCircle2 className="size-8 text-[#22C55E]" />
+          <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-success/10">
+            <CheckCircle2 className="size-8 text-success" />
           </div>
           <h1 className="font-display text-3xl font-bold text-text-primary">Message sent!</h1>
           <p className="mt-4 text-text-secondary">
@@ -135,7 +135,7 @@ export default function ContactPage() {
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-text-primary placeholder:text-text-muted outline-none transition-colors focus:border-primary/50 focus:ring-2 focus:ring-primary/30 min-h-[100px] resize-y"
               />
-              {errors.message && <p className="text-xs text-[#EF4444]">{errors.message}</p>}
+              {errors.message && <p className="text-xs text-error">{errors.message}</p>}
             </div>
             <Button type="submit" loading={submitting} className="w-full" size="lg">
               <Send className="size-4" />

@@ -65,7 +65,7 @@ function FCMChart() {
   const d = coords.map((c, i) => `${i === 0 ? "M" : "L"}${c.x.toFixed(1)},${c.y.toFixed(1)}`).join("");
   return (
     <svg width={w} height={h + 20} className="overflow-visible" aria-label="FCM success rate chart">
-      <defs><linearGradient id="fcmGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="rgba(34,197,94,0.2)" /><stop offset="100%" stopColor="rgba(34,197,94,0)" /></linearGradient></defs>
+        <defs><linearGradient id="fcmGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="rgba(34, 197, 94, 0.2)" /><stop offset="100%" stopColor="rgba(34, 197, 94, 0)" /></linearGradient></defs>
       <path d={d} fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" />
       <path d={`${d} L${w},${h} L0,${h} Z`} fill="url(#fcmGrad)" />
       {labels.map((l, i) => (<text key={i} x={(i / (data.length - 1)) * w} y={h + 14} textAnchor="middle" className="fill-text-muted" fontSize="9">{l}</text>))}
@@ -83,7 +83,7 @@ function LatencyChart() {
     <svg width={w} height={h + 20} aria-label="Latency chart">
       {data.map((v, i) => {
         const barH = ((v - minVal) / (maxVal - minVal)) * h;
-        const color = v > 230 ? "#F59E0B" : "#3B82F6";
+        const color = v > 230 ? "#F59E0B" : "#0447FF";
         return (<g key={i}><rect x={i * (barW + gap)} y={h - barH} width={barW} height={barH} rx="3" fill={color} opacity={0.7} /><text x={i * (barW + gap) + barW / 2} y={h + 14} textAnchor="middle" className="fill-text-muted" fontSize="9">{labels[i]}</text></g>);
       })}
     </svg>

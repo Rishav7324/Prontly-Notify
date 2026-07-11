@@ -97,8 +97,8 @@ function RevenueChart() {
     <svg width={w} height={h} className="overflow-visible" aria-label="Revenue chart">
       <defs>
         <linearGradient id="billGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(34,197,94,0.25)" />
-          <stop offset="100%" stopColor="rgba(34,197,94,0)" />
+          <stop offset="0%" stopColor="rgba(34, 197, 94, 0.25)" />
+          <stop offset="100%" stopColor="rgba(34, 197, 94, 0)" />
         </linearGradient>
       </defs>
       <path d={d} fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

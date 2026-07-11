@@ -66,7 +66,7 @@ export function RazorpayCheckout({
         subscription_id,
         name: "Prontly Notify",
         description: `${planName} Plan - Monthly`,
-        theme: { color: "#3B82F6" },
+        theme: { color: "#0447ff" },
         handler: function (response: any) {
           fetch("/api/v1/billing/verify-payment", {
             method: "POST",

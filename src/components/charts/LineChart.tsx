@@ -17,16 +17,16 @@ interface LineChartProps {
   showGrid?: boolean;
 }
 
-export function LineChart({ data, height = 200, color = "#000000", showGrid = false }: LineChartProps) {
+export function LineChart({ data, height = 200, color = "#0447ff", showGrid = false }: LineChartProps) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <RechartsLine data={data}>
-        {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="#ebe8e4" />}
-        <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#a59f97" }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 11, fill: "#a59f97" }} axisLine={false} tickLine={false} />
+        {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="var(--color-stone)" />}
+        <XAxis dataKey="label" tick={{ fontSize: 11, fill: "var(--color-ash)" }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 11, fill: "var(--color-ash)" }} axisLine={false} tickLine={false} />
         <Tooltip
-          contentStyle={{ background: "#fdfcfc", border: "1px solid #ebe8e4", borderRadius: 8 }}
-          labelStyle={{ color: "#777169" }}
+          contentStyle={{ background: "var(--color-eggshell)", border: "1px solid var(--color-stone)", borderRadius: 8 }}
+          labelStyle={{ color: "var(--color-smoke)" }}
         />
         <Line type="monotone" dataKey="value" stroke={color} strokeWidth={2} dot={false} />
       </RechartsLine>
@@ -34,7 +34,7 @@ export function LineChart({ data, height = 200, color = "#000000", showGrid = fa
   );
 }
 
-export function Sparkline({ data, height = 40, color = "#3B82F6" }: { data: number[]; height?: number; color?: string }) {
+export function Sparkline({ data, height = 40, color = "#0447ff" }: { data: number[]; height?: number; color?: string }) {
   const chartData = data.map((v, i) => ({ label: String(i), value: v }));
   return (
     <ResponsiveContainer width="100%" height={height}>

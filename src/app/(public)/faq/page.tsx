@@ -116,7 +116,7 @@ export default function FAQPage() {
                   onClick={() => setActiveCategory(cat.id)}
                   className={`block w-full rounded-lg px-3 py-2 text-left text-sm transition-colors ${
                     activeCategory === cat.id
-                      ? "bg-[#3B82F6]/10 text-primary font-medium"
+                      ? "bg-primary/10 text-primary font-medium"
                       : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                   }`}
                 >

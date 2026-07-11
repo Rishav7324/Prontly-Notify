@@ -76,7 +76,7 @@ export default function BlogPostPage() {
   return (
     <div className="relative">
       <div
-        className="fixed top-0 left-0 z-50 h-[3px] bg-[#3B82F6] transition-all duration-150"
+        className="fixed top-0 left-0 z-50 h-[3px] bg-primary transition-all duration-150"
         style={{ width: `${scrollProgress}%` }}
       />
 
@@ -133,7 +133,7 @@ export default function BlogPostPage() {
           <div className="mb-10 mt-8 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
             {post.author && (
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-full bg-[#3B82F6]/20 text-sm font-semibold text-primary">
+                <div className="flex size-10 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold text-primary">
                   {post.author.name?.charAt(0) || "A"}
                 </div>
                 <div>

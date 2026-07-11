@@ -103,7 +103,7 @@ export default function PrivacyPage() {
                 href={`#${s.id}`}
                 className={`block rounded-lg px-3 py-2 text-sm transition-colors ${
                   activeSection === s.id
-                    ? "bg-[#3B82F6]/10 text-primary font-medium"
+                    ? "bg-primary/10 text-primary font-medium"
                     : "text-text-secondary hover:bg-black/5 hover:text-text-primary"
                 }`}
               >
@@ -123,9 +123,9 @@ export default function PrivacyPage() {
             </div>
           </div>
 
-          <div className="mb-8 rounded-xl border border-[#22C55E]/25 bg-[#22C55E]/5 p-4">
+          <div className="mb-8 rounded-xl border border-success/25 bg-success/5 p-4">
             <div className="flex items-start gap-3">
-              <Shield className="mt-0.5 size-5 shrink-0 text-[#22C55E]" />
+              <Shield className="mt-0.5 size-5 shrink-0 text-success" />
               <div>
                 <p className="text-sm font-semibold text-text-primary">GDPR & DPDPA Compliant</p>
                 <p className="mt-1 text-xs text-text-secondary">

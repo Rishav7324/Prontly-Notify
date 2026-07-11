@@ -58,7 +58,7 @@ export default function BlogPage() {
               onClick={() => setActiveCategory(cat)}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 cat === activeCategory
-                  ? "bg-[#3B82F6] text-white"
+                  ? "bg-primary text-white"
                   : "border border-border text-text-secondary hover:bg-black/5 hover:text-text-primary"
               }`}
             >
@@ -109,8 +109,8 @@ export default function BlogPage() {
             <div
               className="flex flex-col items-center justify-center rounded-xl border p-8 text-center"
               style={{
-                borderColor: "rgba(59,130,246,0.3)",
-                background: "linear-gradient(135deg, rgba(59,130,246,0.12), rgba(30,58,138,0.25))",
+                borderColor: "rgba(4, 71, 255, 0.3)",
+                background: "linear-gradient(135deg, rgba(4, 71, 255, 0.12), rgba(4, 71, 255, 0.25))",
               }}
             >
               <Badge variant="info" className="mb-4">Newsletter</Badge>

@@ -8,16 +8,16 @@ interface BarChartProps {
   color?: string;
 }
 
-export function BarChart({ data, height = 200, color = "#000000" }: BarChartProps) {
+export function BarChart({ data, height = 200,   color = "#0447ff" }: BarChartProps) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <RechartsBar data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#ebe8e4" />
-        <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#a59f97" }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 11, fill: "#a59f97" }} axisLine={false} tickLine={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--color-stone)" />
+        <XAxis dataKey="label" tick={{ fontSize: 11, fill: "var(--color-ash)" }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 11, fill: "var(--color-ash)" }} axisLine={false} tickLine={false} />
         <Tooltip
-          contentStyle={{ background: "#fdfcfc", border: "1px solid #ebe8e4", borderRadius: 8 }}
-          labelStyle={{ color: "#777169" }}
+          contentStyle={{ background: "var(--color-eggshell)", border: "1px solid var(--color-stone)", borderRadius: 8 }}
+          labelStyle={{ color: "var(--color-smoke)" }}
         />
         <Bar dataKey="value" fill={color} radius={[4, 4, 0, 0]} />
       </RechartsBar>
