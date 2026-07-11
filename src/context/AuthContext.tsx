@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
+import { withTimeout } from "@/lib/utils";
 
 interface AuthContextType {
   user: User | null;
@@ -35,9 +36,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchUserMeta = async (firebaseUser: User) => {
     try {
       const idToken = await firebaseUser.getIdToken();
-      const res = await fetch("/api/v1/users/me", {
-        headers: { Authorization: `Bearer ${idToken}` },
-      });
+      const res = await withTimeout(
+        fetch("/api/v1/users/me", {
+          headers: { Authorization: `Bearer ${idToken}` },
+        }),
+        8000
+      );
       const data = await res.json();
       if (data.success && data.data) {
         setUserRole(data.data.workspace_role || null);
@@ -45,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsStaff(!!data.data.is_staff);
       }
     } catch {
-      // meta fetch is non-critical
+      // meta fetch is non-critical and must never block navigation
     }
   };
 

@@ -110,7 +110,7 @@ function LoginForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken }),
       });
-      await refreshUser();
+      refreshUser().catch(() => {});
       addToast("Welcome back!", "success");
       doRedirect();
     } catch (err: unknown) {
@@ -136,7 +136,7 @@ function LoginForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken }),
       });
-      await refreshUser();
+      refreshUser().catch(() => {});
       doRedirect();
     } catch (err: unknown) {
       const firebaseErr = err as { code?: string };

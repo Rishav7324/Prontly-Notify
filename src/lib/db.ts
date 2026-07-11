@@ -12,7 +12,7 @@ function getD1Config() {
 export async function executeQuery<T = any>(sql: string, params: any[] = []): Promise<T> {
   const { accountId, databaseId, apiToken } = getD1Config();
   const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/query`;
-  
+
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -20,6 +20,7 @@ export async function executeQuery<T = any>(sql: string, params: any[] = []): Pr
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ sql, params }),
+    signal: AbortSignal.timeout(15000),
   });
 
   const data = await res.json();
