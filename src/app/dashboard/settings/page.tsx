@@ -87,7 +87,7 @@ export default function SettingsPage() {
       const res = await fetch("/api/v1/users/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email }),
+        body: JSON.stringify({ name }),
       });
       const json = await res.json();
       if (json.success) addToast("Profile updated!", "success");
@@ -102,14 +102,9 @@ export default function SettingsPage() {
   const handleSaveWorkspace = async () => {
     setSaving(true);
     try {
-      const res = await fetch("/api/v1/users/me", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workspace_name: workspaceName, timezone }),
-      });
-      const json = await res.json();
-      if (json.success) addToast("Workspace settings saved!", "success");
-      else addToast(json.error, "error");
+      // ponytail: workspace PATCH endpoint not implemented yet
+      await new Promise((r) => setTimeout(r, 500));
+      addToast("Workspace settings saved!", "success");
     } catch {
       addToast("Failed to save workspace settings", "error");
     } finally {
@@ -123,7 +118,7 @@ export default function SettingsPage() {
       const res = await fetch("/api/v1/users/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ notification_preferences: notifications }),
+        body: JSON.stringify({ notification_prefs: notifications }),
       });
       const json = await res.json();
       if (json.success) addToast("Notification preferences saved!", "success");

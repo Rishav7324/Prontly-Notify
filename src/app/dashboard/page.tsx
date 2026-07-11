@@ -29,6 +29,7 @@ import {
   UserPlus,
   CalendarClock,
   Activity,
+  Globe,
 } from "lucide-react";
 import {
   AreaChart,
@@ -127,57 +128,47 @@ export default function DashboardHome() {
     const siteId = activeSite.id;
     setLoading(true);
     try {
-      const [summaryRes, campaignsRes, aiRes, growthRes, activityRes] = await Promise.all([
-        fetch(`/api/v1/sites/${siteId}/dashboard-summary?range=${dateRange}`),
-        fetch(`/api/v1/campaigns?range=${dateRange}`),
-        fetch(`/api/v1/ai/analytics-summary?siteId=${siteId}&range=${dateRange}`),
-        fetch(`/api/v1/sites/${siteId}/subscriber-growth?range=${dateRange}`),
-        fetch(`/api/v1/sites/${siteId}/recent-activity?range=${dateRange}`),
-      ]);
+      const summaryRes = await fetch(`/api/v1/sites/${siteId}/dashboard-summary?range=${dateRange}`).catch(() => null);
+      const campaignsRes = await fetch(`/api/v1/campaigns?range=${dateRange}`).catch(() => null);
+      const aiRes = await fetch(`/api/v1/ai/analytics-summary?siteId=${siteId}&range=${dateRange}`).catch(() => null);
 
-      const summaryJson = await summaryRes.json();
-      const campaignsJson = await campaignsRes.json();
-      const aiJson = await aiRes.json();
-      const growthJson = await growthRes.json();
-      const activityJson = await activityRes.json();
-
-      if (summaryJson.success) {
-        const d = summaryJson.data;
-        setKpis([
-          {
-            label: "Total Subscribers",
-            value: formatNumber(d.total_subscribers ?? 0),
-            delta: { value: Math.abs(d.subscriber_growth ?? 0), isPositive: (d.subscriber_growth ?? 0) >= 0 },
-            sparklineData: d.subscriber_trend ?? [],
-            icon: <Users className="size-5" />,
-          },
-          {
-            label: "Sends Today",
-            value: formatNumber(d.sends_today ?? 0),
-            delta: { value: Math.abs(d.sends_change ?? 0), isPositive: (d.sends_change ?? 0) >= 0 },
-            sparklineData: d.sends_trend ?? [],
-            icon: <Send className="size-5" />,
-          },
-          {
-            label: "Avg CTR",
-            value: `${(d.avg_ctr ?? 0).toFixed(1)}%`,
-            delta: { value: Math.abs(d.ctr_change ?? 0), isPositive: (d.ctr_change ?? 0) >= 0 },
-            sparklineData: d.ctr_trend ?? [],
-            icon: <MousePointerClick className="size-5" />,
-          },
-          {
-            label: "Active Campaigns",
-            value: String(d.active_campaigns ?? 0),
-            delta: { value: Math.abs(d.campaigns_change ?? 0), isPositive: (d.campaigns_change ?? 0) >= 0 },
-            sparklineData: d.campaigns_trend ?? [],
-            icon: <Megaphone className="size-5" />,
-          },
-        ]);
+      if (summaryRes && summaryRes.ok) {
+        const summaryJson = await summaryRes.json();
+        if (summaryJson.success) {
+          const d = summaryJson.data;
+          setKpis([
+            {
+              label: "Total Subscribers",
+              value: formatNumber(d.subscribers?.total ?? 0),
+              icon: <Users className="size-5" />,
+            },
+            {
+              label: "Sent",
+              value: formatNumber(d.delivery?.total_sent ?? 0),
+              icon: <Send className="size-5" />,
+            },
+            {
+              label: "Avg CTR",
+              value: d.delivery ? `${(d.delivery.ctr ?? 0).toFixed(1)}%` : "0.0%",
+              icon: <MousePointerClick className="size-5" />,
+            },
+            {
+              label: "Active Campaigns",
+              value: String(d.campaigns?.sent ?? 0),
+              icon: <Megaphone className="size-5" />,
+            },
+          ]);
+          setGrowthData(d.subscriber_trend ?? []);
+        }
       }
-      if (campaignsJson.success) setCampaigns(campaignsJson.data ?? []);
-      if (aiJson.success) setAiSummary(aiJson.data.summary ?? "");
-      if (growthJson.success) setGrowthData(growthJson.data ?? []);
-      if (activityJson.success) setActivity(activityJson.data ?? []);
+      if (campaignsRes && campaignsRes.ok) {
+        const campaignsJson = await campaignsRes.json();
+        if (campaignsJson.success) setCampaigns(campaignsJson.data ?? []);
+      }
+      if (aiRes && aiRes.ok) {
+        const aiJson = await aiRes.json();
+        if (aiJson.success) setAiSummary(aiJson.data.summary ?? "");
+      }
     } catch {
       toast.error("Failed to load dashboard data");
     } finally {
@@ -268,6 +259,19 @@ export default function DashboardHome() {
       ),
     },
   ];
+
+  if (!activeSite && !loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <Globe className="mb-4 size-12 text-text-muted" />
+        <h2 className="text-xl font-semibold text-text-primary">No website selected</h2>
+        <p className="mt-2 text-sm text-text-muted">Select or add a website to view your dashboard.</p>
+        <Link href="/dashboard/sites">
+          <Button className="mt-6" icon={<Plus className="size-4" />}>Add Website</Button>
+        </Link>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

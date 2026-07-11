@@ -65,8 +65,9 @@ export default function TeamPage() {
         const res = await fetch("/api/v1/team/members");
         const json = await res.json();
         if (json.success) {
-          setMembers(json.data.members ?? json.data ?? []);
-          setPendingInvites(json.data.pending_invites ?? []);
+          const all = Array.isArray(json.data) ? json.data : [];
+          setMembers(all.filter((m: any) => m.status === 'active'));
+          setPendingInvites(all.filter((m: any) => m.status === 'pending'));
         }
       } catch {
         addToast("Failed to load team members", "error");
